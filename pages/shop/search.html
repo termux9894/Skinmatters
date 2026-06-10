@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Search – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link rel="stylesheet" href="../../css/pages.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .search-hero{background:linear-gradient(135deg,#f5ede0,#e8d5b7);padding:48px 24px 40px}
+    .search-hero-inner{max-width:680px;margin:0 auto}
+    .search-hero h1{font-family:var(--font-display);font-size:1.8rem;margin-bottom:20px}
+    .big-search{display:flex;border:2px solid var(--brown);border-radius:50px;overflow:hidden;background:#fff}
+    .big-search input{flex:1;padding:14px 24px;font-family:var(--font-body);font-size:1rem;border:none;outline:none;background:transparent;color:var(--text)}
+    .big-search button{padding:0 28px;background:var(--brown);color:#fff;font-size:1rem;transition:var(--transition)}
+    .big-search button:hover{background:var(--text)}
+    .pop-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+    .pop-tag{background:rgba(107,66,38,0.08);color:var(--brown);font-size:0.78rem;font-weight:500;padding:5px 14px;border-radius:20px;cursor:pointer;transition:var(--transition)}
+    .pop-tag:hover{background:var(--brown);color:#fff}
+    .search-wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
+    .search-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .search-meta p{color:var(--text-muted);font-size:0.88rem}
+    .no-results{text-align:center;padding:80px 20px}
+    .no-results i{font-size:4rem;color:var(--border);display:block;margin-bottom:16px}
+    .blog-results{margin-top:48px;border-top:1px solid var(--border);padding-top:40px}
+    .blog-results h2{font-family:var(--font-display);font-size:1.4rem;margin-bottom:20px}
+    .blog-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:var(--transition)}
+    .blog-row:hover{padding-left:8px}
+    .br-em{width:44px;height:44px;border-radius:var(--radius-sm);background:var(--warm-white);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+    .br-info h4{font-size:0.9rem;font-weight:500;margin-bottom:3px}
+    .br-info span{font-size:0.78rem;color:var(--text-muted)}
+  </style>
+</head>
+<body>
+<div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+<div class="search-hero">
+  <div class="search-hero-inner">
+    <h1>Search <em>Products</em></h1>
+    <div class="big-search">
+      <input type="text" id="mainSearch" placeholder="Search soaps, oils, serums…"/>
+      <button onclick="doSearch()"><i class="fa fa-search"></i></button>
+    </div>
+    <div class="pop-tags">
+      <span class="pop-tag" onclick="setQ('aloe')">Aloe vera</span>
+      <span class="pop-tag" onclick="setQ('charcoal')">Charcoal soap</span>
+      <span class="pop-tag" onclick="setQ('hair oil')">Hair oil</span>
+      <span class="pop-tag" onclick="setQ('balm')">Lip balm</span>
+      <span class="pop-tag" onclick="setQ('face pack')">Face pack</span>
+      <span class="pop-tag" onclick="setQ('sandalwood')">Sandalwood</span>
+      <span class="pop-tag" onclick="setQ('serum')">Serum</span>
+    </div>
+  </div>
+</div>
+
+<div class="search-wrap">
+  <div id="searchResults">
+    <div style="text-align:center;padding:60px 20px;color:var(--text-muted)">
+      <i class="fa fa-search" style="font-size:2.5rem;display:block;margin-bottom:14px;color:var(--border)"></i>
+      Type something above to search
+    </div>
+  </div>
+  <div id="defaultState">
+    <h2 style="font-family:var(--font-display);font-size:1.4rem;margin-bottom:20px">🔥 Popular Right Now</h2>
+    <div class="products-grid" id="popularGrid"></div>
+  </div>
+</div>
+
+<footer class="footer" id="siteFooter"></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/products-data.js"></script>
+<script src="../../js/ui/layout.js"></script>
+<script src="../../js/ui/main.js"></script>
+<script>
+  const BLOGS=[
+    {emoji:'🌿',title:'Why Aloe Vera is the Ultimate Skin Superfood',tags:['aloe','skin'],date:'Apr 12'},
+    {emoji:'💆',title:'5 Signs Your Scalp Needs a Detox',tags:['hair','scalp'],date:'Apr 8'},
+    {emoji:'✨',title:'Charcoal Soap: Does It Really Work for Acne?',tags:['charcoal','soap','acne'],date:'Apr 3'},
+    {emoji:'🧪',title:'DIY Turmeric Face Mask for Radiant Skin',tags:['turmeric','face','diy'],date:'Mar 28'},
+    {emoji:'🥥',title:'Cold-Pressed Coconut Oil vs. Refined',tags:['coconut','oil','hair'],date:'Mar 12'},
+  ];
+
+  function hl(text,q){
+    if(!q) return text;
+    return text.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),'<mark style="background:rgba(107,66,38,0.15);border-radius:3px;padding:0 2px">$1</mark>');
+  }
+
+  function doSearch(q){
+    q=q||document.getElementById('mainSearch').value.trim();
+    if(!q) return;
+    document.getElementById('mainSearch').value=q;
+    document.getElementById('defaultState').style.display='none';
+    const lq=q.toLowerCase();
+    const prods=PRODUCTS.filter(p=>p.name.toLowerCase().includes(lq)||p.description.toLowerCase().includes(lq)||p.tagline.toLowerCase().includes(lq)||p.category.toLowerCase().includes(lq));
+    const blogs=BLOGS.filter(b=>b.title.toLowerCase().includes(lq)||b.tags.some(t=>t.includes(lq)));
+    const c=document.getElementById('searchResults');
+
+    if(!prods.length&&!blogs.length){
+      c.innerHTML=`<div class="no-results"><i class="fa fa-search"></i><h2 style="font-family:var(--font-display);margin-bottom:8px">No results for "<em>${q}</em>"</h2><p style="color:var(--text-muted);margin-bottom:24px">Try different keywords or browse all products.</p><a href="../../pages/shop/products.html" class="btn btn-dark">Browse All Products</a></div>`;
+      return;
+    }
+
+    let html=`<div class="search-meta"><p>Found <strong>${prods.length} product${prods.length!==1?'s':''}</strong>${blogs.length?` and <strong>${blogs.length} article${blogs.length!==1?'s':''}</strong>`:''} for "<strong>${q}</strong>"</p>
+    <select class="sort-select" onchange="sortSR(this.value,'${q}')">
+      <option value="default">Most relevant</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="rating">Top Rated</option>
+    </select></div>`;
+
+    if(prods.length) html+=`<div class="products-grid" id="srGrid">`+prods.map(p=>`
+      <div class="product-card">
+        <a href="../../pages/shop/product.html?id=${p.id}" class="product-img-wrap">
+          ${p.badge?`<span class="product-badge">${p.badge}</span>`:''}
+          <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='https://placehold.co/400x400/f5f0eb/888'"/>
+        </a>
+        <div class="product-info">
+          <p class="product-tagline">${p.tagline}</p>
+          <h3 class="product-name"><a href="../../pages/shop/product.html?id=${p.id}">${hl(p.name,q)}</a></h3>
+          <div class="product-rating"><span class="stars-mini">${'★'.repeat(Math.floor(p.rating))}</span><span class="review-count">(${p.reviews})</span></div>
+          <div class="product-price-row"><span class="price-now">₹${p.price}</span>${p.originalPrice?`<span class="price-old">₹${p.originalPrice}</span>`:''}</div>
+          <button class="btn btn-add-cart" onclick="addToCart(${p.id})"><i class="fa fa-plus"></i> Add to Cart</button>
+        </div>
+      </div>`).join('')+`</div>`;
+
+    if(blogs.length) html+=`<div class="blog-results"><h2>📝 Related Articles</h2>`+blogs.map(b=>`
+      <div class="blog-row" onclick="window.location.href='../../pages/content/blog-post.html'">
+        <div class="br-em">${b.emoji}</div>
+        <div class="br-info"><h4>${hl(b.title,q)}</h4><span>${b.date}</span></div>
+        <i class="fa fa-chevron-right" style="color:var(--text-muted);font-size:0.8rem;margin-left:auto"></i>
+      </div>`).join('')+`</div>`;
+
+    c.innerHTML=html;
+    initScrollReveal();
+  }
+
+  function setQ(q){document.getElementById('mainSearch').value=q;doSearch(q);}
+
+  function sortSR(val,q){
+    const lq=q.toLowerCase();
+    let matches=PRODUCTS.filter(p=>p.name.toLowerCase().includes(lq)||p.description.toLowerCase().includes(lq)||p.category.toLowerCase().includes(lq));
+    if(val==='price-asc') matches.sort((a,b)=>a.price-b.price);
+    else if(val==='price-desc') matches.sort((a,b)=>b.price-a.price);
+    else if(val==='rating') matches.sort((a,b)=>b.rating-a.rating);
+    const g=document.getElementById('srGrid');
+    if(g) g.innerHTML=matches.map(p=>`<div class="product-card"><a href="../../pages/shop/product.html?id=${p.id}" class="product-img-wrap"><img src="${p.image}" alt="${p.name}" onerror="this.src='https://placehold.co/400x400/f5f0eb/888'"/></a><div class="product-info"><h3 class="product-name"><a href="../../pages/shop/product.html?id=${p.id}">${p.name}</a></h3><div class="product-price-row"><span class="price-now">₹${p.price}</span></div><button class="btn btn-add-cart" onclick="addToCart(${p.id})">Add to Cart</button></div></div>`).join('');
+  }
+
+  document.getElementById('mainSearch').addEventListener('keydown',e=>{if(e.key==='Enter') doSearch();});
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    initLayout();
+    const q=new URLSearchParams(window.location.search).get('q');
+    if(q) doSearch(q);
+    else {
+      const pop=PRODUCTS.filter(p=>p.reviews>200).slice(0,4);
+      document.getElementById('popularGrid').innerHTML=pop.map(p=>`
+        <div class="product-card">
+          <a href="../../pages/shop/product.html?id=${p.id}" class="product-img-wrap">
+            ${p.badge?`<span class="product-badge">${p.badge}</span>`:''}
+            <img src="${p.image}" alt="${p.name}" onerror="this.src='https://placehold.co/400x400/f5f0eb/888'"/>
+          </a>
+          <div class="product-info">
+            <h3 class="product-name"><a href="../../pages/shop/product.html?id=${p.id}">${p.name}</a></h3>
+            <div class="product-price-row"><span class="price-now">₹${p.price}</span></div>
+            <button class="btn btn-add-cart" onclick="addToCart(${p.id})">Add to Cart</button>
+          </div>
+        </div>`).join('');
+    }
+  });
+</script>
+</body>
+</html>

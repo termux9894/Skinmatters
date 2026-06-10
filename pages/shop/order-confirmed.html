@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Order Confirmed – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link rel="stylesheet" href="../../css/pages.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    @keyframes popIn{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+    .confirmed-wrap{max-width:680px;margin:0 auto;padding:60px 24px 80px;text-align:center}
+    .success-ring{width:100px;height:100px;border-radius:50%;background:rgba(58,107,53,0.1);border:3px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 28px;animation:popIn 0.6s cubic-bezier(0.4,0,0.2,1) forwards}
+    .success-ring i{font-size:2.5rem;color:var(--green)}
+    .confirmed-wrap h1{font-family:var(--font-display);font-size:2.4rem;font-weight:400;margin-bottom:12px;animation:fadeUp 0.5s ease 0.2s both}
+    .confirmed-wrap>p{color:var(--text-muted);margin-bottom:32px;animation:fadeUp 0.5s ease 0.3s both;font-size:0.95rem;line-height:1.7}
+    .order-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;text-align:left;animation:fadeUp 0.5s ease 0.4s both}
+    .order-card-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+    .order-card-hd h3{font-family:var(--font-display);font-size:1.1rem}
+    .detail-row{display:flex;justify-content:space-between;font-size:0.85rem;padding:7px 0;border-bottom:1px solid var(--border)}
+    .detail-row:last-child{border:none}
+    .detail-row span:first-child{color:var(--text-muted)}.detail-row span:last-child{font-weight:500}
+    .tl-mini{display:flex;justify-content:space-between;align-items:center;padding:20px;background:var(--warm-white);border-radius:var(--radius-sm);margin-top:20px;flex-wrap:wrap;gap:8px}
+    .tl-step{display:flex;flex-direction:column;align-items:center;gap:6px}
+    .tl-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem}
+    .tl-dot.done{background:var(--green);color:#fff}.tl-dot.pending{background:var(--border);color:var(--text-muted)}
+    .tl-step span{font-size:0.72rem;color:var(--text-muted)}
+    .tl-line{flex:1;height:2px;background:var(--border)}
+    .what-next{background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px;text-align:left;animation:fadeUp 0.5s ease 0.5s both}
+    .what-next h3{font-family:var(--font-display);font-size:1.1rem;margin-bottom:14px}
+    .next-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.85rem}
+    .next-item:last-child{border:none}
+    .next-icon{width:32px;height:32px;border-radius:50%;background:rgba(58,107,53,0.1);display:flex;align-items:center;justify-content:center;color:var(--green);flex-shrink:0;font-size:0.85rem}
+    .next-text p{font-weight:500;margin-bottom:2px}.next-text span{color:var(--text-muted)}
+    .action-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.5s ease 0.6s both}
+  </style>
+</head>
+<body>
+<div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+<div class="confirmed-wrap">
+  <div style="font-size:2rem;animation:popIn 0.5s ease 0.1s both;display:inline-block">🎉</div>
+  <div class="success-ring"><i class="fa fa-check"></i></div>
+  <h1>Order <em>Confirmed!</em></h1>
+  <p>Thank you! Your SkinMatters products are being lovingly packed and will be on their way soon. A confirmation email has been sent to you.</p>
+
+  <div class="order-card">
+    <div class="order-card-hd">
+      <h3>Order Details</h3>
+      <span style="font-size:0.82rem;color:var(--text-muted)">ID: <strong id="orderId" style="color:var(--brown)">#SM-2025-0042</strong></span>
+    </div>
+    <div class="detail-row"><span>Order Date</span><span id="orderDate">–</span></div>
+    <div class="detail-row"><span>Estimated Delivery</span><span id="etaDate">–</span></div>
+    <div class="detail-row"><span>Payment</span><span>UPI / Online</span></div>
+    <div class="detail-row"><span>Shipping To</span><span>Chennai, Tamil Nadu</span></div>
+    <div class="tl-mini">
+      <div class="tl-step"><div class="tl-dot done"><i class="fa fa-check" style="font-size:0.65rem"></i></div><span>Placed</span></div>
+      <div class="tl-line"></div>
+      <div class="tl-step"><div class="tl-dot done"><i class="fa fa-check" style="font-size:0.65rem"></i></div><span>Confirmed</span></div>
+      <div class="tl-line"></div>
+      <div class="tl-step"><div class="tl-dot pending"><i class="fa fa-box" style="font-size:0.65rem"></i></div><span>Packing</span></div>
+      <div class="tl-line"></div>
+      <div class="tl-step"><div class="tl-dot pending"><i class="fa fa-truck" style="font-size:0.65rem"></i></div><span>Shipped</span></div>
+      <div class="tl-line"></div>
+      <div class="tl-step"><div class="tl-dot pending"><i class="fa fa-home" style="font-size:0.65rem"></i></div><span>Delivered</span></div>
+    </div>
+  </div>
+
+  <div class="what-next">
+    <h3>What happens next?</h3>
+    <div class="next-item"><div class="next-icon"><i class="fa fa-envelope"></i></div><div class="next-text"><p>Confirmation email sent</p><span>Check your inbox for your order receipt.</span></div></div>
+    <div class="next-item"><div class="next-icon"><i class="fa fa-box"></i></div><div class="next-text"><p>We pack your order (1–2 days)</p><span>Freshly handpacked with eco-friendly materials.</span></div></div>
+    <div class="next-item"><div class="next-icon"><i class="fa fa-truck"></i></div><div class="next-text"><p>Shipped with tracking</p><span>You'll get an SMS + email with your tracking number.</span></div></div>
+    <div class="next-item"><div class="next-icon"><i class="fa fa-star"></i></div><div class="next-text"><p>Leave a review & earn points</p><span>Review your products to earn 25 reward points each!</span></div></div>
+  </div>
+
+  <div class="action-btns">
+    <a href="../../pages/account/track.html" class="btn btn-dark"><i class="fa fa-truck"></i>&nbsp; Track Order</a>
+    <a href="../../pages/account/account.html" class="btn btn-outline">My Account</a>
+    <a href="../../pages/shop/products.html" class="btn btn-outline">Continue Shopping</a>
+  </div>
+
+  <div style="margin-top:40px;padding:24px;background:linear-gradient(135deg,#f5ede0,#e8d5b7);border-radius:var(--radius);animation:fadeUp 0.5s ease 0.7s both">
+    <p style="font-family:var(--font-display);font-size:1.2rem;margin-bottom:8px">Love SkinMatters? 🌿</p>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:14px">Share your referral code — both you and your friend get ₹50 off your next order!</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 20px;font-weight:700;font-size:1rem;letter-spacing:0.1em;color:var(--brown)" id="refCode">SKIN-YOU</div>
+      <button class="btn btn-dark" style="padding:10px 20px" onclick="navigator.clipboard.writeText(document.getElementById('refCode').textContent);showToast('Referral code copied!')">Copy Code</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer" id="siteFooter"></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/products-data.js"></script>
+<script src="../../js/ui/layout.js"></script>
+<script src="../../js/ui/main.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded',()=>{
+    initLayout();
+    const now=new Date();
+    document.getElementById('orderDate').textContent=now.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+    const eta=new Date(now); eta.setDate(eta.getDate()+4);
+    document.getElementById('etaDate').textContent=eta.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('orderId').textContent='#SM-2025-'+(Math.floor(Math.random()*900)+100);
+    const user=JSON.parse(localStorage.getItem('sm_user')||'{}');
+    if(user.name) document.getElementById('refCode').textContent='SKIN-'+user.name.split(' ')[0].toUpperCase();
+  });
+</script>
+</body>
+</html>

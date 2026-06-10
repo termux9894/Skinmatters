@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Ingredients – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .ing-hero { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 80px 24px; text-align: center; }
+    .ing-wrap { max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; }
+    .ing-search-bar { max-width: 500px; margin: 0 auto 48px; display: flex; gap: 10px; }
+    .ing-search-bar input { flex: 1; padding: 13px 18px; border: 1px solid var(--border); border-radius: 50px; font-family: var(--font-body); font-size: 0.9rem; background: var(--warm-white); outline: none; }
+    .ing-search-bar input:focus { border-color: var(--green); }
+    .ing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .ing-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; transition: var(--transition); }
+    .ing-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+    .ing-emoji { font-size: 2.5rem; margin-bottom: 14px; display: block; }
+    .ing-name { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 4px; }
+    .ing-sanskrit { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin-bottom: 12px; }
+    .ing-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 14px; }
+    .ing-benefits { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ing-benefit { background: rgba(58,107,53,0.08); color: var(--green); font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+    .pledge-section { background: linear-gradient(135deg, #f5ede0, #e8d5b7); border-radius: var(--radius); padding: 48px; text-align: center; margin-top: 60px; }
+    .pledge-section h2 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 16px; }
+    .never-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }
+    .never-item { background: #fff; border: 1px solid var(--border); border-radius: 30px; padding: 8px 18px; font-size: 0.82rem; font-weight: 500; color: #e53e3e; }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+<section class="ing-hero">
+  <span class="section-tag">Transparency First</span>
+  <h1>Our <em>Ingredients</em></h1>
+  <p style="color:var(--text-muted); max-width:520px; margin:12px auto 0;">Every ingredient in every product — explained. We believe you deserve to know exactly what goes on your skin.</p>
+</section>
+
+<div class="ing-wrap">
+  <div class="ing-search-bar">
+    <input type="text" placeholder="Search ingredients…" oninput="filterIngredients(this.value)" />
+  </div>
+
+  <div class="ing-grid" id="ingGrid"></div>
+
+  <div class="pledge-section">
+    <span class="section-tag">Our Pledge</span>
+    <h2>We <em>Never</em> Use</h2>
+    <p style="color:var(--text-muted); max-width:500px; margin:0 auto;">These harmful ingredients will never appear in a SkinMatters product. Ever.</p>
+    <div class="never-list">
+      <span class="never-item">❌ Parabens</span>
+      <span class="never-item">❌ Sulphates (SLS/SLES)</span>
+      <span class="never-item">❌ Synthetic Fragrances</span>
+      <span class="never-item">❌ Mineral Oil</span>
+      <span class="never-item">❌ Formaldehyde</span>
+      <span class="never-item">❌ Phthalates</span>
+      <span class="never-item">❌ Triclosan</span>
+      <span class="never-item">❌ Hydroquinone</span>
+      <span class="never-item">❌ Mercury</span>
+      <span class="never-item">❌ Talc</span>
+      <span class="never-item">❌ Artificial Colours</span>
+      <span class="never-item">❌ BHA / BHT</span>
+    </div>
+  </div>
+</div>
+
+<footer class="footer" id="siteFooter"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/products-data.js"></script>
+<script src="../../js/ui/layout.js"></script>
+<script src="../../js/ui/main.js"></script>
+<script>
+  const INGREDIENTS = [
+    { emoji:'🌿', name:'Aloe Vera', sanskrit:'Kumari', desc:'Extracted from the succulent aloe plant, this gel is packed with polysaccharides and antioxidants that soothe, hydrate and accelerate skin healing.', benefits:['Anti-inflammatory','Acne healing','Deep hydration','UV protection'] },
+    { emoji:'⚫', name:'Activated Charcoal', sanskrit:'Shuddha Kajal', desc:'Produced by heating carbon-rich materials to extreme temperatures, activated charcoal has a porous structure that acts like a magnet to draw out toxins and excess oil.', benefits:['Pore cleansing','Oil control','Detoxifying','Brightening'] },
+    { emoji:'🌸', name:'Avarampoo', sanskrit:'Cassia auriculata', desc:'A golden yellow flowering plant used in Siddha medicine for centuries. Rich in antioxidants and tannins that brighten skin and protect against free radical damage.', benefits:['Brightening','Anti-aging','Even skin tone','Antioxidant'] },
+    { emoji:'🌱', name:'Kuppaimeni', sanskrit:'Acalypha indica', desc:'A powerful Siddha medicinal herb traditionally used to treat skin diseases, eczema and itching. Rich in tannins and flavonoids with strong antibacterial properties.', benefits:['Antibacterial','Eczema relief','Anti-itch','Healing'] },
+    { emoji:'🌺', name:'Manjistha', sanskrit:'Rubia cordifolia', desc:'Known as the "queen of lymphatic herbs" in Ayurveda. Manjistha root cleanses the blood, reduces inflammation, and breaks down excess melanin for brighter, clearer skin.', benefits:['Anti-pigmentation','Blood purifying','Anti-inflammatory','Brightening'] },
+    { emoji:'🟡', name:'Multani Mitti', sanskrit:'Fuller\'s Earth', desc:'A naturally occurring mineral clay rich in magnesium, quartz and calcite. It absorbs excess sebum, unclogs pores and improves circulation for a fresh, matte complexion.', benefits:['Oil absorption','Pore tightening','Cleansing','Circulation'] },
+    { emoji:'🥛', name:'Almond Milk', sanskrit:'Vatadha Ksheera', desc:'Cold-pressed from sweet almonds, almond milk is rich in vitamin E, fatty acids and proteins that soften, nourish and protect the skin barrier against moisture loss.', benefits:['Moisturising','Vitamin E','Skin softening','Barrier repair'] },
+    { emoji:'🌾', name:'Rice Flour', sanskrit:'Tandula Churna', desc:'A gentle physical exfoliant used in Japanese and Korean beauty for centuries. Rice flour brightens skin tone, reduces the appearance of pores and adds a subtle glow.', benefits:['Exfoliation','Brightening','Pore minimising','Antioxidant'] },
+    { emoji:'🪵', name:'Sandalwood', sanskrit:'Chandan', desc:'One of the most prized ingredients in Indian skincare. Sandalwood has powerful antiseptic, anti-inflammatory and skin-cooling properties that leave skin smooth and fragrant.', benefits:['Anti-inflammatory','Antiseptic','Cooling','Fragrant'] },
+    { emoji:'🥥', name:'Coconut Oil (Cold Pressed)', sanskrit:'Narikela Taila', desc:'Virgin coconut oil is rich in lauric acid, capric acid and vitamin E. It penetrates deep into the hair shaft to reduce protein loss and deeply moisturise dry skin.', benefits:['Deep moisturising','Hair strengthening','Antimicrobial','Scalp health'] },
+    { emoji:'🌿', name:'Castor Oil', sanskrit:'Eranda Taila', desc:'Cold-pressed castor oil is exceptionally rich in ricinoleic acid — a rare fatty acid that promotes hair growth, reduces scalp inflammation and adds shine.', benefits:['Hair growth','Scalp nourishing','Thickness','Anti-fungal'] },
+    { emoji:'🌻', name:'Vitamin C (from Amla)', sanskrit:'Amalaki', desc:'Amla (Indian gooseberry) contains 20x more vitamin C than oranges. It is a powerful antioxidant that inhibits melanin production, boosts collagen and brightens skin.', benefits:['Brightening','Anti-aging','Collagen boost','Pigmentation control'] },
+    { emoji:'🌹', name:'Beetroot', sanskrit:'Paalak Moola', desc:'Rich in betacyanin, iron and vitamin C, beetroot provides a natural rosy pigment while antioxidants protect lips from UV damage and free radicals. Heals dry, chapped lips.', benefits:['Natural tint','Lip healing','Antioxidant','UV protection'] },
+    { emoji:'🌴', name:'Shea Butter', sanskrit:'Vitellaria paradoxa', desc:'Cold-pressed from the nuts of the shea tree, this butter is rich in oleic and stearic acids. It creates a long-lasting moisture barrier and is one of the best natural emollients.', benefits:['Intense moisture','Barrier protection','Anti-aging','Healing'] },
+  ];
+
+  let allIngredients = [...INGREDIENTS];
+
+  function renderIngredients(list) {
+    document.getElementById('ingGrid').innerHTML = list.map(i => `
+      <div class="ing-card">
+        <span class="ing-emoji">${i.emoji}</span>
+        <h3 class="ing-name">${i.name}</h3>
+        <p class="ing-sanskrit">${i.sanskrit}</p>
+        <p class="ing-desc">${i.desc}</p>
+        <div class="ing-benefits">${i.benefits.map(b => `<span class="ing-benefit">${b}</span>`).join('')}</div>
+      </div>`).join('');
+  }
+
+  function filterIngredients(q) {
+    const lq = q.toLowerCase();
+    renderIngredients(lq ? INGREDIENTS.filter(i => i.name.toLowerCase().includes(lq) || i.desc.toLowerCase().includes(lq) || i.benefits.some(b => b.toLowerCase().includes(lq))) : INGREDIENTS);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => { initLayout(); renderIngredients(INGREDIENTS); });
+</script>
+</body>
+</html>

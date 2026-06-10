@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Cart – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .page-hero { background: linear-gradient(135deg, #f5ede0, #e8d5b7); padding: 48px 24px; text-align: center; }
+    .cart-page { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 360px; gap: 40px; align-items: start; }
+    .cart-items-section h2 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 24px; }
+    .cart-page-item { display: flex; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--border); align-items: center; }
+    .cart-page-item img { width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius-sm); background: var(--warm-white); flex-shrink: 0; }
+    .cpi-info { flex: 1; }
+    .cpi-name { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 4px; }
+    .cpi-cat { font-size: 0.78rem; color: var(--green); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+    .cpi-controls { display: flex; align-items: center; gap: 16px; }
+    .qty-ctrl-sm { display: flex; align-items: center; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+    .qty-ctrl-sm button { width: 34px; height: 36px; font-size: 1rem; color: var(--text); transition: background 0.2s; }
+    .qty-ctrl-sm button:hover { background: var(--brown); color: #fff; }
+    .qty-ctrl-sm span { width: 40px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+    .cpi-remove { color: var(--text-muted); font-size: 0.82rem; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: color 0.2s; }
+    .cpi-remove:hover { color: #e53e3e; }
+    .cpi-price { font-size: 1.1rem; font-weight: 600; color: var(--brown); min-width: 70px; text-align: right; }
+    .order-summary { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; position: sticky; top: 90px; }
+    .order-summary h3 { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.9rem; color: var(--text-muted); }
+    .summary-row.total { font-weight: 700; font-size: 1.1rem; color: var(--text); border-top: 1px solid var(--border); margin-top: 8px; padding-top: 16px; }
+    .coupon-row { display: flex; gap: 8px; margin: 16px 0; }
+    .coupon-row input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.85rem; outline: none; background: var(--card-bg); }
+    .coupon-row input:focus { border-color: var(--brown); }
+    .coupon-row button { padding: 10px 16px; background: var(--brown); color: #fff; border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 600; transition: var(--transition); }
+    .coupon-row button:hover { background: var(--text); }
+    .checkout-btn { width: 100%; padding: 16px; background: var(--green); color: #fff; border-radius: var(--radius-sm); font-size: 1rem; font-weight: 600; margin-top: 16px; transition: var(--transition); }
+    .checkout-btn:hover { background: var(--green-light); }
+    .secure-badges { display: flex; justify-content: center; gap: 16px; margin-top: 16px; }
+    .secure-badges span { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+    .empty-cart-page { text-align: center; padding: 80px 24px; grid-column: 1/-1; }
+    .empty-cart-page i { font-size: 4rem; color: var(--border); margin-bottom: 20px; display: block; }
+    @media (max-width: 768px) { .cart-page { grid-template-columns: 1fr; } .order-summary { position: static; } }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+  <section class="page-hero">
+    <h1>Your <em>Cart</em></h1>
+  </section>
+
+  <div class="cart-page" id="cartPage">
+    <div class="empty-cart-page">
+      <i class="fa fa-shopping-bag"></i>
+      <h2>Your cart is empty</h2>
+      <p style="color:var(--text-muted); margin: 12px 0 28px;">Looks like you haven't added anything yet.</p>
+      <a href="../../pages/shop/products.html" class="btn btn-dark">Start Shopping</a>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer class="footer" id="siteFooter"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/products-data.js"></script>
+  <script src="../../js/ui/layout.js"></script>
+  <script src="../../js/ui/main.js"></script>
+  <script>
+    function renderCartPage() {
+      const page = document.getElementById('cartPage');
+      if (cart.length === 0) {
+        page.innerHTML = `<div class="empty-cart-page"><i class="fa fa-shopping-bag"></i><h2>Your cart is empty</h2><p style="color:var(--text-muted); margin: 12px 0 28px;">Looks like you haven't added anything yet.</p><a href="../../pages/shop/products.html" class="btn btn-dark">Start Shopping</a></div>`;
+        return;
+      }
+      const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      const shipping = subtotal >= 999 ? 0 : 79;
+      const total = subtotal + shipping;
+      page.innerHTML = `
+        <div class="cart-items-section">
+          <h2>Cart Items (${cart.length})</h2>
+          ${cart.map(item => `
+            <div class="cart-page-item" id="cpi-${item.id}">
+              <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/100x100/f5f0eb/888?text=Product'" />
+              <div class="cpi-info">
+                <p class="cpi-name">${item.name}</p>
+                <p class="cpi-cat">${item.category}</p>
+                <div class="cpi-controls">
+                  <div class="qty-ctrl-sm">
+                    <button onclick="updateCartQty(${item.id}, -1); renderCartPage();">−</button>
+                    <span>${item.qty}</span>
+                    <button onclick="updateCartQty(${item.id}, 1); renderCartPage();">+</button>
+                  </div>
+                  <span class="cpi-remove" onclick="removeFromCart(${item.id}); renderCartPage();"><i class="fa fa-trash"></i> Remove</span>
+                </div>
+              </div>
+              <span class="cpi-price">₹${(item.price * item.qty).toLocaleString('en-IN')}</span>
+            </div>`).join('')}
+          <a href="../../pages/shop/products.html" style="display:inline-flex; align-items:center; gap:8px; margin-top:24px; color:var(--brown); font-size:0.88rem; font-weight:500;">
+            <i class="fa fa-arrow-left"></i> Continue Shopping
+          </a>
+        </div>
+        <div class="order-summary">
+          <h3>Order Summary</h3>
+          <div class="summary-row"><span>Subtotal</span><span>₹${subtotal.toLocaleString('en-IN')}</span></div>
+          <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? '<span style="color:var(--green)">FREE</span>' : `₹${shipping}`}</span></div>
+          ${shipping > 0 ? `<p style="font-size:0.78rem; color:var(--green); margin-top:4px;">Add ₹${999 - subtotal} more for free shipping!</p>` : ''}
+          <div class="coupon-row">
+            <input type="text" placeholder="Coupon code (PURE10)" id="couponInput" />
+            <button onclick="applyCoupon()">Apply</button>
+          </div>
+          <div class="summary-row total"><span>Total</span><span>₹${total.toLocaleString('en-IN')}</span></div>
+          <button class="checkout-btn" onclick="window.location.href='../../pages/shop/checkout.html'">
+            <i class="fa fa-lock"></i> &nbsp;Proceed to Checkout
+          </button>
+          <div class="secure-badges">
+            <span><i class="fa fa-lock"></i> Secure</span>
+            <span><i class="fa fa-undo"></i> Easy Returns</span>
+            <span><i class="fa fa-truck"></i> Fast Delivery</span>
+          </div>
+        </div>`;
+    }
+
+    function applyCoupon() {
+      const code = document.getElementById('couponInput')?.value.trim().toUpperCase();
+      if (code === 'PURE10') showToast('🎉 10% discount applied!');
+      else showToast('Invalid coupon code');
+    }
+
+    document.addEventListener('DOMContentLoaded', renderCartPage);
+  </script>
+</body>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof initLayout === 'function') {
+        initLayout();
+    }
+});
+</script>
+</html>

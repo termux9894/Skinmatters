@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Account – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .account-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 240px 1fr; gap: 40px; align-items: start; }
+    .account-sidebar { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; position: sticky; top: 90px; }
+    .account-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--brown); color: #fff; font-family: var(--font-display); font-size: 1.8rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+    .account-name { text-align: center; font-family: var(--font-display); font-size: 1.1rem; font-weight: 500; }
+    .account-email { text-align: center; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 24px; }
+    .account-nav { display: flex; flex-direction: column; gap: 4px; }
+    .account-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.88rem; color: var(--text-muted); cursor: pointer; transition: var(--transition); }
+    .account-nav-item i { width: 16px; text-align: center; }
+    .account-nav-item:hover { background: #f5ede0; color: var(--brown); }
+    .account-nav-item.active { background: var(--brown); color: #fff; }
+    .account-nav-item.danger { color: #e53e3e; }
+    .account-nav-item.danger:hover { background: #fff5f5; }
+    .account-main { }
+    .account-panel { display: none; }
+    .account-panel.active { display: block; }
+    .panel-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 400; margin-bottom: 6px; }
+    .panel-subtitle { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 28px; }
+    .address-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .address-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; position: relative; font-size: 0.88rem; line-height: 1.7; color: var(--text-muted); }
+    .address-card.default { border-color: var(--brown-light); }
+    .address-default-badge { position: absolute; top: 12px; right: 12px; background: var(--brown); color: #fff; font-size: 0.7rem; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+    .address-card h4 { color: var(--text); font-size: 0.9rem; margin-bottom: 8px; }
+    .address-actions { display: flex; gap: 12px; margin-top: 14px; }
+    .address-actions a { font-size: 0.78rem; color: var(--brown); cursor: pointer; }
+    .loyalty-bar-wrap { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; }
+    .loyalty-label { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 8px; }
+    .loyalty-bar { height: 8px; background: var(--border); border-radius: 8px; overflow: hidden; }
+    .loyalty-fill { height: 100%; width: 35%; background: linear-gradient(90deg, var(--green), var(--accent)); border-radius: 8px; }
+    .points-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .points-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; }
+    .points-card .num { font-family: var(--font-display); font-size: 1.8rem; font-weight: 400; color: var(--brown); }
+    .points-card .lbl { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+    @media (max-width: 768px) {
+      .account-wrap { grid-template-columns: 1fr; }
+      .account-sidebar { position: static; }
+      .address-grid { grid-template-columns: 1fr; }
+      .points-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+<section class="page-hero-sm">
+  <span class="section-tag">My Account</span>
+  <h1>Welcome <em id="heroName">Back</em></h1>
+  <p>Manage your orders, addresses, wishlist and profile.</p>
+</section>
+
+<div class="account-wrap">
+  <!-- SIDEBAR -->
+  <aside class="account-sidebar">
+    <div class="account-avatar" id="avatarInitial">G</div>
+    <p class="account-name" id="sidebarName">Guest User</p>
+    <p class="account-email" id="sidebarEmail">guest@example.com</p>
+    <nav class="account-nav">
+      <div class="account-nav-item active" onclick="showPanel('orders')"><i class="fa fa-box"></i> My Orders</div>
+      <div class="account-nav-item" onclick="showPanel('addresses')"><i class="fa fa-map-marker-alt"></i> Addresses</div>
+      <div class="account-nav-item" onclick="showPanel('profile')"><i class="fa fa-user"></i> Profile</div>
+      <div class="account-nav-item" onclick="showPanel('rewards')"><i class="fa fa-star"></i> Rewards</div>
+      <div class="account-nav-item" onclick="window.location.href='../../pages/shop/wishlist.html'"><i class="fa fa-heart"></i> Wishlist</div>
+      <div class="account-nav-item" onclick="window.location.href='../../pages/account/track.html'"><i class="fa fa-truck"></i> Track Order</div>
+      <div class="account-nav-item danger" onclick="logout()"><i class="fa fa-sign-out-alt"></i> Logout</div>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="account-main">
+
+    <!-- ORDERS -->
+    <div class="account-panel active" id="panel-orders">
+      <h2 class="panel-title">My <em>Orders</em></h2>
+      <p class="panel-subtitle">Your recent purchases</p>
+      <div id="ordersContainer"></div>
+    </div>
+
+    <!-- ADDRESSES -->
+    <div class="account-panel" id="panel-addresses">
+      <h2 class="panel-title">Saved <em>Addresses</em></h2>
+      <p class="panel-subtitle">Manage your delivery addresses</p>
+      <div class="address-grid">
+        <div class="address-card default">
+          <span class="address-default-badge">Default</span>
+          <h4>Home</h4>
+          <p id="addrName">Guest User</p>
+          <p>42, Anna Nagar West,<br/>Chennai – 600040<br/>Tamil Nadu, India</p>
+          <p>📞 98765 43210</p>
+          <div class="address-actions"><a>Edit</a><a style="color:#e53e3e;">Delete</a></div>
+        </div>
+        <div class="address-card" style="border: 2px dashed var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; min-height:160px;" onclick="showToast('Address form coming soon!')">
+          <i class="fa fa-plus" style="font-size:1.5rem; color:var(--text-muted); margin-bottom:10px;"></i>
+          <p style="font-size:0.85rem; color:var(--text-muted);">Add New Address</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="account-panel" id="panel-profile">
+      <h2 class="panel-title">My <em>Profile</em></h2>
+      <p class="panel-subtitle">Update your personal details</p>
+      <div class="form-card" style="max-width:540px;">
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" id="pFirst" placeholder="Priya" /></div>
+          <div class="form-group"><label>Last Name</label><input type="text" id="pLast" placeholder="Sharma" /></div>
+        </div>
+        <div class="form-group"><label>Email</label><input type="email" id="pEmail" placeholder="you@example.com" /></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="pPhone" placeholder="+91 98765 43210" /></div>
+        <div class="form-group"><label>Birthday (for a surprise 🎁)</label><input type="date" id="pBday" /></div>
+        <button class="btn btn-dark" onclick="saveProfile()">Save Changes</button>
+      </div>
+    </div>
+
+    <!-- REWARDS -->
+    <div class="account-panel" id="panel-rewards">
+      <h2 class="panel-title">My <em>Rewards</em></h2>
+      <p class="panel-subtitle">Earn points on every purchase and redeem for discounts</p>
+      <div class="loyalty-bar-wrap">
+        <div class="loyalty-label"><span>🌱 Seedling (350 pts)</span><span>🌿 Green Member (1000 pts)</span></div>
+        <div class="loyalty-bar"><div class="loyalty-fill"></div></div>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-top:8px;">650 more points to reach Green Member status!</p>
+      </div>
+      <div class="points-grid">
+        <div class="points-card"><div class="num">350</div><div class="lbl">Total Points</div></div>
+        <div class="points-card"><div class="num">0</div><div class="lbl">Redeemed</div></div>
+        <div class="points-card"><div class="num">350</div><div class="lbl">Available</div></div>
+      </div>
+      <div style="margin-top: 28px; background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px;">
+        <h3 style="font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 16px;">How to earn points</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.88rem; color: var(--text-muted);">
+          <div style="display:flex; justify-content:space-between;"><span>🛒 Every ₹100 spent</span><span style="font-weight:600; color:var(--green);">+10 pts</span></div>
+          <div style="display:flex; justify-content:space-between;"><span>⭐ Write a review</span><span style="font-weight:600; color:var(--green);">+25 pts</span></div>
+          <div style="display:flex; justify-content:space-between;"><span>👥 Refer a friend</span><span style="font-weight:600; color:var(--green);">+100 pts</span></div>
+          <div style="display:flex; justify-content:space-between;"><span>🎂 Birthday bonus</span><span style="font-weight:600; color:var(--green);">+50 pts</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer" id="siteFooter"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/products-data.js"></script>
+<script src="../../js/ui/layout.js"></script>
+<script src="../../js/ui/main.js"></script>
+<script>
+  const MOCK_ORDERS = [
+    { id: '#SM-2025-0041', date: 'Apr 18, 2025', status: 'delivered', total: 540, items: [1, 9, 13] },
+    { id: '#SM-2025-0038', date: 'Apr 10, 2025', status: 'shipped',   total: 350, items: [11] },
+    { id: '#SM-2025-0031', date: 'Mar 28, 2025', status: 'delivered', total: 720, items: [2, 7, 10] },
+  ];
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initLayout();
+    const user = JSON.parse(localStorage.getItem('sm_user') || '{"name":"Guest User","email":"guest@example.com"}');
+    const initials = user.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('heroName').textContent = user.name.split(' ')[0];
+    document.getElementById('avatarInitial').textContent = initials;
+    document.getElementById('sidebarName').textContent = user.name;
+    document.getElementById('sidebarEmail').textContent = user.email;
+    document.getElementById('addrName').textContent = user.name;
+    document.getElementById('pEmail').value = user.email;
+    const parts = user.name.split(' ');
+    document.getElementById('pFirst').value = parts[0] || '';
+    document.getElementById('pLast').value  = parts.slice(1).join(' ') || '';
+    renderOrders();
+  });
+
+  function showPanel(id) {
+    document.querySelectorAll('.account-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.account-nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(`panel-${id}`).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+
+  function renderOrders() {
+    const c = document.getElementById('ordersContainer');
+    if (!MOCK_ORDERS.length) { c.innerHTML = '<p style="color:var(--text-muted);">No orders yet. <a href="../../pages/shop/products.html" style="color:var(--brown);">Start shopping!</a></p>'; return; }
+    c.innerHTML = MOCK_ORDERS.map(o => {
+      const thumbs = o.items.map(id => { const p = PRODUCTS.find(x=>x.id===id); return p ? `<div class="order-thumb"><img src="${p.image}" onerror="this.src='https://placehold.co/60x60/f5f0eb/888'" /></div>` : ''; }).join('');
+      const statusClass = { delivered: 'status-delivered', shipped: 'status-shipped', processing: 'status-processing' }[o.status];
+      const statusLabel = { delivered: '✅ Delivered', shipped: '🚚 Shipped', processing: '⏳ Processing' }[o.status];
+      return `<div class="order-card">
+        <div class="order-header">
+          <div><span class="order-id">${o.id}</span>&nbsp;&nbsp;<span class="order-date">${o.date}</span></div>
+          <span class="order-status ${statusClass}">${statusLabel}</span>
+        </div>
+        <div class="order-items">${thumbs}</div>
+        <div class="order-footer">
+          <span class="order-total">₹${o.total.toLocaleString('en-IN')}</span>
+          <div style="display:flex;gap:12px;">
+            <a href="../../pages/account/track.html" class="btn btn-outline-dark" style="padding:8px 20px; font-size:0.8rem;">Track</a>
+            <button class="btn btn-dark" style="padding:8px 20px; font-size:0.8rem;" onclick="showToast('Reorder added to cart!')">Reorder</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function saveProfile() {
+    const name = `${document.getElementById('pFirst').value} ${document.getElementById('pLast').value}`.trim();
+    const email = document.getElementById('pEmail').value;
+    localStorage.setItem('sm_user', JSON.stringify({ name, email }));
+    showToast('Profile updated! 🌿');
+  }
+
+  function logout() {
+    localStorage.removeItem('sm_user');
+    showToast('Logged out. See you soon! 👋');
+    setTimeout(() => window.location.href = '../../index.html', 1200);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog Post – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .post-layout { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 320px; gap: 48px; align-items: start; }
+    .post-content { max-width: 720px; }
+    .post-tag { margin-bottom: 12px; }
+    .post-title { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 400; line-height: 1.2; margin-bottom: 16px; }
+    .post-meta { display: flex; align-items: center; gap: 20px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 28px; flex-wrap: wrap; }
+    .post-meta span { display: flex; align-items: center; gap: 5px; }
+    .post-cover { width: 100%; height: 360px; border-radius: var(--radius); background: linear-gradient(135deg, #e8f5e9, #c8e6c9); display: flex; align-items: center; justify-content: center; font-size: 8rem; margin-bottom: 36px; overflow: hidden; }
+    .post-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .post-body { font-size: 0.97rem; line-height: 1.85; color: var(--text); }
+    .post-body h2 { font-family: var(--font-display); font-size: 1.6rem; margin: 32px 0 12px; }
+    .post-body h3 { font-family: var(--font-display); font-size: 1.3rem; margin: 24px 0 10px; color: var(--brown); }
+    .post-body p { margin-bottom: 16px; color: var(--text-muted); }
+    .post-body strong { color: var(--text); }
+    .post-body ul { margin: 0 0 16px 20px; }
+    .post-body ul li { margin-bottom: 8px; color: var(--text-muted); }
+    .post-body .highlight { background: rgba(58,107,53,0.06); border-left: 3px solid var(--green); padding: 16px 20px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 24px 0; }
+    .post-body .highlight p { color: var(--text); margin: 0; font-style: italic; }
+    .post-share { display: flex; align-items: center; gap: 12px; margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+    .post-share span { font-size: 0.85rem; font-weight: 600; }
+    .share-btn { padding: 8px 18px; border-radius: 30px; font-size: 0.8rem; font-weight: 500; border: 1.5px solid var(--border); cursor: pointer; transition: var(--transition); background: none; display: flex; align-items: center; gap: 6px; }
+    .share-btn:hover { background: var(--brown); border-color: var(--brown); color: #fff; }
+    .post-sidebar { position: sticky; top: 90px; }
+    .sidebar-widget { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; }
+    .sidebar-widget h4 { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .sidebar-post { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+    .sidebar-post:last-child { border: none; }
+    .sp-emoji { width: 48px; height: 48px; border-radius: var(--radius-sm); background: var(--warm-white); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+    .sp-text p { font-size: 0.82rem; font-weight: 500; line-height: 1.4; margin-bottom: 3px; }
+    .sp-text span { font-size: 0.72rem; color: var(--text-muted); }
+    .featured-product { display: flex; gap: 12px; align-items: center; }
+    .fp-img { width: 64px; height: 64px; border-radius: var(--radius-sm); object-fit: cover; background: var(--warm-white); }
+    .fp-info p { font-size: 0.85rem; font-weight: 500; margin-bottom: 3px; }
+    .fp-info span { font-size: 0.82rem; color: var(--brown); font-weight: 600; }
+    @media (max-width: 900px) { .post-layout { grid-template-columns: 1fr; } .post-sidebar { position: static; } }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+<div style="max-width:1100px; margin:0 auto; padding:20px 24px 0; font-size:0.82rem; color:var(--text-muted);">
+  <a href="../../index.html" style="color:var(--text-muted);">Home</a> › <a href="../../pages/content/blog.html" style="color:var(--text-muted);">Blog</a> › <span>The Ancient Indian 4-Step Routine</span>
+</div>
+
+<div class="post-layout">
+  <article class="post-content">
+    <span class="blog-tag post-tag">Skincare Tips</span>
+    <h1 class="post-title">The Ancient Indian 4-Step Skincare Routine You Need to Try</h1>
+    <div class="post-meta">
+      <span><i class="fa fa-user"></i> SkinMatters Team</span>
+      <span><i class="fa fa-calendar"></i> April 15, 2025</span>
+      <span><i class="fa fa-clock"></i> 5 min read</span>
+    </div>
+    <div class="post-cover">🌿</div>
+
+    <div class="post-body">
+      <p>Long before serums and retinols became buzzwords, Indian women maintained luminous skin with a deceptively simple philosophy: use what grows in nature, apply it consistently, and treat skin as a reflection of overall health.</p>
+
+      <p>The Ayurvedic approach to skincare is built on four pillars — <strong>Cleanse, Exfoliate, Moisturise, and Nourish</strong> — each corresponding to a specific skin need and best served by specific natural ingredients.</p>
+
+      <div class="highlight"><p>"Nature has an ingredient for every skin concern. The challenge is not finding what works, but learning to trust it."</p></div>
+
+      <h2>Step 1: Cleanse — Remove Without Stripping</h2>
+      <p>The first mistake most people make is using a harsh surfactant-based cleanser that strips the skin's natural acid mantle. Ayurvedic cleansing uses mild, plant-based agents that clean while preserving moisture.</p>
+      <p><strong>Best natural cleansers:</strong></p>
+      <ul>
+        <li><strong>Aloe Vera Soap</strong> — Gentle, anti-inflammatory, ideal for sensitive and acne-prone skin.</li>
+        <li><strong>Charcoal Soap</strong> — Activated charcoal draws out toxins without over-drying.</li>
+        <li><strong>Neem + Turmeric Soap</strong> — Classical Ayurvedic combination for antimicrobial action.</li>
+      </ul>
+
+      <h2>Step 2: Exfoliate — Reveal Fresh Skin</h2>
+      <p>Exfoliation removes dead skin cells and stimulates cell turnover. Ayurveda traditionally uses <em>ubtan</em> — a paste of chickpea flour, turmeric, and botanical powders — as a gentle weekly scrub.</p>
+      <p>Modern natural exfoliants include herbal face packs with multani mitti (Fuller's Earth), rose petal powder, and rice flour. These absorb excess oil, refine pores, and brighten skin tone without micro-tears.</p>
+      <p><strong>Pro tip:</strong> Exfoliate no more than 2-3 times per week. Over-exfoliating weakens the skin barrier and causes more harm than good.</p>
+
+      <h2>Step 3: Moisturise — Lock in Hydration</h2>
+      <p>The Ayurvedic approach to moisturising goes beyond water-based creams. Oils and butter are used to seal in hydration at the cellular level. The right oil depends on your skin type (<em>dosha</em>) — but most Indians do well with lightweight options like aloe vera gel, jojoba oil, or kokum butter.</p>
+      <ul>
+        <li><strong>Vata skin</strong> (dry, thin): Sesame oil, almond oil</li>
+        <li><strong>Pitta skin</strong> (sensitive, redness): Coconut oil, sandalwood</li>
+        <li><strong>Kapha skin</strong> (oily, congested): Neem oil, light jojoba</li>
+      </ul>
+
+      <h2>Step 4: Nourish — Target Your Skin Concerns</h2>
+      <p>The final step is treatment — applying a targeted botanical serum or overnight oil to address specific concerns like pigmentation, fine lines, or dark circles. This is where plant actives like vitamin C (from amla), bakuchiol, and kumkumadi oil shine.</p>
+
+      <div class="highlight"><p>Consistency matters more than complexity. A simple 4-step routine done every day will always outperform an elaborate 10-step routine done occasionally.</p></div>
+
+      <h2>Building Your Routine</h2>
+      <p>You don't need 10 products. A well-chosen set of 4-5 products used consistently will transform your skin over 4-8 weeks. Start with the basics — a good natural soap, a weekly pack, a light moisturiser, and a nourishing oil — and build from there.</p>
+      <p>Our <a href="../../pages/shop/products.html" style="color:var(--brown);">full product range</a> is designed around exactly this 4-step philosophy, making it easy to build a complete routine with products that work together.</p>
+    </div>
+
+    <div class="post-share">
+      <span>Share this article:</span>
+      <button class="share-btn" onclick="showToast('Link copied!')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+      <button class="share-btn" onclick="showToast('Shared to Instagram!')"><i class="fab fa-instagram"></i> Instagram</button>
+      <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href); showToast('Link copied!')"><i class="fa fa-link"></i> Copy Link</button>
+    </div>
+  </article>
+
+  <aside class="post-sidebar">
+    <div class="sidebar-widget">
+      <h4>🌿 Featured Products</h4>
+      <div id="featuredProducts"></div>
+    </div>
+    <div class="sidebar-widget">
+      <h4>📖 More Articles</h4>
+      <div class="sidebar-post" onclick="window.location.href='../../pages/content/blog-post.html'"><div class="sp-emoji">🌿</div><div class="sp-text"><p>Why Aloe Vera is the Ultimate Skin Superfood</p><span>Apr 12, 2025</span></div></div>
+      <div class="sidebar-post" onclick="window.location.href='../../pages/content/blog-post.html'"><div class="sp-emoji">✨</div><div class="sp-text"><p>Charcoal Soap: Does It Really Work for Acne?</p><span>Apr 3, 2025</span></div></div>
+      <div class="sidebar-post" onclick="window.location.href='../../pages/content/blog-post.html'"><div class="sp-emoji">🌸</div><div class="sp-text"><p>Manjistha: The Forgotten Herb for Glowing Skin</p><span>Mar 22, 2025</span></div></div>
+    </div>
+    <div class="sidebar-widget" style="background: linear-gradient(135deg, #f5ede0, #e8d5b7);">
+      <h4>✉️ Skincare Newsletter</h4>
+      <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:16px;">Get weekly skincare tips and exclusive offers.</p>
+      <input type="email" placeholder="Your email" style="width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius-sm); font-family:var(--font-body); margin-bottom:10px; outline:none; background:white;" />
+      <button class="btn btn-dark" style="width:100%; padding:10px;" onclick="showToast('Subscribed! 🌿')">Subscribe</button>
+    </div>
+  </aside>
+</div>
+
+<footer class="footer" id="siteFooter"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/products-data.js"></script>
+<script src="../../js/ui/layout.js"></script>
+<script src="../../js/ui/main.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    initLayout();
+    const featured = [PRODUCTS[0], PRODUCTS[1], PRODUCTS[12]].filter(Boolean);
+    document.getElementById('featuredProducts').innerHTML = featured.map(p => `
+      <div class="featured-product" style="margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border);">
+        <img class="fp-img" src="${p.image}" alt="${p.name}" onerror="this.src='https://placehold.co/64x64/f5f0eb/888'" />
+        <div class="fp-info">
+          <p>${p.name}</p>
+          <span>₹${p.price}</span><br/>
+          <button style="font-size:0.75rem; color:var(--green); font-weight:600; margin-top:4px;" onclick="addToCart(${p.id})">+ Add to Cart</button>
+        </div>
+      </div>`).join('');
+  });
+</script>
+</body>
+</html>

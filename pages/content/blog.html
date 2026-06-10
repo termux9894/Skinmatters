@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .blog-wrap { max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; }
+    .blog-hero-card { background: linear-gradient(135deg, #3a6b35 0%, #2d5228 100%); border-radius: var(--radius); padding: 56px 40px; margin-bottom: 48px; color: #fff; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    .blog-hero-card .blog-tag { background: rgba(200,169,110,0.25); color: var(--accent); }
+    .blog-hero-card h2 { font-family: var(--font-display); font-size: 2rem; color: #fff; margin: 12px 0 16px; line-height: 1.2; }
+    .blog-hero-card p { color: rgba(255,255,255,0.75); line-height: 1.7; font-size: 0.92rem; margin-bottom: 20px; }
+    .blog-hero-card .btn-light { background: #fff; color: var(--green); }
+    .blog-hero-img { border-radius: var(--radius-sm); overflow: hidden; height: 240px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 5rem; }
+    .blog-filter { display: flex; gap: 10px; margin-bottom: 32px; flex-wrap: wrap; }
+    .blog-filter-btn { padding: 8px 20px; border-radius: 30px; font-size: 0.82rem; font-weight: 500; border: 1.5px solid var(--border); color: var(--text-muted); transition: var(--transition); cursor: pointer; background: none; }
+    .blog-filter-btn.active, .blog-filter-btn:hover { background: var(--brown); border-color: var(--brown); color: #fff; }
+    @media (max-width: 768px) { .blog-hero-card { grid-template-columns: 1fr; } .blog-hero-img { display: none; } }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+<section class="page-hero-sm">
+  <span class="section-tag">Skincare Wisdom</span>
+  <h1>Our <em>Blog</em></h1>
+  <p>Tips, rituals, and ingredient guides to help you get the most from natural skincare.</p>
+</section>
+
+<div class="blog-wrap">
+  <!-- HERO POST -->
+  <div class="blog-hero-card">
+    <div>
+      <span class="blog-tag">Skincare Tips</span>
+      <h2>The Ancient Indian 4-Step Skincare Routine You Need to Try</h2>
+      <p>Discover how Ayurvedic wisdom combined with modern science can transform your skin in just 4 simple steps — cleanse, exfoliate, moisturise, nourish.</p>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; font-size:0.78rem; color:rgba(255,255,255,0.6);">
+        <span><i class="fa fa-calendar"></i> Apr 15, 2025</span>
+        <span><i class="fa fa-clock"></i> 5 min read</span>
+      </div>
+      <a href="../../pages/content/blog-post.html" class="btn btn-light">Read Article</a>
+    </div>
+    <div class="blog-hero-img">🌿</div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="blog-filter">
+    <button class="blog-filter-btn active" onclick="filterBlog('all', this)">All Posts</button>
+    <button class="blog-filter-btn" onclick="filterBlog('skincare', this)">Skincare</button>
+    <button class="blog-filter-btn" onclick="filterBlog('haircare', this)">Haircare</button>
+    <button class="blog-filter-btn" onclick="filterBlog('ingredients', this)">Ingredients</button>
+    <button class="blog-filter-btn" onclick="filterBlog('diy', this)">DIY Tips</button>
+    <button class="blog-filter-btn" onclick="filterBlog('wellness', this)">Wellness</button>
+  </div>
+
+  <div class="blog-grid" id="blogGrid"></div>
+</div>
+
+<footer class="footer" id="siteFooter"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/products-data.js"></script>
+<script src="../../js/ui/layout.js"></script>
+<script src="../../js/ui/main.js"></script>
+<script>
+  const BLOG_POSTS = [
+    { id:1, cat:'ingredients', emoji:'🌿', title:'Why Aloe Vera is the Ultimate Skin Superfood', excerpt:'Aloe vera has been used in Ayurveda for over 5,000 years. Here is everything you need to know about why it deserves a permanent spot in your routine.', date:'Apr 12, 2025', read:'4 min', tag:'Ingredients' },
+    { id:2, cat:'haircare', emoji:'💆', title:'5 Signs Your Scalp Needs a Detox', excerpt:'Excess oil, dandruff, itchiness — your scalp sends signals. Learn how to read them and which herbs can help restore balance naturally.', date:'Apr 8, 2025', read:'6 min', tag:'Haircare' },
+    { id:3, cat:'skincare', emoji:'✨', title:'Charcoal Soap: Does It Really Work for Acne?', excerpt:'Activated charcoal has become a skincare buzzword. We break down the science behind how it deep-cleanses pores and whether it is right for you.', date:'Apr 3, 2025', read:'5 min', tag:'Skincare' },
+    { id:4, cat:'diy', emoji:'🧪', title:'DIY Turmeric Face Mask for Radiant Skin', excerpt:'This simple 3-ingredient mask made with turmeric, honey and rose water can brighten your complexion in just 15 minutes. Here is how to make it.', date:'Mar 28, 2025', read:'3 min', tag:'DIY Tips' },
+    { id:5, cat:'ingredients', emoji:'🌸', title:'Manjistha: The Forgotten Herb for Glowing Skin', excerpt:'Used in Ayurvedic medicine for centuries, Manjistha root is one of the most powerful blood-purifying herbs for clear, even-toned skin.', date:'Mar 22, 2025', read:'7 min', tag:'Ingredients' },
+    { id:6, cat:'wellness', emoji:'🧘', title:'How Stress Destroys Your Skin — and What to Do About It', excerpt:'Cortisol triggers inflammation, breaks collagen, and worsens acne. Here is a holistic guide to managing stress-related skin flare-ups naturally.', date:'Mar 18, 2025', read:'8 min', tag:'Wellness' },
+    { id:7, cat:'haircare', emoji:'🥥', title:'Cold-Pressed Coconut Oil vs. Refined: What is the Difference?', excerpt:'Not all coconut oils are equal. Cold-pressed, virgin coconut oil retains far more nutrients. Here is why it matters for your hair.', date:'Mar 12, 2025', read:'5 min', tag:'Haircare' },
+    { id:8, cat:'skincare', emoji:'🌻', title:'The Right Way to Layer Skincare Products', excerpt:'Serum before moisturiser? Oil last or first? We clear up the confusion with a step-by-step guide to applying natural skincare for maximum benefits.', date:'Mar 5, 2025', read:'4 min', tag:'Skincare' },
+    { id:9, cat:'diy', emoji:'🫐', title:'Beetroot Lip Mask: Get Natural Pink Lips at Home', excerpt:'Mix beetroot powder, honey and shea butter for a lip-softening, tint-adding overnight mask. Your lips will thank you!', date:'Feb 28, 2025', read:'2 min', tag:'DIY Tips' },
+  ];
+
+  function renderBlog(posts) {
+    document.getElementById('blogGrid').innerHTML = posts.map(p => `
+      <div class="blog-card">
+        <div class="blog-img">${p.emoji}</div>
+        <div class="blog-body">
+          <div class="blog-meta">
+            <span><i class="fa fa-calendar"></i>${p.date}</span>
+            <span><i class="fa fa-clock"></i>${p.read} read</span>
+          </div>
+          <span class="blog-tag">${p.tag}</span>
+          <h3 style="margin-top:10px;"><a href="../../pages/content/blog-post.html?id=${p.id}">${p.title}</a></h3>
+          <p>${p.excerpt}</p>
+          <a href="../../pages/content/blog-post.html?id=${p.id}" style="font-size:0.83rem; font-weight:500; color:var(--brown);">Read More →</a>
+        </div>
+      </div>`).join('');
+  }
+
+  function filterBlog(cat, btn) {
+    document.querySelectorAll('.blog-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderBlog(cat === 'all' ? BLOG_POSTS : BLOG_POSTS.filter(p => p.cat === cat));
+  }
+
+  document.addEventListener('DOMContentLoaded', () => { initLayout(); renderBlog(BLOG_POSTS); });
+</script>
+</body>
+</html>

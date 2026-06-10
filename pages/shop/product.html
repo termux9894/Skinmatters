@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .breadcrumb { max-width: 1200px; margin: 0 auto; padding: 20px 24px 0; font-size: 0.82rem; color: var(--text-muted); }
+    .breadcrumb a { color: var(--text-muted); } .breadcrumb a:hover { color: var(--brown); }
+    .product-detail { max-width: 1200px; margin: 0 auto; padding: 32px 24px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+    .product-gallery { position: sticky; top: 90px; }
+    .main-img { border-radius: var(--radius); overflow: hidden; background: var(--warm-white); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; border: 1px solid var(--border); }
+    .main-img img { width: 80%; height: 80%; object-fit: contain; }
+    .img-thumbs { display: flex; gap: 10px; }
+    .thumb { width: 72px; height: 72px; border-radius: var(--radius-sm); overflow: hidden; cursor: pointer; border: 2px solid var(--border); background: var(--warm-white); transition: border-color 0.2s; }
+    .thumb.active { border-color: var(--brown); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .pd-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green); font-weight: 600; }
+    .pd-name { font-family: var(--font-display); font-size: 2.2rem; font-weight: 400; margin: 8px 0 6px; }
+    .pd-tagline { color: var(--text-muted); margin-bottom: 16px; }
+    .pd-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+    .pd-stars { color: #f5a623; font-size: 1rem; }
+    .pd-price-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px; }
+    .pd-price { font-size: 1.8rem; font-weight: 600; color: var(--brown); }
+    .pd-old-price { font-size: 1.1rem; text-decoration: line-through; color: var(--text-muted); }
+    .pd-save { background: var(--green); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+    .pd-desc { font-size: 0.92rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 28px; padding: 16px; background: var(--warm-white); border-radius: var(--radius-sm); border-left: 3px solid var(--accent); }
+    .qty-row { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+    .qty-ctrl { display: flex; align-items: center; gap: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+    .qty-ctrl button { width: 40px; height: 44px; font-size: 1.2rem; color: var(--text); transition: background 0.2s; }
+    .qty-ctrl button:hover { background: var(--brown); color: #fff; }
+    .qty-ctrl span { width: 48px; height: 44px; display: flex; align-items: center; justify-content: center; font-weight: 600; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+    .pd-actions { display: flex; gap: 12px; margin-bottom: 28px; }
+    .pd-actions .btn { flex: 1; }
+    .pd-features { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+    .pd-feature { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--warm-white); border-radius: var(--radius-sm); font-size: 0.82rem; color: var(--text-muted); }
+    .pd-feature i { color: var(--green); }
+    .related-section { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+    .related-section h2 { font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 28px; }
+    @media (max-width: 768px) { .product-detail { grid-template-columns: 1fr; gap: 32px; } .product-gallery { position: static; } .pd-actions { flex-direction: column; } }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+  <div class="breadcrumb" id="breadcrumb">
+    <a href="../../index.html">Home</a> › <a href="../../pages/shop/products.html">Products</a> › <span id="breadProduct">Loading…</span>
+  </div>
+
+  <div class="product-detail" id="productDetail">
+    <div style="text-align:center; padding: 100px; color: var(--text-muted); grid-column: 1/-1;">Loading product…</div>
+  </div>
+
+  <div class="related-section" id="relatedSection" style="display:none;">
+    <h2>You might also <em>like</em></h2>
+    <div class="products-grid" id="relatedGrid"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer class="footer" id="siteFooter"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../../js/config/supabase.js"></script>
+
+<script src="../../js/config/paths.js"></script>
+
+<script src="../../js/{config,auth,products,cart,orders,account,search,reviews,blog,ui}/products-data.js"></script>
+
+<script src="../../js/auth/auth.js"></script>
+
+<script src="../../js/cart/cart.js"></script>
+
+<script src="../../js/wishlist/wishlist.js"></script>
+
+<script src="../../js/ui/layout.js"></script>
+
+<script src="../../js/ui/main.js"></script>
+  <script>
+    let qty = 1;
+    function setQty(n) {
+      qty = Math.max(1, n);
+      document.getElementById('qtyDisplay').textContent = qty;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const id = parseInt(params.get('id'));
+      const product = PRODUCTS.find(p => p.id === id);
+      if (!product) { document.getElementById('productDetail').innerHTML = '<div style="text-align:center;padding:100px;grid-column:1/-1;"><h2>Product not found</h2><a href="../../pages/shop/products.html" class="btn btn-dark" style="margin-top:20px;">Back to Products</a></div>'; return; }
+
+      document.title = `${product.name} – SkinMatters`;
+      document.getElementById('breadProduct').textContent = product.name;
+
+      const detail = document.getElementById('productDetail');
+      detail.innerHTML = `
+        <div class="product-gallery">
+          <div class="main-img"><img src="../../${product.image}" id="mainImg" alt="${product.name}" onerror="this.src='https://placehold.co/500x500/f5f0eb/888?text=${encodeURIComponent(product.name)}'" /></div>
+          <div class="img-thumbs">
+            <div class="thumb active"><img src="../../${product.image}" onerror="this.src='https://placehold.co/80x80/f5f0eb/888'" /></div>
+          </div>
+        </div>
+        <div class="product-content">
+          <p class="pd-tag">${product.category} &nbsp;·&nbsp; ${product.tagline}</p>
+          <h1 class="pd-name">${product.name}</h1>
+          <div class="pd-rating">
+            <span class="pd-stars">${'★'.repeat(Math.floor(product.rating))}${product.rating % 1 ? '½' : ''}</span>
+            <span style="font-weight:600;">${product.rating}</span>
+            <span style="color:var(--text-muted); font-size:0.85rem;">(${product.reviews} reviews)</span>
+          </div>
+          <div class="pd-price-row">
+            <span class="pd-price">₹${product.price}</span>
+            ${product.originalPrice ? `<span class="pd-old-price">₹${product.originalPrice}</span><span class="pd-save">Save ₹${product.originalPrice - product.price}</span>` : ''}
+          </div>
+          <p class="pd-desc">${product.description}</p>
+          <div class="qty-row">
+            <label style="font-size:0.85rem; font-weight:500;">Quantity</label>
+            <div class="qty-ctrl">
+              <button onclick="setQty(qty-1)">−</button>
+              <span id="qtyDisplay">1</span>
+              <button onclick="setQty(qty+1)">+</button>
+            </div>
+          </div>
+          <div class="pd-actions">
+            <button class="btn btn-dark" onclick="addToCart(${product.id}); for(let i=1;i<qty;i++) addToCart(${product.id});">
+              <i class="fa fa-shopping-bag"></i> Add to Cart
+            </button>
+            <button class="btn btn-outline"
+onclick="toggleWishlist(${product.id})">
+    <i class="fa fa-heart"></i>
+    Wishlist
+</button>
+          </div>
+          <div class="pd-features">
+            <div class="pd-feature"><i class="fa fa-leaf"></i> 100% Natural</div>
+            <div class="pd-feature"><i class="fa fa-truck"></i> Free shipping ₹999+</div>
+            <div class="pd-feature"><i class="fa fa-undo"></i> Easy returns</div>
+            <div class="pd-feature"><i class="fa fa-shield-alt"></i> Authentic product</div>
+          </div>
+        </div>`;
+
+      // Related products
+      const related = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+      if (related.length) {
+        document.getElementById('relatedSection').style.display = 'block';
+        document.getElementById('relatedGrid').innerHTML = related.map(p => `
+          <div class="product-card">
+            <a href="product.html?id=${p.id}" class="product-img-wrap">
+              <img src="../../${p.image}" alt="${p.name}" onerror="this.src='https://placehold.co/400x400/f5f0eb/888?text=${encodeURIComponent(p.name)}'" />
+            </a>
+            <div class="product-info">
+              <h3 class="product-name"><a href="product.html?id=${p.id}">${p.name}</a></h3>
+              <div class="product-price-row"><span class="price-now">₹${p.price}</span></div>
+              <button class="btn btn-add-cart" onclick="addToCart(${p.id})">Add to Cart</button>
+            </div>
+          </div>`).join('');
+      }
+    });
+  </script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof initLayout === 'function') {
+        initLayout();
+    }
+});
+</script>
+</body>
+</html>

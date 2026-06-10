@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found – SkinMatters</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+    body { background: var(--cream); }
+
+    .err-wrap {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 24px; text-align: center;
+    }
+
+    /* Big illustrated 404 */
+    .err-visual { position: relative; margin-bottom: 40px; }
+    .err-num {
+      font-family: var(--font-display); font-size: clamp(6rem, 20vw, 12rem);
+      font-weight: 300; color: transparent;
+      -webkit-text-stroke: 2px var(--border);
+      line-height: 1; letter-spacing: -0.02em;
+      animation: fadeUp 0.6s ease both;
+    }
+    .err-leaf {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      font-size: clamp(3rem, 10vw, 6rem);
+      animation: float 3.5s ease-in-out infinite;
+    }
+    .err-dot {
+      position: absolute; border-radius: 50%; opacity: 0.18;
+    }
+    .err-dot-1 { width: 60px; height: 60px; background: var(--green); top: 10%; left: 8%; animation: float 4s ease-in-out infinite; }
+    .err-dot-2 { width: 40px; height: 40px; background: var(--brown); bottom: 20%; right: 10%; animation: float 5s ease-in-out infinite 1s; }
+    .err-dot-3 { width: 20px; height: 20px; background: var(--accent); top: 30%; right: 5%; animation: float 3s ease-in-out infinite 0.5s; }
+
+    .err-title {
+      font-family: var(--font-display); font-size: clamp(1.6rem, 5vw, 2.6rem);
+      font-weight: 400; margin-bottom: 14px;
+      animation: fadeUp 0.6s ease 0.15s both;
+    }
+    .err-sub {
+      color: var(--text-muted); font-size: 1rem; max-width: 440px;
+      margin: 0 auto 36px; line-height: 1.7;
+      animation: fadeUp 0.6s ease 0.25s both;
+    }
+
+    /* CTA buttons */
+    .err-btns {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 56px;
+      animation: fadeUp 0.6s ease 0.35s both;
+    }
+
+    /* Quick links */
+    .err-links {
+      width: 100%; max-width: 680px;
+      animation: fadeUp 0.6s ease 0.45s both;
+    }
+    .err-links h4 {
+      font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.14em; color: var(--text-muted); margin-bottom: 16px;
+    }
+    .err-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    .err-link-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 14px;
+      text-align: center; transition: var(--transition);
+      text-decoration: none; color: var(--text);
+    }
+    .err-link-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--brown-light); }
+    .err-link-card i { font-size: 1.3rem; color: var(--green); margin-bottom: 8px; display: block; }
+    .err-link-card span { font-size: 0.82rem; font-weight: 500; }
+
+    /* Search bar */
+    .err-search {
+      display: flex; gap: 0; border: 2px solid var(--border);
+      border-radius: 50px; overflow: hidden; background: #fff;
+      max-width: 420px; width: 100%; margin: 0 auto 40px;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+    .err-search input {
+      flex: 1; padding: 12px 20px; border: none; outline: none;
+      font-family: var(--font-body); font-size: 0.9rem; background: transparent;
+    }
+    .err-search button {
+      padding: 0 22px; background: var(--brown); color: #fff;
+      border-radius: 0 50px 50px 0; font-size: 0.9rem; transition: var(--transition);
+    }
+    .err-search button:hover { background: var(--text); }
+  </style>
+</head>
+<body>
+
+  <!-- Minimal header -->
+  <header style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,246,240,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);">
+    <div style="max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+      <a href="./index.html" class="logo">
+        <span class="logo-leaf">🌿</span>
+        <div class="logo-text">
+          <span class="logo-main">SkinMatters</span>
+          <span class="logo-sub">Pure Naturals</span>
+        </div>
+      </a>
+      <a href="./index.html" class="btn btn-dark" style="padding:10px 22px;font-size:0.85rem;">
+        <i class="fa fa-home"></i>&nbsp; Go Home
+      </a>
+    </div>
+  </header>
+
+  <div class="err-wrap" style="padding-top:80px;">
+
+    <!-- Illustrated number -->
+    <div class="err-visual">
+      <div class="err-dot err-dot-1"></div>
+      <div class="err-dot err-dot-2"></div>
+      <div class="err-dot err-dot-3"></div>
+      <div class="err-num">404</div>
+      <div class="err-leaf">🌿</div>
+    </div>
+
+    <h1 class="err-title">Oops! Page <em>Not Found</em></h1>
+    <p class="err-sub">Looks like this page wandered off into the forest. Don't worry — let's get you back to your skincare journey.</p>
+
+    <!-- Search -->
+    <div class="err-search">
+      <input type="text" id="errSearch" placeholder="Search products…" />
+      <button onclick="window.location.href='./pages/shop/search.html?q='+document.getElementById('errSearch').value">
+        <i class="fa fa-search"></i>
+      </button>
+    </div>
+
+    <!-- CTA buttons -->
+    <div class="err-btns">
+      <a href="./index.html" class="btn btn-dark"><i class="fa fa-home"></i>&nbsp; Back to Home</a>
+      <a href="./pages/shop/products.html" class="btn btn-outline">Browse Products</a>
+      <a href="./pages/support/contact.html" class="btn btn-outline">Contact Us</a>
+    </div>
+
+    <!-- Quick links grid -->
+    <div class="err-links">
+      <h4>Or jump to a page</h4>
+      <div class="err-grid">
+        <a href="./pages/shop/products.html" class="err-link-card"><i class="fa fa-leaf"></i><span>All Products</span></a>
+        <a href="./pages/shop/combos.html" class="err-link-card"><i class="fa fa-gift"></i><span>Combos</span></a>
+        <a href="./pages/content/skin-quiz.html" class="err-link-card"><i class="fa fa-magic"></i><span>Skin Quiz</span></a>
+        <a href="./pages/content/blog.html" class="err-link-card"><i class="fa fa-pen"></i><span>Blog</span></a>
+        <a href="./pages/account/account.html" class="err-link-card"><i class="fa fa-user"></i><span>My Account</span></a>
+        <a href="./pages/account/track.html" class="err-link-card"><i class="fa fa-truck"></i><span>Track Order</span></a>
+        <a href="./pages/support/faq.html" class="err-link-card"><i class="fa fa-question-circle"></i><span>FAQs</span></a>
+        <a href="./pages/support/contact.html" class="err-link-card"><i class="fa fa-envelope"></i><span>Contact Us</span></a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Press Enter to search -->
+  <script>
+    document.getElementById('errSearch').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const q = e.target.value.trim();
+        if (q) window.location.href = './pages/shop/search.html?q=' + encodeURIComponent(q);
+      }
+    });
+  </script>
+</body>
+</html>

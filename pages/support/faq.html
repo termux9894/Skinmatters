@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQs – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .faq-wrap { max-width: 820px; margin: 0 auto; padding: 60px 24px 80px; }
+    .faq-section { margin-bottom: 44px; }
+    .faq-section-title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; margin-bottom: 20px; color: var(--brown); display: flex; align-items: center; gap: 10px; }
+    .faq-cta { background: linear-gradient(135deg, var(--green), #2d5228); color: #fff; border-radius: var(--radius); padding: 40px; text-align: center; margin-top: 48px; }
+    .faq-cta h3 { font-family: var(--font-display); font-size: 1.6rem; color: #fff; margin-bottom: 10px; }
+    .faq-cta p { color: rgba(255,255,255,0.8); margin-bottom: 20px; }
+    .search-faq { display: flex; gap: 12px; margin-bottom: 40px; }
+    .search-faq input { flex: 1; padding: 13px 16px; border: 1px solid var(--border); border-radius: 50px; font-family: var(--font-body); font-size: 0.9rem; background: var(--warm-white); outline: none; }
+    .search-faq input:focus { border-color: var(--brown); }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+<section class="page-hero-sm">
+  <span class="section-tag">Help Centre</span>
+  <h1>Frequently Asked <em>Questions</em></h1>
+  <p>Find quick answers to the most common questions about our products, orders and policies.</p>
+</section>
+
+<div class="faq-wrap">
+  <div class="search-faq">
+    <input type="text" id="faqSearch" placeholder="Search for a question…" oninput="filterFAQ(this.value)" />
+  </div>
+
+  <div id="faqContent">
+    <div class="faq-section">
+      <div class="faq-section-title">🛍️ Orders & Payments</div>
+      <div class="accordion-item open">
+        <div class="accordion-head" onclick="toggleAccordion(this)">How do I place an order? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">Simply browse our products, add items to your cart, and proceed to checkout. You can pay via UPI, debit/credit cards, net banking, or Cash on Delivery (COD). We accept all major payment methods.</div></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">Can I modify or cancel my order after placing it? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">You can cancel or modify your order within 2 hours of placing it by contacting us on WhatsApp or email. After 2 hours, the order is usually dispatched and cannot be modified.</div></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">What payment methods do you accept? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">We accept UPI (PhonePe, GPay, Paytm), all credit/debit cards (Visa, Mastercard, RuPay), Net Banking, Wallets, and Cash on Delivery across India.</div></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">Do you offer Cash on Delivery? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">Yes! COD is available for all orders across India. Please note that COD orders may take 1-2 extra days for processing.</div></div>
+      </div>
+    </div>
+
+    <div class="faq-section">
+      <div class="faq-section-title">🚚 Shipping & Delivery</div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">How long does delivery take? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">We dispatch within 1-2 business days. Delivery typically takes 3-5 business days for most pin codes in India. Metro cities usually receive orders faster (2-3 days).</div></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">Is shipping free? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">Yes! We offer FREE shipping on all prepaid orders above ₹999. For orders below ₹999, a flat shipping charge of ₹79 applies.</div></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">Do you ship internationally? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">Currently we ship only within India. International shipping is coming soon! Follow us on Instagram @skinmatters.in for updates.</div></div>
+      </div>
+    </div>
+
+    <div class="faq-section">
+      <div class="faq-section-title">🌿 Products & Ingredients</div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">Are your products 100% natural? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">Absolutely! All SkinMatters products are made with 100% natural and organic ingredients. We never use parabens, sulphates, synthetic fragrances, or harsh chemicals. Every ingredient is listed transparently on our product pages.</div></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">Are your products safe for sensitive skin? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">Most of our products are gentle enough for sensitive skin. However, if you have a known allergy to specific ingredients (e.g., nuts, essential oils), please read the ingredient list carefully. You can also do a patch test on your inner arm before full application.</div></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">Are your products cruelty-free and vegan? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">All our products are cruelty-free and never tested on animals. Most products are fully vegan. Products containing honey or beeswax will be clearly labelled.</div></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">What is the shelf life of your products? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">Our soaps last 12-18 months unopened. Oils and serums are best used within 12 months of opening. Balms and packs have a shelf life of 12 months. All products have a manufacturing date on the label.</div></div>
+      </div>
+    </div>
+
+    <div class="faq-section">
+      <div class="faq-section-title">🔄 Returns & Refunds</div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">What is your return policy? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">We accept returns within 7 days of delivery for damaged or defective products. Due to hygiene reasons, we cannot accept returns for products that have been opened and used unless they are damaged or you experienced an adverse reaction.</div></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">My product arrived damaged. What do I do? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">We're so sorry! Please take a photo/video of the damaged product and packaging, and WhatsApp or email it to us within 48 hours of delivery. We'll send a replacement immediately at no cost to you.</div></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-head" onclick="toggleAccordion(this)">When will I receive my refund? <i class="fa fa-chevron-down"></i></div>
+        <div class="accordion-body"><div class="accordion-body-inner">Once we receive and inspect the returned item, refunds are processed within 5-7 business days to your original payment method (UPI/card). COD refunds are sent via bank transfer.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-cta">
+    <h3>Still have a question?</h3>
+    <p>Our team is happy to help you personally.</p>
+    <a href="../../pages/support/contact.html" class="btn btn-light">Contact Us</a>
+  </div>
+</div>
+
+<footer class="footer" id="siteFooter"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/products-data.js"></script>
+<script src="../../js/ui/layout.js"></script>
+<script src="../../js/ui/main.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => { initLayout(); });
+  function toggleAccordion(head) {
+    const item = head.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+  function filterFAQ(q) {
+    const lq = q.toLowerCase();
+    document.querySelectorAll('.accordion-item').forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(lq) ? '' : 'none';
+    });
+  }
+</script>
+</body>
+</html>

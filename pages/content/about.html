@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Story – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .about-hero { background: linear-gradient(135deg, #3a6b35 0%, #2d5228 100%); color: #fff; padding: 100px 24px; text-align: center; position: relative; overflow: hidden; }
+    .about-hero::before { content: ''; position: absolute; inset: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="40" fill="rgba(255,255,255,0.03)"/><circle cx="80" cy="80" r="60" fill="rgba(255,255,255,0.03)"/></svg>'); }
+    .about-hero .section-tag { color: #c8a96e; background: rgba(200,169,110,0.15); }
+    .about-hero h1 { color: #fff; margin: 16px 0 20px; }
+    .about-hero em { color: #c8a96e; }
+    .about-hero p { color: rgba(255,255,255,0.8); max-width: 600px; margin: 0 auto; line-height: 1.8; font-size: 1.05rem; }
+    .story-section { max-width: 1100px; margin: 0 auto; padding: 80px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .story-img-wrap { border-radius: var(--radius); overflow: hidden; background: var(--warm-white); aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; position: relative; }
+    .story-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .story-img-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-size: 5rem; background: linear-gradient(135deg, #f5ede0, #e8d5b7); }
+    .story-img-placeholder p { font-family: var(--font-display); font-size: 1.2rem; color: var(--brown); }
+    .story-text .section-tag { margin-bottom: 16px; }
+    .story-text h2 { margin-bottom: 20px; }
+    .story-text p { color: var(--text-muted); line-height: 1.8; margin-bottom: 16px; font-size: 0.95rem; }
+    .values-section { background: var(--warm-white); padding: 80px 24px; }
+    .values-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 40px; }
+    .value-card { background: var(--card-bg); border-radius: var(--radius); padding: 32px; border: 1px solid var(--border); text-align: center; transition: var(--transition); }
+    .value-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+    .value-icon { font-size: 2.5rem; margin-bottom: 16px; }
+    .value-card h3 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 12px; color: var(--brown); }
+    .value-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; }
+    .team-section { max-width: 1100px; margin: 0 auto; padding: 80px 24px; text-align: center; }
+    .stats-bar { background: var(--brown); padding: 48px 24px; }
+    .stats-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center; }
+    .stat-item h3 { font-family: var(--font-display); font-size: 2.5rem; font-weight: 400; color: var(--accent); margin-bottom: 6px; }
+    .stat-item p { color: rgba(255,255,255,0.75); font-size: 0.85rem; }
+    @media (max-width: 768px) { .story-section { grid-template-columns: 1fr; } .values-grid { grid-template-columns: 1fr; } .stats-inner { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+  <div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+  <section class="about-hero">
+    <span class="section-tag">Our Story</span>
+    <h1>Pure. Natural.<br/><em>Made with Love.</em></h1>
+    <p>Born from a deep belief that nature holds the best answers for skin and hair, SkinMatters is crafted from ancient Indian wisdom and modern care.</p>
+  </section>
+
+  <!-- STORY SECTION -->
+  <div class="story-section">
+    <div class="story-img-wrap">
+      <div class="story-img-placeholder">🌿<p>Born from Nature</p></div>
+    </div>
+    <div class="story-text">
+      <span class="section-tag">How it began</span>
+      <h2>From a Kitchen to <em>Your Skin</em></h2>
+      <p>It started with a simple frustration — the inability to find skincare products that were truly natural, honestly made, and actually worked. Store shelves were full of products claiming to be "herbal" but packed with synthetic chemicals.</p>
+      <p>So we went back to the roots. To the knowledge passed down through generations in Indian households — the turmeric packs, the neem soap bars, the coconut oil hair treatments that truly worked.</p>
+      <p>Today, every SkinMatters product is still handcrafted in small batches using cold-process techniques, traditional recipes, and ethically sourced organic ingredients from across India.</p>
+      <a href="../../pages/shop/products.html" class="btn btn-dark" style="margin-top: 8px;">Explore Our Products</a>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item"><h3>5000+</h3><p>Happy Customers</p></div>
+      <div class="stat-item"><h3>14</h3><p>Natural Products</p></div>
+      <div class="stat-item"><h3>100%</h3><p>Chemical-Free</p></div>
+      <div class="stat-item"><h3>3+</h3><p>Years of Craft</p></div>
+    </div>
+  </div>
+
+  <!-- VALUES -->
+  <section class="values-section">
+    <div style="text-align: center; max-width: 1100px; margin: 0 auto;">
+      <span class="section-tag">What We Stand For</span>
+      <h2>Our <em>Values</em></h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">🌿</div>
+        <h3>Pure Ingredients</h3>
+        <p>Every ingredient is carefully sourced — no parabens, no sulphates, no synthetic fragrances. Just nature's best, honestly presented.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤲</div>
+        <h3>Handcrafted Care</h3>
+        <p>Every product is made by hand in small, fresh batches. We believe personal care should feel personal — not factory-produced.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🌍</div>
+        <h3>Eco-Conscious</h3>
+        <p>Sustainable sourcing, minimal packaging, and a commitment to reducing our ecological footprint. Because beautiful skin and a healthy planet go hand in hand.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT CTA -->
+  <section class="newsletter">
+    <div class="newsletter-inner">
+      <h2>Have a <em>Question?</em></h2>
+      <p>We're here for you. Reach out and we'll respond personally.</p>
+      <div class="nl-form">
+        <input type="email" placeholder="Your email…" />
+        <button class="btn btn-dark" onclick="showToast && showToast('Message sent! We\'ll reply soon. 🌿')">Contact Us</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer" id="siteFooter"></footer>
+
+  <div class="toast" id="toast"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/products-data.js"></script>
+  <script src="../../js/ui/layout.js"></script>
+  <script src="../../js/ui/main.js"></script>
+</body>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof initLayout === 'function') {
+        initLayout();
+    }
+});
+</script>
+</html>

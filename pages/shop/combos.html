@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Combos & Gifting – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link rel="stylesheet" href="../../css/pages.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .combos-hero { background: linear-gradient(135deg, #2d5228 0%, #3a6b35 60%, #5c9b56 100%); padding: 72px 24px; text-align: center; color: #fff; }
+    .combos-hero .section-tag { color: var(--accent); background: rgba(200,169,110,0.2); }
+    .combos-hero h1 { color: #fff; }
+    .combos-hero em { color: var(--accent); }
+    .combos-hero p { color: rgba(255,255,255,0.75); max-width: 520px; margin: 12px auto 0; }
+    .combo-wrap { max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; }
+    .combo-section { margin-bottom: 60px; }
+    .combo-section-title { font-family: var(--font-display); font-size: 1.8rem; font-weight: 400; margin-bottom: 28px; border-bottom: 1px solid var(--border); padding-bottom: 14px; }
+    .combo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .combo-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: var(--transition); }
+    .combo-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+    .combo-img { height: 220px; background: var(--warm-white); display: flex; align-items: center; justify-content: center; font-size: 4.5rem; position: relative; overflow: hidden; }
+    .combo-img img { width: 100%; height: 100%; object-fit: cover; }
+    .combo-savings { position: absolute; top: 12px; left: 12px; background: #e53e3e; color: #fff; font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+    .combo-body { padding: 20px; }
+    .combo-name { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 6px; }
+    .combo-includes { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; }
+    .combo-price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+    .combo-price { font-size: 1.3rem; font-weight: 600; color: var(--brown); }
+    .combo-old { font-size: 0.88rem; text-decoration: line-through; color: var(--text-muted); }
+    .gift-banner { background: linear-gradient(135deg, #fdf7f2, #f5ede0); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; margin-bottom: 60px; }
+    .gift-banner h2 { font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 12px; }
+    .gift-banner p { color: var(--text-muted); line-height: 1.7; margin-bottom: 20px; }
+    .gift-features { display: flex; flex-direction: column; gap: 10px; }
+    .gift-feature { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: var(--text-muted); }
+    .gift-feature i { color: var(--green); }
+    .gift-img { border-radius: var(--radius-sm); height: 220px; background: linear-gradient(135deg, #e8d5b7, #c8a96e); display: flex; align-items: center; justify-content: center; font-size: 6rem; }
+    @media (max-width: 768px) { .gift-banner { grid-template-columns: 1fr; } .gift-img { display: none; } }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+<section class="combos-hero">
+  <span class="section-tag">Save More Together</span>
+  <h1>Combos & <em>Gifting</em></h1>
+  <p>Handpicked product bundles designed to work together, at special bundled prices.</p>
+</section>
+
+<div class="combo-wrap">
+  <!-- GIFT BANNER -->
+  <div class="gift-banner">
+    <div>
+      <h2>Gift Someone <em>Pure Goodness</em></h2>
+      <p>Looking for the perfect gift? Our gift sets come beautifully packaged with a handwritten note option — perfect for birthdays, anniversaries, or just because.</p>
+      <div class="gift-features">
+        <div class="gift-feature"><i class="fa fa-box"></i> Beautiful eco-friendly packaging</div>
+        <div class="gift-feature"><i class="fa fa-pen"></i> Personalised handwritten note</div>
+        <div class="gift-feature"><i class="fa fa-truck"></i> Free shipping on gift orders ₹999+</div>
+        <div class="gift-feature"><i class="fa fa-leaf"></i> 100% natural, chemical-free products</div>
+      </div>
+      <button class="btn btn-dark" style="margin-top:20px;" onclick="showToast('Gift customisation coming soon! 🎁')">Build a Gift Set</button>
+    </div>
+    <div class="gift-img">🎁</div>
+  </div>
+
+  <!-- FACE COMBOS -->
+  <div class="combo-section">
+    <h2 class="combo-section-title">✨ Face Care Combos</h2>
+    <div class="combo-grid" id="faceCombos"></div>
+  </div>
+
+  <!-- HAIR COMBOS -->
+  <div class="combo-section">
+    <h2 class="combo-section-title">💆 Hair Care Combos</h2>
+    <div class="combo-grid" id="hairCombos"></div>
+  </div>
+
+  <!-- BODY COMBOS -->
+  <div class="combo-section">
+    <h2 class="combo-section-title">🌿 Full Body Combos</h2>
+    <div class="combo-grid" id="bodyCombos"></div>
+  </div>
+</div>
+
+<footer class="footer" id="siteFooter"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/products-data.js"></script>
+<script src="../../js/ui/layout.js"></script>
+<script src="../../js/ui/main.js"></script>
+<script>
+  const COMBOS = {
+    face: [
+      { name: 'Glow Starter Kit', includes: 'Aloe Vera Soap + Herbal Face Pack + Face Serum', items: [1,13,12], price: 749, original: 890, emoji: '✨', savings: 'Save ₹141' },
+      { name: 'Clear Skin Combo', includes: 'Charcoal Soap + Avarampoo Soap + Beetroot Balm', items: [2,3,9], price: 499, original: 610, emoji: '🌿', savings: 'Save ₹111' },
+      { name: 'Anti-Pigmentation Pack', includes: 'Manjistha Soap + Face Pack + Serum', items: [5,13,12], price: 649, original: 785, emoji: '🌸', savings: 'Save ₹136' },
+    ],
+    hair: [
+      { name: 'Hair Growth Ritual', includes: 'Hair Growth Oil + Hair Pack', items: [11,14], price: 569, original: 660, emoji: '💆', savings: 'Save ₹91' },
+      { name: 'Shampoo Bar + Oil Duo', includes: 'Almond Milk Soap + Hair Growth Oil', items: [7,11], price: 499, original: 590, emoji: '🌴', savings: 'Save ₹91' },
+    ],
+    body: [
+      { name: 'Complete Care Box', includes: 'Charcoal Soap + Kuppaimeni Soap + Coco Balm + Hair Oil', items: [2,4,10,11], price: 899, original: 1100, emoji: '🎁', savings: 'Save ₹201' },
+      { name: 'Soap Lovers Collection', includes: 'Any 5 Handmade Soaps of your choice', items: [1,2,3,4,5], price: 699, original: 875, emoji: '🧼', savings: 'Save ₹176' },
+      { name: 'Full Skin Ritual', includes: 'Soap + Face Pack + Serum + Balm + Hair Oil', items: [1,13,12,9,11], price: 1199, original: 1490, emoji: '🌟', savings: 'Save ₹291' },
+    ]
+  };
+
+  function renderCombos(combos, containerId) {
+    const c = document.getElementById(containerId);
+    c.innerHTML = combos.map(combo => {
+      const thumbs = combo.items.slice(0,3).map(id => { const p = PRODUCTS.find(x=>x.id===id); return p ? `<img src="${p.image}" style="width:60px;height:60px;border-radius:6px;object-fit:cover;border:1px solid var(--border);" onerror="this.style.display='none'" />` : ''; }).join('');
+      return `<div class="combo-card">
+        <div class="combo-img">
+          ${combo.emoji}
+          <span class="combo-savings">${combo.savings}</span>
+        </div>
+        <div class="combo-body">
+          <h3 class="combo-name">${combo.name}</h3>
+          <p class="combo-includes">📦 ${combo.includes}</p>
+          <div style="display:flex; gap:6px; margin-bottom:14px;">${thumbs}</div>
+          <div class="combo-price-row">
+            <span class="combo-price">₹${combo.price}</span>
+            <span class="combo-old">₹${combo.original}</span>
+          </div>
+          <button class="btn btn-dark" style="width:100%;" onclick="showToast('${combo.name} added to cart! 🌿')">
+            <i class="fa fa-shopping-bag"></i>&nbsp; Add Combo to Cart
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initLayout();
+    renderCombos(COMBOS.face, 'faceCombos');
+    renderCombos(COMBOS.hair, 'hairCombos');
+    renderCombos(COMBOS.body, 'bodyCombos');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Checkout – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link rel="stylesheet" href="../../css/pages.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .checkout-wrap{max-width:1100px;margin:0 auto;padding:40px 24px 80px;display:grid;grid-template-columns:1fr 360px;gap:40px;align-items:start}
+    .checkout-steps{display:flex;align-items:center;gap:0;margin-bottom:32px}
+    .cs{display:flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:500;color:var(--text-muted)}
+    .cs.active{color:var(--brown)}.cs.done{color:var(--green)}
+    .cs-num{width:26px;height:26px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0}
+    .cs-divider{flex:1;height:1px;background:var(--border);margin:0 10px}
+    .step-panel{display:none}.step-panel.active{display:block}
+    .step-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:16px}
+    .step-card h3{font-family:var(--font-display);font-size:1.2rem;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+    .step-card h3 i{color:var(--green);font-size:1rem}
+    .delivery-options{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+    .delivery-opt{display:flex;align-items:center;gap:14px;padding:16px;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition)}
+    .delivery-opt:hover{border-color:var(--brown-light)}.delivery-opt.selected{border-color:var(--brown);background:rgba(107,66,38,0.04)}
+    .delivery-opt input{accent-color:var(--brown);width:16px;height:16px;flex-shrink:0}
+    .doi{flex:1}.doi p{font-size:0.88rem;font-weight:500}.doi span{font-size:0.78rem;color:var(--text-muted)}
+    .dop{font-weight:600;color:var(--brown);font-size:0.9rem}
+    .payment-methods{display:flex;flex-direction:column;gap:10px}
+    .pay-method{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition)}
+    .pay-method:hover{border-color:var(--brown-light)}.pay-method.selected{border-color:var(--brown);background:rgba(107,66,38,0.04)}
+    .pay-method input{accent-color:var(--brown);width:16px;height:16px;flex-shrink:0}
+    .pay-icon{font-size:1.3rem}.pay-label{font-size:0.88rem;font-weight:500;flex:1}.pay-sub{font-size:0.75rem;color:var(--text-muted)}
+    .extra-box{margin-top:12px;display:none}.extra-box.show{display:block}
+    .order-summary-box{background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:sticky;top:90px}
+    .order-summary-box h3{font-family:var(--font-display);font-size:1.1rem;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+    .summary-item{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+    .summary-item:last-of-type{border:none}
+    .summary-item img{width:52px;height:52px;object-fit:cover;border-radius:var(--radius-sm);background:var(--cream);flex-shrink:0}
+    .si-info{flex:1;font-size:0.82rem}.si-info p{font-weight:500;margin-bottom:2px}.si-info span{color:var(--text-muted)}
+    .si-price{font-weight:600;font-size:0.88rem;color:var(--brown)}
+    .summary-rows{margin-top:14px;border-top:1px solid var(--border);padding-top:14px}
+    .summary-row{display:flex;justify-content:space-between;font-size:0.85rem;padding:5px 0;color:var(--text-muted)}
+    .summary-row.total{font-weight:700;font-size:1rem;color:var(--text);padding-top:10px;border-top:1px solid var(--border);margin-top:6px}
+    .coupon-row{display:flex;gap:8px;margin-bottom:16px}
+    .coupon-row input{flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-body);font-size:0.85rem;outline:none;background:var(--card-bg)}
+    .coupon-row input:focus{border-color:var(--brown)}
+    .coupon-row button{padding:10px 14px;background:var(--brown);color:#fff;border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;transition:var(--transition)}
+    .coupon-row button:hover{background:var(--text)}
+    .step-nav{display:flex;gap:12px;margin-top:20px}
+    .btn-back-s{background:transparent;border:1.5px solid var(--border);color:var(--text-muted);border-radius:50px;padding:13px 24px;font-size:0.88rem;font-weight:500;cursor:pointer;transition:var(--transition)}
+    .btn-back-s:hover{border-color:var(--brown);color:var(--brown)}
+    @media(max-width:768px){.checkout-wrap{grid-template-columns:1fr}.order-summary-box{position:static;order:-1}}
+  </style>
+</head>
+<body>
+<div class="announcement-bar" id="announcementBar"></div>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+<div style="max-width:1100px;margin:0 auto;padding:20px 24px 0;font-size:0.82rem;color:var(--text-muted);">
+  <a href="../../index.html" style="color:var(--text-muted)">Home</a> › <a href="../../pages/shop/cart.html" style="color:var(--text-muted)">Cart</a> › Checkout
+</div>
+
+<div class="checkout-wrap">
+  <div>
+    <!-- Step indicators -->
+    <div class="checkout-steps">
+      <div class="cs active" id="si1"><div class="cs-num" id="sn1">1</div> Address</div>
+      <div class="cs-divider"></div>
+      <div class="cs" id="si2"><div class="cs-num" id="sn2">2</div> Delivery</div>
+      <div class="cs-divider"></div>
+      <div class="cs" id="si3"><div class="cs-num" id="sn3">3</div> Payment</div>
+    </div>
+
+    <!-- STEP 1: ADDRESS -->
+    <div class="step-panel active" id="step1">
+      <div class="step-card">
+        <h3><i class="fa fa-map-marker-alt"></i> Delivery Address</h3>
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" id="af" placeholder="Priya"/></div>
+          <div class="form-group"><label>Last Name</label><input type="text" id="al" placeholder="Sharma"/></div>
+        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="ae" placeholder="you@example.com"/></div>
+        <div class="form-group"><label>Phone Number</label><input type="tel" id="ap" placeholder="+91 98765 43210"/></div>
+        <div class="form-group"><label>Address Line 1</label><input type="text" id="a1" placeholder="House / Flat no., Street name"/></div>
+        <div class="form-group"><label>Address Line 2 (optional)</label><input type="text" id="a2" placeholder="Landmark, Area"/></div>
+        <div class="form-row">
+          <div class="form-group"><label>City</label><input type="text" id="ac" placeholder="Chennai"/></div>
+          <div class="form-group"><label>State</label>
+            <select id="as">
+              <option value="">Select state…</option>
+              <option>Tamil Nadu</option><option>Kerala</option><option>Karnataka</option>
+              <option>Andhra Pradesh</option><option>Telangana</option><option>Maharashtra</option>
+              <option>Delhi</option><option>Gujarat</option><option>Rajasthan</option>
+              <option>West Bengal</option><option>Uttar Pradesh</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>PIN Code</label><input type="text" id="apin" placeholder="600040" maxlength="6"/></div>
+          <div class="form-group"><label>Country</label><input type="text" value="India" readonly style="background:var(--cream)"/></div>
+        </div>
+        <label style="display:flex;align-items:center;gap:10px;font-size:0.85rem;color:var(--text-muted);cursor:pointer;margin-top:4px">
+          <input type="checkbox" checked style="accent-color:var(--brown)"/> Save this address for future orders
+        </label>
+      </div>
+      <div class="step-nav">
+        <a href="../../pages/shop/cart.html" class="btn-back-s">← Back to Cart</a>
+        <button class="btn btn-dark" style="flex:1" onclick="goStep(2)">Continue to Delivery →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: DELIVERY -->
+    <div class="step-panel" id="step2">
+      <div class="step-card">
+        <h3><i class="fa fa-truck"></i> Choose Delivery Method</h3>
+        <div class="delivery-options">
+          <label class="delivery-opt selected">
+            <input type="radio" name="del" value="standard" checked onchange="setShipping(0,this)"/>
+            <div class="doi"><p>Standard Delivery</p><span>3–5 business days · Delhivery / DTDC</span></div>
+            <span class="dop" id="std-lbl">FREE</span>
+          </label>
+          <label class="delivery-opt">
+            <input type="radio" name="del" value="express" onchange="setShipping(99,this)"/>
+            <div class="doi"><p>Express Delivery</p><span>1–2 business days · Bluedart</span></div>
+            <span class="dop">₹99</span>
+          </label>
+          <label class="delivery-opt">
+            <input type="radio" name="del" value="cod" onchange="setShipping(109,this)"/>
+            <div class="doi"><p>Cash on Delivery</p><span>Pay on arrival · ₹79 shipping + ₹30 COD fee</span></div>
+            <span class="dop">₹109</span>
+          </label>
+        </div>
+        <div style="background:rgba(58,107,53,0.06);border-radius:var(--radius-sm);padding:12px 16px;font-size:0.82rem;color:var(--green);">
+          <i class="fa fa-info-circle"></i>&nbsp; Orders are packed within 1–2 business days and sent with full tracking.
+        </div>
+      </div>
+      <div class="step-card">
+        <h3><i class="fa fa-gift"></i> Gift Options</h3>
+        <label style="display:flex;align-items:center;gap:10px;font-size:0.88rem;cursor:pointer;margin-bottom:12px">
+          <input type="checkbox" style="accent-color:var(--brown)" onchange="document.getElementById('giftBox').style.display=this.checked?'block':'none'"/>
+          Add gift wrapping (₹29)
+        </label>
+        <div id="giftBox" style="display:none">
+          <div class="form-group" style="margin-bottom:0"><label>Personalised Gift Message</label>
+            <textarea placeholder="Write a message for the recipient…" style="min-height:80px"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn-back-s" onclick="goStep(1)">← Back</button>
+        <button class="btn btn-dark" style="flex:1" onclick="goStep(3)">Continue to Payment →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: PAYMENT -->
+    <div class="step-panel" id="step3">
+      <div class="step-card">
+        <h3><i class="fa fa-lock"></i> Secure Payment</h3>
+        <div class="payment-methods">
+          <label class="pay-method selected" onclick="selectPay('upi',this)">
+            <input type="radio" name="pay" value="upi" checked/>
+            <span class="pay-icon">📱</span>
+            <div style="flex:1"><div class="pay-label">UPI</div><div class="pay-sub">PhonePe, GPay, Paytm, any UPI app</div></div>
+          </label>
+          <div class="extra-box show" id="upi-box">
+            <div class="form-group" style="margin-bottom:0"><label>Your UPI ID</label><input type="text" placeholder="yourname@upi"/></div>
+          </div>
+          <label class="pay-method" onclick="selectPay('card',this)">
+            <input type="radio" name="pay" value="card"/>
+            <span class="pay-icon">💳</span>
+            <div style="flex:1"><div class="pay-label">Credit / Debit Card</div><div class="pay-sub">Visa, Mastercard, RuPay</div></div>
+          </label>
+          <div class="extra-box" id="card-box">
+            <div class="form-group"><label>Card Number</label><input type="text" placeholder="1234 5678 9012 3456" maxlength="19"/></div>
+            <div class="form-row">
+              <div class="form-group"><label>Expiry</label><input type="text" placeholder="MM / YY" maxlength="7"/></div>
+              <div class="form-group"><label>CVV</label><input type="password" placeholder="•••" maxlength="4"/></div>
+            </div>
+            <div class="form-group"><label>Name on Card</label><input type="text" placeholder="As printed on card"/></div>
+          </div>
+          <label class="pay-method" onclick="selectPay('netbank',this)">
+            <input type="radio" name="pay" value="netbank"/>
+            <span class="pay-icon">🏦</span>
+            <div style="flex:1"><div class="pay-label">Net Banking</div><div class="pay-sub">All major Indian banks</div></div>
+          </label>
+          <label class="pay-method" onclick="selectPay('wallet',this)">
+            <input type="radio" name="pay" value="wallet"/>
+            <span class="pay-icon">👛</span>
+            <div style="flex:1"><div class="pay-label">Wallets</div><div class="pay-sub">Mobikwik, Freecharge, Ola Money</div></div>
+          </label>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn-back-s" onclick="goStep(2)">← Back</button>
+        <button class="btn btn-dark" style="flex:1;background:var(--green)" onclick="placeOrder()">
+          <i class="fa fa-lock"></i>&nbsp; Place Order · ₹<span id="finalAmt">0</span>
+        </button>
+      </div>
+      <p style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:12px">
+        <i class="fa fa-shield-alt"></i> 256-bit SSL encrypted · Your data is safe with us
+      </p>
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY SIDEBAR -->
+  <div class="order-summary-box">
+    <h3>Order Summary</h3>
+    <div id="checkoutItems"></div>
+    <div class="coupon-row">
+      <input type="text" id="couponCode" placeholder="Coupon code (PURE10)"/>
+      <button onclick="applyCoupon()">Apply</button>
+    </div>
+    <div class="summary-rows" id="checkoutSummary"></div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--text-muted);margin-top:14px;justify-content:center">
+      <i class="fa fa-lock"></i> Secure checkout &nbsp;·&nbsp; <i class="fa fa-undo"></i> Free returns
+    </div>
+  </div>
+</div>
+
+<footer class="footer" id="siteFooter"></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/products-data.js"></script>
+<script src="../../js/ui/layout.js"></script>
+<script src="../../js/ui/main.js"></script>
+<script>
+  let discount=0, extraShip=0;
+
+  function renderSummary(){
+    const items=document.getElementById('checkoutItems');
+    const summ=document.getElementById('checkoutSummary');
+    if(!items||!summ) return;
+    if(!cart.length){items.innerHTML='<p style="color:var(--text-muted);font-size:0.85rem">Cart is empty. <a href="../../pages/shop/products.html" style="color:var(--brown)">Shop now</a></p>';return;}
+    items.innerHTML=cart.map(i=>`<div class="summary-item">
+      <img src="${i.image}" alt="${i.name}" onerror="this.src='https://placehold.co/52x52/f5f0eb/888'"/>
+      <div class="si-info"><p>${i.name}</p><span>Qty: ${i.qty}</span></div>
+      <span class="si-price">₹${(i.price*i.qty).toLocaleString('en-IN')}</span>
+    </div>`).join('');
+    const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const ship=sub>=999?0:79;
+    const total=sub-discount+ship+extraShip;
+    document.getElementById('finalAmt').textContent=total.toLocaleString('en-IN');
+    summ.innerHTML=`
+      <div class="summary-row"><span>Subtotal</span><span>₹${sub.toLocaleString('en-IN')}</span></div>
+      ${discount?`<div class="summary-row" style="color:var(--green)"><span>Discount (PURE10)</span><span>−₹${discount}</span></div>`:''}
+      <div class="summary-row"><span>Shipping</span><span>${ship===0&&extraShip===0?'<span style="color:var(--green)">FREE</span>':'₹'+(ship+extraShip)}</span></div>
+      <div class="summary-row total"><span>Total</span><span>₹${total.toLocaleString('en-IN')}</span></div>`;
+  }
+
+  function goStep(n){
+    if(n===2){
+      const req=['af','al','ae','ap','a1','ac','as','apin'];
+      for(const id of req){if(!document.getElementById(id)?.value.trim()){showToast('Please fill in all address fields');return;}}
+    }
+    [1,2,3].forEach(i=>{
+      document.getElementById(`step${i}`).classList.toggle('active',i===n);
+      const si=document.getElementById(`si${i}`);
+      si.classList.remove('active','done');
+      if(i===n) si.classList.add('active');
+      if(i<n){si.classList.add('done');document.getElementById(`sn${i}`).innerHTML='<i class="fa fa-check" style="font-size:0.7rem"></i>';}
+      else document.getElementById(`sn${i}`).textContent=i;
+    });
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function setShipping(amt,radio){
+    document.querySelectorAll('.delivery-opt').forEach(o=>o.classList.remove('selected'));
+    radio.closest('.delivery-opt').classList.add('selected');
+    extraShip=amt;
+    renderSummary();
+  }
+
+  function selectPay(type,el){
+    document.querySelectorAll('.pay-method').forEach(m=>m.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('upi-box').classList.toggle('show',type==='upi');
+    document.getElementById('card-box').classList.toggle('show',type==='card');
+  }
+
+  function applyCoupon(){
+    const code=document.getElementById('couponCode').value.trim().toUpperCase();
+    if(code==='PURE10'){
+      const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+      discount=Math.round(sub*0.1);
+      showToast(`10% discount applied! You save ₹${discount}`);
+      renderSummary();
+    } else showToast('Invalid coupon code');
+  }
+
+  function placeOrder(){
+    if(!document.getElementById('af')?.value){goStep(1);showToast('Please complete your address first');return;}
+    cart=[];saveCart();
+    window.location.href='../../pages/shop/order-confirmed.html';
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{initLayout();renderSummary();});
+</script>
+</body>
+</html>

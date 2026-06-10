@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Products – SkinMatters</title>
+  <link rel="stylesheet" href="../../css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .page-hero { background: linear-gradient(135deg, #f5ede0, #e8d5b7); padding: 60px 24px; text-align: center; }
+    .page-hero h1 { margin-bottom: 12px; }
+    .page-hero p { color: var(--text-muted); }
+    .products-layout { display: grid; grid-template-columns: 240px 1fr; gap: 40px; max-width: 1200px; margin: 0 auto; padding: 48px 24px; }
+    .sidebar h3 { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 16px; }
+    .sidebar-section { margin-bottom: 32px; }
+    .sidebar-section h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); font-weight: 600; margin-bottom: 12px; }
+    .filter-check { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 0.88rem; cursor: pointer; color: var(--text-muted); transition: color 0.2s; }
+    .filter-check:hover { color: var(--brown); }
+    .filter-check input { cursor: pointer; accent-color: var(--brown); width: 15px; height: 15px; }
+    .price-range { width: 100%; accent-color: var(--brown); }
+    .price-labels { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; }
+    .products-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .products-header p { color: var(--text-muted); font-size: 0.88rem; }
+    .sort-select { padding: 8px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--warm-white); font-family: var(--font-body); font-size: 0.88rem; outline: none; cursor: pointer; }
+    @media (max-width: 768px) {
+      .products-layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="announcement-bar" id="announcementBar"></div>>
+<header class="header" id="siteHeader"></header>
+<div id="cartSidebarWrap"></div>
+
+  <section class="page-hero">
+    <span class="section-tag">Explore</span>
+    <h1>All<em>Products</em></h1>
+    <p>Pure, natural skincare crafted with love and ancient wisdom.</p>
+  </section>
+
+  <div class="products-layout">
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h4>Category</h4>
+        <label class="filter-check"><input type="checkbox" value="soap" onchange="filterProducts()"> Soaps</label>
+        <label class="filter-check"><input type="checkbox" value="oil" onchange="filterProducts()"> Oils & Serums</label>
+        <label class="filter-check"><input type="checkbox" value="balm" onchange="filterProducts()"> Balms</label>
+        <label class="filter-check"><input type="checkbox" value="pack" onchange="filterProducts()"> Face & Hair Packs</label>
+      </div>
+      <div class="sidebar-section">
+        <h4>Price Range</h4>
+        <input type="range" class="price-range" id="priceRange" min="100" max="600" value="600" oninput="updatePrice(this.value)">
+        <div class="price-labels"><span>₹100</span><span id="priceMax">₹600</span></div>
+      </div>
+      <div class="sidebar-section">
+        <h4>Rating</h4>
+        <label class="filter-check"><input type="radio" name="rating" value="4.5"> 4.5 & above ⭐</label>
+        <label class="filter-check"><input type="radio" name="rating" value="4"> 4.0 & above ⭐</label>
+        <label class="filter-check"><input type="radio" name="rating" value="all" checked> All</label>
+      </div>
+      <button class="btn btn-outline-dark" onclick="clearFilters()" style="width:100%;margin-top:8px;">Clear Filters</button>
+    </aside>
+
+    <div>
+      <div class="products-header">
+        <p id="productCount">Showing all products</p>
+        <select class="sort-select" id="sortSelect" onchange="sortProducts()">
+          <option value="default">Sort by: Featured</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Top Rated</option>
+        </select>
+      </div>
+      <div class="filter-tabs">
+        <button class="tab active" data-filter="all">All</button>
+        <button class="tab" data-filter="soap">Soaps</button>
+        <button class="tab" data-filter="oil">Oils</button>
+        <button class="tab" data-filter="balm">Balms</button>
+        <button class="tab" data-filter="pack">Packs</button>
+      </div>
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+  </div>
+
+<footer id="siteFooter" class="footer"></footer>
+<div class="toast" id="toast"></div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../js/config/supabase.js"></script>
+<script src="../../js/config/paths.js"></script>
+<script src="../../js/cart/cart.js"></script>
+<script src="../../js/wishlist/wishlist.js"></script>
+<script src="../../js/ui/layout.js"></script>
+<script src="../../js/products/products.js"></script>
+<script src="../../js/ui/main.js"></script>
+  <script>
+    let currentMaxPrice = 600;
+
+    function filterProducts() {
+      const checks = [...document.querySelectorAll('.sidebar input[type=checkbox]:checked')].map(c => c.value);
+      renderFilteredProducts(checks, currentMaxPrice);
+    }
+    function updatePrice(val) {
+      currentMaxPrice = parseInt(val);
+      document.getElementById('priceMax').textContent = `₹${val}`;
+      filterProducts();
+    }
+    function clearFilters() {
+      document.querySelectorAll('.sidebar input').forEach(i => {
+        if (i.type === 'checkbox') i.checked = false;
+        if (i.value === 'all') i.checked = true;
+      });
+      currentMaxPrice = 600;
+      document.getElementById('priceRange').value = 600;
+      document.getElementById('priceMax').textContent = '₹600';
+      renderProducts('all');
+      document.getElementById('productCount').textContent = `Showing ${PRODUCTS.length} products`;
+    }
+    function renderFilteredProducts(cats, maxPrice) {
+      const grid = document.getElementById('productsGrid');
+      let filtered = PRODUCTS.filter(p => p.price <= maxPrice);
+      if (cats.length > 0) filtered = filtered.filter(p => cats.includes(p.category));
+      document.getElementById('productCount').textContent = `Showing ${filtered.length} products`;
+      grid.innerHTML = filtered.map(p => `
+        <div class="product-card">
+          <a href="../../pages/shop/product.html?id=${p.id}" class="product-img-wrap">
+            ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+            <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='https://placehold.co/400x400/f5f0eb/888?text=${encodeURIComponent(p.name)}'" />
+          </a>
+          <div class="product-info">
+            <p class="product-tagline">${p.tagline}</p>
+            <h3 class="product-name"><a href="../../pages/shop/product.html?id=${p.id}">${p.name}</a></h3>
+            <div class="product-rating"><span class="stars-mini">${'★'.repeat(Math.floor(p.rating))}</span><span class="review-count">(${p.reviews})</span></div>
+            <div class="product-price-row">
+              <span class="price-now">₹${p.price}</span>
+              ${p.originalPrice ? `<span class="price-old">₹${p.originalPrice}</span><span class="price-save">Save ₹${p.originalPrice - p.price}</span>` : ''}
+            </div>
+            <button class="btn btn-add-cart" onclick="addToCart(${p.id})"><i class="fa fa-plus"></i> Add to Cart</button>
+          </div>
+        </div>`).join('');
+      initScrollReveal();
+    }
+    function sortProducts() {
+      const val = document.getElementById('sortSelect').value;
+      let sorted = [...PRODUCTS];
+      if (val === 'price-asc') sorted.sort((a,b) => a.price - b.price);
+      else if (val === 'price-desc') sorted.sort((a,b) => b.price - a.price);
+      else if (val === 'rating') sorted.sort((a,b) => b.rating - a.rating);
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = sorted.map(p => `
+        <div class="product-card reveal">
+          <a href="../../pages/shop/product.html?id=${p.id}" class="product-img-wrap">
+            ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+            <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='https://placehold.co/400x400/f5f0eb/888?text=${encodeURIComponent(p.name)}'" />
+          </a>
+          <div class="product-info">
+            <p class="product-tagline">${p.tagline}</p>
+            <h3 class="product-name"><a href="../../pages/shop/product.html?id=${p.id}">${p.name}</a></h3>
+            <div class="product-rating"><span class="stars-mini">${'★'.repeat(Math.floor(p.rating))}</span><span class="review-count">(${p.reviews})</span></div>
+            <div class="product-price-row"><span class="price-now">₹${p.price}</span>${p.originalPrice ? `<span class="price-old">₹${p.originalPrice}</span>` : ''}</div>
+            <button class="btn btn-add-cart" onclick="addToCart(${p.id})"><i class="fa fa-plus"></i> Add to Cart</button>
+          </div>
+        </div>`).join('');
+      initScrollReveal();
+    }
+    document.addEventListener('DOMContentLoaded', async () => {
+
+    // Load header/footer
+    if (typeof initLayout === 'function') {
+        initLayout();
+    }
+
+    // Load products
+    if (typeof initProductsPage === 'function') {
+        await initProductsPage();
+    }
+});
+</script>
+</body>
+</html>

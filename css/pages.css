@@ -1,0 +1,117 @@
+/* Page shell used by login, account, contact, faq, blog, etc. */
+
+/* ---- PAGE HERO (small) ---- */
+.page-hero-sm {
+  background: linear-gradient(135deg, #f5ede0 0%, #e8d5b7 100%);
+  padding: 56px 24px 48px;
+  text-align: center;
+}
+.page-hero-sm .section-tag { margin-bottom: 12px; }
+.page-hero-sm h1 { margin-bottom: 10px; }
+.page-hero-sm p { color: var(--text-muted); max-width: 520px; margin: 0 auto; font-size: 0.95rem; }
+
+/* ---- FORM SHARED ---- */
+.form-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px;
+  box-shadow: var(--shadow);
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--warm-white);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--brown);
+  box-shadow: 0 0 0 3px rgba(107,66,38,0.08);
+}
+.form-group textarea { min-height: 120px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+.form-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; }
+.form-divider { text-align: center; color: var(--text-muted); font-size: 0.82rem; margin: 20px 0; position: relative; }
+.form-divider::before { content: ''; position: absolute; left: 0; top: 50%; height: 1px; width: 44%; background: var(--border); }
+.form-divider::after  { content: ''; position: absolute; right: 0; top: 50%; height: 1px; width: 44%; background: var(--border); }
+
+/* ---- TABS ---- */
+.page-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 32px; gap: 0; }
+.page-tab {
+  padding: 12px 24px; font-size: 0.88rem; font-weight: 500;
+  color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -2px;
+  transition: var(--transition); cursor: pointer;
+}
+.page-tab.active { color: var(--brown); border-bottom-color: var(--brown); }
+.page-tab:hover { color: var(--brown); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ---- ACCORDION ---- */
+.accordion-item { border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 10px; overflow: hidden; }
+.accordion-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px; cursor: pointer; font-weight: 500; font-size: 0.95rem;
+  background: var(--warm-white); transition: background 0.2s;
+}
+.accordion-head:hover { background: #f5ede0; }
+.accordion-head i { font-size: 0.75rem; color: var(--text-muted); transition: transform 0.3s; }
+.accordion-item.open .accordion-head i { transform: rotate(180deg); }
+.accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.accordion-body-inner { padding: 0 20px 20px; font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; }
+.accordion-item.open .accordion-body { max-height: 400px; }
+
+/* ---- BLOG CARD ---- */
+.blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; }
+.blog-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: var(--transition); }
+.blog-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+.blog-img { height: 200px; background: var(--warm-white); overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+.blog-img img { width: 100%; height: 100%; object-fit: cover; }
+.blog-body { padding: 24px; }
+.blog-meta { display: flex; gap: 16px; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; }
+.blog-meta span { display: flex; align-items: center; gap: 5px; }
+.blog-body h3 { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 10px; line-height: 1.3; }
+.blog-body h3 a:hover { color: var(--brown); }
+.blog-body p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 16px; }
+.blog-tag { display: inline-block; background: rgba(58,107,53,0.1); color: var(--green); font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* ---- ORDER CARD ---- */
+.order-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
+.order-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+.order-id { font-weight: 600; font-size: 0.9rem; }
+.order-date { font-size: 0.8rem; color: var(--text-muted); }
+.order-status { padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.status-delivered { background: rgba(58,107,53,0.12); color: var(--green); }
+.status-processing { background: rgba(200,169,110,0.2); color: #8b6914; }
+.status-shipped { background: rgba(107,66,38,0.1); color: var(--brown); }
+.order-items { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.order-thumb { width: 60px; height: 60px; border-radius: var(--radius-sm); background: var(--warm-white); overflow: hidden; border: 1px solid var(--border); }
+.order-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.order-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--border); }
+.order-total { font-weight: 600; }
+
+/* ---- WISHLIST ---- */
+.wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+.wishlist-empty { text-align: center; padding: 80px 20px; }
+.wishlist-empty i { font-size: 4rem; color: var(--border); display: block; margin-bottom: 16px; }

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkinMatters – Pure. Natural. Yours.</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- ANNOUNCEMENT BAR -->
+  <div class="announcement-bar">
+    <div class="announcement-track">
+      <span>🌿 Free shipping on orders above ₹999 &nbsp;&nbsp;|&nbsp;&nbsp; ✨ Use code <strong>PURE10</strong> for 10% off your first order &nbsp;&nbsp;|&nbsp;&nbsp; 🎁 Free gift on orders above ₹1299 &nbsp;&nbsp;|&nbsp;&nbsp; 🌿 Free shipping on orders above ₹999 &nbsp;&nbsp;|&nbsp;&nbsp; ✨ Use code <strong>PURE10</strong> for 10% off your first order</span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <!--<header class="header" id="header">
+    <div class="header-inner">
+      <button class="mobile-menu-btn" id="menuBtn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <a href="#" class="logo">
+        <span class="logo-leaf">🌿</span>
+        <div class="logo-text">
+          <span class="logo-main">SkinMatters</span>
+          <span class="logo-sub">Pure Naturals</span>
+        </div>
+      </a>
+
+      <nav class="main-nav" id="mainNav">
+        <ul>
+          <li class="has-dropdown">
+            <a href="#">Best Sellers <i class="fa fa-chevron-down"></i></a>
+            <div class="dropdown">
+              <div class="dropdown-col">
+                <h4>Skincare</h4>
+                <a href="./pages/shop/products.html">Aloe Vera Soap</a>
+                <a href="./pages/shop/products.html">Beetroot Balm</a>
+                <a href="./pages/shop/products.html">Charcoal Soap</a>
+                <a href="./pages/shop/products.html">Face Serum</a>
+              </div>
+              <div class="dropdown-col">
+                <h4>Haircare</h4>
+                <a href="./pages/shop/products.html">Hair Oil</a>
+                <a href="./pages/shop/products.html">Hair Pack</a>
+                <a href="./pages/shop/products.html">Shampoo Bar</a>
+              </div>
+            </div>
+          </li>
+          <li class="has-dropdown">
+            <a href="#">Face <i class="fa fa-chevron-down"></i></a>
+            <div class="dropdown">
+              <div class="dropdown-col">
+                <h4>Category</h4>
+                <a href="./pages/shop/products.html">Face Serum</a>
+                <a href="./pages/shop/products.html">Face Pack</a>
+                <a href="./pages/shop/products.html">Face Wash</a>
+                <a href="./pages/shop/products.html">Lip Balm</a>
+              </div>
+            </div>
+          </li>
+          <li class="has-dropdown">
+            <a href="#">Hair <i class="fa fa-chevron-down"></i></a>
+            <div class="dropdown">
+              <div class="dropdown-col">
+                <h4>Category</h4>
+                <a href="./pages/shop/products.html">Hair Oil</a>
+                <a href="./pages/shop/products.html">Hair Pack</a>
+                <a href="./pages/shop/products.html">Hair Shampoo</a>
+              </div>
+            </div>
+          </li>
+          <li><a href="./pages/shop/products.html">Body</a></li>
+          <li><a href="./pages/shop/products.html">Combos</a></li>
+          <li><a href="./pages/content/about.html">Our Story</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="searchToggle" aria-label="Search"><i class="fa fa-search"></i></button>
+        <a href="./pages/shop/cart.html" class="icon-btn cart-btn" aria-label="Cart">
+          <i class="fa fa-shopping-bag"></i>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+      </div>
+    </div>-->
+    <header class="header" id="siteHeader"></header>
+
+    <!-- SEARCH BAR -->
+    <div class="search-bar" id="searchBar">
+      <div class="search-inner">
+        <input type="text" placeholder="Search for soaps, oils, serums…" id="searchInput" />
+        <button class="search-close" id="searchClose"><i class="fa fa-times"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE NAV OVERLAY -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-slides" id="heroSlides">
+      <div class="hero-slide active" style="background: linear-gradient(135deg, #f5ede0 0%, #e8d5b7 100%);">
+        <div class="hero-content">
+          <span class="hero-tag">New Arrival</span>
+          <h1>Aloe Vera <em>Soap</em><br/>Fresh from Nature</h1>
+          <p>Handcrafted with pure aloe vera extract.<br/>Gentle on skin, kind to earth.</p>
+          <div class="hero-btns">
+            <a href="./pages/shop/products.html" class="btn btn-dark">Shop Now</a>
+            <a href="./pages/content/about.html" class="btn btn-outline">Our Story</a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <div class="product-showcase">
+            <img src="./images/Aloe vera Soap.png" alt="Aloe Vera Soap" onerror="this.src='https://placehold.co/400x400/d4e8d0/3a6b35?text=Aloe+Vera+Soap'" />
+          </div>
+        </div>
+      </div>
+      <div class="hero-slide" style="background: linear-gradient(135deg, #fce8e8 0%, #f5c6c6 100%);">
+        <div class="hero-content">
+          <span class="hero-tag">Best Seller</span>
+          <h1>Charcoal <em>Soap</em><br/>Deep Clean Power</h1>
+          <p>Activated charcoal draws out impurities.<br/>For a radiant, clear complexion.</p>
+          <div class="hero-btns">
+            <a href="./pages/shop/products.html" class="btn btn-dark">Shop Now</a>
+            <a href="./pages/content/about.html" class="btn btn-outline">Our Story</a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <div class="product-showcase">
+            <img src="./images/charcoal 1.png" alt="Charcoal Soap" onerror="this.src='https://placehold.co/400x400/d0d0d0/333?text=Charcoal+Soap'" />
+          </div>
+        </div>
+      </div>
+      <div class="hero-slide" style="background: linear-gradient(135deg, #e8f0fe 0%, #c5d8f5 100%);">
+        <div class="hero-content">
+          <span class="hero-tag">Pure Luxury</span>
+          <h1>Beetroot <em>Balm</em><br/>Nourish Your Lips</h1>
+          <p>Rich in antioxidants and natural pigments.<br/>Heal, hydrate & colour naturally.</p>
+          <div class="hero-btns">
+            <a href="./pages/shop/products.html" class="btn btn-dark">Shop Now</a>
+            <a href="./pages/content/about.html" class="btn btn-outline">Our Story</a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <div class="product-showcase">
+            <img src="./images/beetroot balm.png" alt="Beetroot Balm" onerror="this.src='https://placehold.co/400x400/f5c6c6/8b1a1a?text=Beetroot+Balm'" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-dots" id="heroDots">
+      <button class="dot active" data-idx="0"></button>
+      <button class="dot" data-idx="1"></button>
+      <button class="dot" data-idx="2"></button>
+    </div>
+    <button class="hero-arrow prev" id="heroPrev"><i class="fa fa-chevron-left"></i></button>
+    <button class="hero-arrow next" id="heroNext"><i class="fa fa-chevron-right"></i></button>
+  </section>
+
+  <!-- TRUST BAR -->
+  <section class="trust-bar">
+    <div class="trust-track">
+      <div class="trust-item"><i class="fa fa-leaf"></i><span>100% Natural</span></div>
+      <div class="trust-sep">·</div>
+      <div class="trust-item"><i class="fa fa-flask"></i><span>No Harsh Chemicals</span></div>
+      <div class="trust-sep">·</div>
+      <div class="trust-item"><i class="fa fa-hand-holding-heart"></i><span>Freshly Handmade</span></div>
+      <div class="trust-sep">·</div>
+      <div class="trust-item"><i class="fa fa-seedling"></i><span>Organic Ingredients</span></div>
+      <div class="trust-sep">·</div>
+      <div class="trust-item"><i class="fa fa-star"></i><span>Traditional Formula</span></div>
+      <div class="trust-sep">·</div>
+      <div class="trust-item"><i class="fa fa-leaf"></i><span>100% Natural</span></div>
+      <div class="trust-sep">·</div>
+      <div class="trust-item"><i class="fa fa-flask"></i><span>No Harsh Chemicals</span></div>
+      <div class="trust-sep">·</div>
+      <div class="trust-item"><i class="fa fa-hand-holding-heart"></i><span>Freshly Handmade</span></div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES GRID -->
+  <section class="categories section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Shop by Category</span>
+        <h2>What are you <em>looking for?</em></h2>
+      </div>
+      <div class="cat-grid">
+        <a href="./pages/shop/products.html?cat=face" class="cat-card">
+          <div class="cat-img" style="background:#f9ede0;">
+            <img src="./images/face serum 2.png" alt="Face" onerror="this.src='https://placehold.co/300x300/f9ede0/8b5e3c?text=Face+Care'" />
+          </div>
+          <span>Face Care</span>
+        </a>
+        <a href="./pages/shop/products.html?cat=hair" class="cat-card">
+          <div class="cat-img" style="background:#e8f5e9;">
+            <img src="./images/hair oil 1.png" alt="Hair" onerror="this.src='https://placehold.co/300x300/e8f5e9/2e7d32?text=Hair+Care'" />
+          </div>
+          <span>Hair Care</span>
+        </a>
+        <a href="./pages/shop/products.html?cat=body" class="cat-card">
+          <div class="cat-img" style="background:#fce4ec;">
+            <img src="./images/Aloe vera Soap.png" alt="Body" onerror="this.src='https://placehold.co/300x300/fce4ec/880e4f?text=Body+Care'" />
+          </div>
+          <span>Body Care</span>
+        </a>
+        <a href="./pages/shop/products.html?cat=combo" class="cat-card">
+          <div class="cat-img" style="background:#e8eaf6;">
+            <img src="./images/Avarampoo Soap.png" alt="Combos" onerror="this.src='https://placehold.co/300x300/e8eaf6/3949ab?text=Combos'" />
+          </div>
+          <span>Combos</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEST SELLERS -->
+  <section class="bestsellers section" id="bestsellers">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Customer Favourites</span>
+        <h2>Best <em>Sellers</em></h2>
+      </div>
+      <div class="filter-tabs">
+        <button class="tab active" data-filter="all">All</button>
+        <button class="tab" data-filter="soap">Soaps</button>
+        <button class="tab" data-filter="oil">Oils</button>
+        <button class="tab" data-filter="balm">Balms</button>
+        <button class="tab" data-filter="pack">Packs</button>
+      </div>
+      <div class="products-grid" id="productsGrid">
+        <!-- Products injected by JS -->
+      </div>
+      <div class="center-btn">
+        <a href="./pages/shop/products.html" class="btn btn-outline-dark">View All Products</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE BANNER -->
+  <section class="feature-banner">
+    <div class="feature-banner-inner">
+      <div class="feature-text">
+        <span class="section-tag">Our Promise</span>
+        <h2>Pure Ingredients,<br/><em>Pure Results</em></h2>
+        <p>Every product is handcrafted in small batches using traditional recipes passed down through generations. No parabens, no sulphates, no compromises.</p>
+        <a href="./pages/content/about.html" class="btn btn-light">Learn More</a>
+      </div>
+      <div class="feature-cards">
+        <div class="feature-card">
+          <div class="fc-icon">🌿</div>
+          <h3>All Natural</h3>
+          <p>Sourced from organic farms and forests across India.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">🧪</div>
+          <h3>No Toxins</h3>
+          <p>Zero harsh chemicals, parabens, or synthetic fragrances.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">🤲</div>
+          <h3>Handcrafted</h3>
+          <p>Small batch, cold-pressed, made fresh for every order.</p>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">🌍</div>
+          <h3>Eco-Friendly</h3>
+          <p>Sustainable packaging and zero-waste production goals.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKIN ROUTINE -->
+  <section class="routine section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Step by Step</span>
+        <h2>Your Daily <em>Routine</em></h2>
+      </div>
+      <div class="routine-steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-img" style="background:#f9ede0;">
+            <img src="./images/Aloe vera Soap.png" alt="Cleanse" onerror="this.src='https://placehold.co/200x200/f9ede0/8b5e3c?text=Cleanse'" />
+          </div>
+          <h3>Cleanse</h3>
+          <p>Start with a gentle natural soap to remove impurities.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-img" style="background:#e8f5e9;">
+            <img src="./images/face pack 1.png" alt="Exfoliate" onerror="this.src='https://placehold.co/200x200/e8f5e9/2e7d32?text=Exfoliate'" />
+          </div>
+          <h3>Exfoliate</h3>
+          <p>Use a herbal face pack twice a week for deep cleansing.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-img" style="background:#fce4ec;">
+            <img src="./images/coco balm.png" alt="Moisturise" onerror="this.src='https://placehold.co/200x200/fce4ec/880e4f?text=Moisturise'" />
+          </div>
+          <h3>Moisturise</h3>
+          <p>Lock in hydration with our plant-based balms and butters.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-img" style="background:#fff9e6;">
+            <img src="./images/face serum 2.png" alt="Nourish" onerror="this.src='https://placehold.co/200x200/fff9e6/8b6914?text=Nourish'" />
+          </div>
+          <h3>Nourish</h3>
+          <p>Apply a serum to target specific skin concerns overnight.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Real Stories</span>
+        <h2>What Our <em>Customers Say</em></h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial">
+          <div class="stars">★★★★★</div>
+          <p>"The Aloe Vera Soap completely transformed my skin. After just 2 weeks of use, my acne scars started fading and my skin feels so soft!"</p>
+          <div class="reviewer"><div class="avatar">P</div><div><strong>Priya S.</strong><span>Chennai</span></div></div>
+        </div>
+        <div class="testimonial featured">
+          <div class="stars">★★★★★</div>
+          <p>"I was skeptical about natural products but the Hair Oil has made my hair incredibly thick and shiny. The aroma is wonderful too. Highly recommend!"</p>
+          <div class="reviewer"><div class="avatar">A</div><div><strong>Aishwarya R.</strong><span>Bengaluru</span></div></div>
+        </div>
+        <div class="testimonial">
+          <div class="stars">★★★★★</div>
+          <p>"The Kuppaimeni Soap works wonders! My skin issues cleared up within a month. Love that everything is 100% natural. Will keep buying forever."</p>
+          <div class="reviewer"><div class="avatar">M</div><div><strong>Meena K.</strong><span>Coimbatore</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter">
+    <div class="newsletter-inner">
+      <div class="nl-text">
+        <h2>Join the <em>SkinMatters</em> Family</h2>
+        <p>Get exclusive offers, skincare tips and early access to new launches.</p>
+      </div>
+      <div class="nl-form">
+        <input type="email" placeholder="Your email address…" />
+        <button class="btn btn-dark">Subscribe</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="logo footer-logo">
+          <span class="logo-leaf">🌿</span>
+          <div class="logo-text">
+            <span class="logo-main">SkinMatters</span>
+            <span class="logo-sub">Pure Naturals</span>
+          </div>
+        </a>
+        <p>Handcrafted natural skincare products made with love and traditional wisdom from India.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>Shop</h4>
+        <a href="./pages/shop/products.html">Face Care</a>
+        <a href="./pages/shop/products.html">Hair Care</a>
+        <a href="./pages/shop/products.html">Body Care</a>
+        <a href="./pages/shop/products.html">Combos</a>
+        <a href="./pages/shop/products.html">Best Sellers</a>
+      </div>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <a href="./pages/content/about.html">Our Story</a>
+        <a href="#">Ingredients</a>
+        <a href="#">Blog</a>
+        <a href="#">Contact Us</a>
+      </div>
+      <div class="footer-links">
+        <h4>Help</h4>
+        <a href="#">FAQs</a>
+        <a href="#">Shipping Policy</a>
+        <a href="#">Return Policy</a>
+        <a href="#">Track Order</a>
+        <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 SkinMatters Pure Naturals. All rights reserved.</p>
+      <p>Made with 🌿 in India</p>
+    </div>
+  </footer>
+
+  <!-- CART SIDEBAR -->
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h3>Your Cart (<span id="cartItemCount">0</span>)</h3>
+      <button id="cartClose"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="cart-body" id="cartBody">
+      <div class="cart-empty">
+        <i class="fa fa-shopping-bag"></i>
+        <p>Your cart is empty</p>
+        <a href="./pages/shop/products.html" class="btn btn-dark">Start Shopping</a>
+      </div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none;">
+      <div class="cart-total">
+        <span>Total</span>
+        <span id="cartTotal">₹0</span>
+      </div>
+      <a href="./pages/shop/cart.html" class="btn btn-dark full-width">Proceed to Checkout</a>
+    </div>
+  </div>
+  <div class="cart-overlay" id="cartOverlay"></div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/config/supabase.js"></script>
+  <script src="./js/config/paths.js"></script>
+  <script src="./js/ui/layout.js"></script>
+  <script src="./js/products-data.js"></script>
+  <script src="./js/products/products.js"></script>
+  <script src="./js/ui/main.js"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', async () => {
+    if (typeof initLayout === 'function') {
+        initLayout();
+    }
+
+    if (typeof initHomepageBestSellers === 'function') {
+        await initHomepageBestSellers();
+    }
+});
+</script>
+  <script>
+</script>
+</body>
+</html>
