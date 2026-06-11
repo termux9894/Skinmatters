@@ -189,7 +189,4 @@ window.PRODUCTS = [
   }
 ];
 
-// Export for use in other scripts
-window.PRODUCTS = PRODUCTS;
-
 if (typeof module !== 'undefined') module.exports = PRODUCTS;

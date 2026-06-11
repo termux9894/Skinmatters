@@ -72,7 +72,7 @@ function initLayout() {
           </li>
           <li><a href=PAGES.products>All Products</a></li>
           <li><a href=PAGES.combos>Combos</a></li>
-          <li><a href=PAGES.skinQuiz>Skin Quiz ✨</a></li>
+          <li><a href=PAGES.skinQuiz>Skin Quiz</a></li>
           <li><a href=PAGES.blog>Blog</a></li>
           <li><a href=PAGES.about>Our Story</a></li>
         </ul>
@@ -121,7 +121,7 @@ function initLayout() {
         <a href="${PAGES.products}?cat=oil">Oils & Serums</a>
         <a href="${PAGES.products}?cat=balm">Balms</a>
         <a href=PAGES.combos>Combos & Gifts</a>
-        <a href=PAGES.skinQuiz>Skin Quiz ✨</a>
+        <a href=PAGES.skinQuiz>✨Skin Quiz</a>
       </div>
       <div class="footer-links">
         <h4>Company</h4>

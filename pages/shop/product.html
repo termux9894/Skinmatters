@@ -102,9 +102,9 @@
       const detail = document.getElementById('productDetail');
       detail.innerHTML = `
         <div class="product-gallery">
-          <div class="main-img"><img src="../../${product.image}" id="mainImg" alt="${product.name}" onerror="this.src='https://placehold.co/500x500/f5f0eb/888?text=${encodeURIComponent(product.name)}'" /></div>
+          <div class="main-img"><img src="${product.image}" id="mainImg" alt="${product.name}" onerror="this.src='https://placehold.co/500x500/f5f0eb/888?text=${encodeURIComponent(product.name)}'" /></div>
           <div class="img-thumbs">
-            <div class="thumb active"><img src="../../${product.image}" onerror="this.src='https://placehold.co/80x80/f5f0eb/888'" /></div>
+            <div class="thumb active"><img src="${product.image}" onerror="this.src='https://placehold.co/80x80/f5f0eb/888'" /></div>
           </div>
         </div>
         <div class="product-content">
@@ -153,7 +153,7 @@ onclick="toggleWishlist(${product.id})">
         document.getElementById('relatedGrid').innerHTML = related.map(p => `
           <div class="product-card">
             <a href="product.html?id=${p.id}" class="product-img-wrap">
-              <img src="../../${p.image}" alt="${p.name}" onerror="this.src='https://placehold.co/400x400/f5f0eb/888?text=${encodeURIComponent(p.name)}'" />
+              <img src="${p.image}" alt="${p.name}" onerror="this.src='https://placehold.co/400x400/f5f0eb/888?text=${encodeURIComponent(p.name)}'" />
             </a>
             <div class="product-info">
               <h3 class="product-name"><a href="product.html?id=${p.id}">${p.name}</a></h3>
