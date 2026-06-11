@@ -36,7 +36,7 @@ const PAGES = {
   login:          ROOT + 'pages/account/login.html',
   forgotPassword: ROOT + 'pages/account/forgot-password.html',
   account:        ROOT + 'pages/account/account.html',
-  track:          ROOT + 'pages/account/track.html',
+  track: ROOT + 'pages/support/contact.html',
 
   // ── Content ───────────────────────────────────────────────
   about:          ROOT + 'pages/content/about.html',

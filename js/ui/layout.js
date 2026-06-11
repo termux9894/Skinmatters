@@ -77,7 +77,7 @@ function initLayout() {
         <nav class="main-nav" id="mainNav">
           <ul>
             <li class="has-dropdown">
-              <a href="#">Best Sellers <i class="fa fa-chevron-down"></i></a>
+             <a href="${PAGES.products}">Best Sellers <i class="fa fa-chevron-down"></i></a>
               <div class="dropdown">
                 <div class="dropdown-col">
                   <h4>Skincare</h4>
@@ -93,7 +93,7 @@ function initLayout() {
               </div>
             </li>
             <li class="has-dropdown">
-              <a href="#">Face <i class="fa fa-chevron-down"></i></a>
+             <a href="${PAGES.products}?cat=soap">Face <i class="fa fa-chevron-down"></i></a>
               <div class="dropdown">
                 <div class="dropdown-col">
                   <h4>Category</h4>
@@ -105,7 +105,7 @@ function initLayout() {
               </div>
             </li>
             <li class="has-dropdown">
-              <a href="#">Hair <i class="fa fa-chevron-down"></i></a>
+              <a href="${PAGES.products}?cat=oil">Hair <i class="fa fa-chevron-down"></i></a>
               <div class="dropdown">
                 <div class="dropdown-col">
                   <h4>Category</h4>

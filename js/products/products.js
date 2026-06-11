@@ -199,10 +199,18 @@ async function initProductsPage() {
   </div>`;
 
   // Read category from URL
-  const params = new URLSearchParams(window.location.search);
-  const catParam = params.get('cat');
+ const params = new URLSearchParams(window.location.search);
+const catParam = params.get('cat');
 
-  let products = await fetchProducts({ category: catParam || null });
+let products = await fetchProducts();
+
+if (catParam) {
+  products = products.filter(
+    p => (p.category_slug || p.category) === catParam
+  );
+}
+console.log("CAT PARAM:", catParam);
+console.log("PRODUCTS:", products);
 
   // Update count
   const countEl = document.getElementById('productCount');
