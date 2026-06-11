@@ -89,11 +89,16 @@ function renderProductCard(p) {
   // Fix image path
   let image = p.image_url || p.image || '';
 
-  if (image.startsWith('images/')) {
-    image = `../../${image}`;
-  }
+const isProductsPage =
+  window.location.pathname.includes('/pages/shop/');
 
-  console.log("FINAL IMAGE:", image);
+if (image.startsWith('images/')) {
+  image = isProductsPage
+    ? `../../${image}`
+    : `./${image}`;
+}
+
+console.log("FINAL IMAGE:", image);
 
   const badge       = p.badge || '';
   const rating      = parseFloat(p.rating) || 0;

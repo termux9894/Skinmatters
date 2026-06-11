@@ -80,7 +80,7 @@ create policy "Anyone can view active products" on public.products for select us
 
 -- Seed products
 insert into public.products (name, tagline, slug, category_slug, price, original_price, image_url, badge, rating, reviews_count, description) values
-  ('Aloe Vera Soap',                    'Soothe & Glow',          'aloe-vera-soap',          'soap', 180, 220, 'images/Aloe vera Soap.png',                         'Best Seller', 4.8, 312, 'Cold-processed with pure aloe vera gel and neem leaf extract. Ideal for acne-prone and sensitive skin.'),
+  ('Aloe Vera Soap',                    'Soothe & Glow',          'aloe-vera-soap',          'soap', 149, 199, 'images/Aloe vera Soap.png',                         'Best Seller', 4.8, 312, 'Cold-processed with pure aloe vera gel and neem leaf extract. Ideal for acne-prone and sensitive skin.'),
   ('Charcoal Soap',                     'Deep Cleanse',           'charcoal-soap',            'soap', 190, 240, 'images/charcoal 1.png',                              'Trending',    4.9, 510, 'Activated charcoal draws out toxins and unclogs pores for a visibly clearer complexion.'),
   ('Avarampoo Soap',                    'Brightening Formula',    'avarampoo-soap',           'soap', 160, 200, 'images/Avarampoo Soap.png',                          'Traditional', 4.7, 198, 'Traditional South Indian flower soap. Brightens skin and evens out complexion naturally.'),
   ('Kuppaimeni Soap',                   'Herbal Healing',         'kuppaimeni-soap',          'soap', 150, 190, 'images/Kuppaimeni Soap.png',                         'Herbal',      4.6, 145, 'Made with Indian acalypha – a powerful Siddha herb known for treating skin disorders.'),
