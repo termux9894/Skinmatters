@@ -91,15 +91,6 @@
     </div>-->
     <header class="header" id="siteHeader"></header>
 
-    <!-- SEARCH BAR -->
-    <div class="search-bar" id="searchBar">
-      <div class="search-inner">
-        <input type="text" placeholder="Search for soaps, oils, serums…" id="searchInput" />
-        <button class="search-close" id="searchClose"><i class="fa fa-times"></i></button>
-      </div>
-    </div>
-  </header>
-
   <!-- MOBILE NAV OVERLAY -->
   <div class="mobile-overlay" id="mobileOverlay"></div>
 
@@ -446,13 +437,17 @@
   <script src="./js/config/supabase.js"></script>
   <script src="./js/config/paths.js"></script>
   <script src="./js/ui/layout.js"></script>
-  <script src="./js/products-data.js"></script>
   <script src="./js/products/products.js"></script>
   <script src="./js/ui/main.js"></script>
   <script>
 document.addEventListener('DOMContentLoaded', async () => {
+
     if (typeof initLayout === 'function') {
         initLayout();
+    }
+
+    if (typeof initSearchBar === 'function') {
+        initSearchBar();
     }
 
     if (typeof initHomepageBestSellers === 'function') {

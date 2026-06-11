@@ -72,7 +72,7 @@
 <footer class="footer" id="siteFooter"></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../../js/config/paths.js"></script>
-  <script src="../../js/products-data.js"></script>
+<script src="../../js/{config,auth,products,cart,orders,account,search,reviews,blog,ui}/products-data.js"></script>
 <script src="../../js/ui/layout.js"></script>
 <script src="../../js/ui/main.js"></script>
 <script>
@@ -96,6 +96,7 @@
     document.getElementById('defaultState').style.display='none';
     const lq=q.toLowerCase();
     const prods=PRODUCTS.filter(p=>p.name.toLowerCase().includes(lq)||p.description.toLowerCase().includes(lq)||p.tagline.toLowerCase().includes(lq)||p.category.toLowerCase().includes(lq));
+   console.log(prods);
     const blogs=BLOGS.filter(b=>b.title.toLowerCase().includes(lq)||b.tags.some(t=>t.includes(lq)));
     const c=document.getElementById('searchResults');
 
@@ -155,6 +156,8 @@
   document.addEventListener('DOMContentLoaded',()=>{
     initLayout();
     const q=new URLSearchParams(window.location.search).get('q');
+    console.log("PRODUCTS:", PRODUCTS);
+console.log("SEARCH QUERY:", q);
     if(q) doSearch(q);
     else {
       const pop=PRODUCTS.filter(p=>p.reviews>200).slice(0,4);

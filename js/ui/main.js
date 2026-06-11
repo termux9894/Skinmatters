@@ -114,11 +114,21 @@ function initSearchBar() {
 
   toggle.addEventListener('click', () => {
     bar.classList.toggle('open');
-    if (bar.classList.contains('open')) { input?.focus(); initHeaderSearch(); }
+    if (bar.classList.contains('open')) { input?.focus(); }
   });
   close?.addEventListener('click', () => bar.classList.remove('open'));
-}
 
+input?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const q = input.value.trim();
+
+    if (!q) return;
+console.log("Searching:", q);
+    window.location.href =
+  '/Skinmatters/pages/shop/search.html?q=' + encodeURIComponent(q);
+  }
+});
+}
 // ── ACCORDION ─────────────────────────────────────────────────
 function initAccordion() {
   document.querySelectorAll('.accordion-head').forEach(head => {
@@ -214,13 +224,21 @@ function initSmoothScroll() {
 
 // ── INIT ALL UI ───────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+
+  // Inject header/footer first
+  if (typeof initLayout === 'function') {
+    initLayout();
+  }
+
   ensureToast();
   initHeroSlider();
   initScrollReveal();
   initHeaderScroll();
   initMobileMenu();
   initDropdowns();
-  initSearchBar();
+  setTimeout(() => {
+    initSearchBar();
+}, 300);
   initAccordion();
   initPageTabs();
   initFilterTabs();
@@ -228,8 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initBackToTop();
   initSmoothScroll();
 
-  // Mark reveal elements
-  document.querySelectorAll('.product-card, .cat-card, .step, .testimonial, .feature-card, .blog-card, .combo-card')
-    .forEach(el => el.classList.add('reveal'));
+  document.querySelectorAll(
+    '.product-card, .cat-card, .step, .testimonial, .feature-card, .blog-card, .combo-card'
+  ).forEach(el => el.classList.add('reveal'));
+
   initScrollReveal();
 });

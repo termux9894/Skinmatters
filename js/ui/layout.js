@@ -242,3 +242,10 @@ if (typeof initWishlist === 'function')
 }
 
 window.initLayout = initLayout;
+document.addEventListener('DOMContentLoaded', () => {
+  initLayout();
+
+  if (typeof initSearchBar === 'function') {
+    initSearchBar();
+  }
+});
