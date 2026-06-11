@@ -4,7 +4,7 @@
 // Images go in the /images/ folder.
 // ============================================
 
-const PRODUCTS = [
+window.PRODUCTS = [
   {
     id: 1,
     name: "Aloe Vera Soap",

@@ -107,27 +107,36 @@ function initDropdowns() {
 // ── SEARCH BAR TOGGLE ─────────────────────────────────────────
 function initSearchBar() {
   const toggle = document.getElementById('searchToggle');
-  const bar    = document.getElementById('searchBar');
-  const close  = document.getElementById('searchClose');
-  const input  = document.getElementById('searchInput');
-  if (!toggle || !bar) return;
+  const bar = document.getElementById('searchBar');
+  const close = document.getElementById('searchClose');
+  const input = document.getElementById('searchInput');
 
-  toggle.addEventListener('click', () => {
-    bar.classList.toggle('open');
-    if (bar.classList.contains('open')) { input?.focus(); }
-  });
-  close?.addEventListener('click', () => bar.classList.remove('open'));
+  console.log("Search initialized");
 
-input?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    const q = input.value.trim();
-
-    if (!q) return;
-console.log("Searching:", q);
-    window.location.href =
-  '/Skinmatters/pages/shop/search.html?q=' + encodeURIComponent(q);
+  if (!toggle || !bar) {
+    console.log("Search elements not found");
+    return;
   }
-});
+
+  toggle.onclick = function () {
+    console.log("Search clicked");
+    bar.classList.toggle('open');
+  };
+
+  close?.addEventListener('click', () => {
+    bar.classList.remove('open');
+  });
+
+  input?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const q = input.value.trim();
+      if (!q) return;
+
+      window.location.href =
+        '/Skinmatters/pages/shop/search.html?q=' +
+        encodeURIComponent(q);
+    }
+  });
 }
 // ── ACCORDION ─────────────────────────────────────────────────
 function initAccordion() {
@@ -237,8 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   initDropdowns();
   setTimeout(() => {
-    initSearchBar();
-}, 300);
+  console.log("Search initialized");
+  initSearchBar();
+}, 1000);
   initAccordion();
   initPageTabs();
   initFilterTabs();
