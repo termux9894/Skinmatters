@@ -87,7 +87,7 @@ function renderProductCard(p) {
   const origPrice = p.original_price || p.originalPrice;
 
   // Fix image path
-  let image = p.image_url || p.image || '';
+ let image = p.image_url || p.image || '';
 
 const isProductsPage =
   window.location.pathname.includes('/pages/shop/');
@@ -98,9 +98,7 @@ if (image.startsWith('images/')) {
     : `./${image}`;
 }
 
-console.log("FINAL IMAGE:", image);
-
-  const badge       = p.badge || '';
+ const badge       = p.badge || '';
   const rating      = parseFloat(p.rating) || 0;
   const reviewCount = p.reviews_count || p.reviews || 0;
   const stars       = '★'.repeat(Math.floor(rating)) + (rating % 1 ? '½' : '');
@@ -197,62 +195,92 @@ async function initProductsPage() {
   grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">
     <i class="fa fa-spinner fa-spin" style="font-size:2rem;display:block;margin-bottom:12px"></i>Loading products…
   </div>`;
-
-  // Read category from URL
  const params = new URLSearchParams(window.location.search);
-const catParam = params.get('cat');
-
-let products = await fetchProducts();
-
-if (catParam) {
-  products = products.filter(
-    p => (p.category_slug || p.category) === catParam
-  );
-}
-console.log("CAT PARAM:", catParam);
-console.log("PRODUCTS:", products);
-
-  // Update count
+  const catParam = params.get('cat');
+  const products = await fetchProducts();
   const countEl = document.getElementById('productCount');
-  if (countEl) countEl.textContent = `Showing ${products.length} products`;
+  const sortEl = document.getElementById('sortSelect');
+  const priceEl = document.getElementById('priceRange');
+  const priceMaxEl = document.getElementById('priceMax');
+  let activeTab = catParam || 'all';
 
-  renderProductsGrid(products);
+  function getCheckedCategories() {
+    return [...document.querySelectorAll('.sidebar input[type=checkbox]:checked')].map(c => c.value);
+  }
+
+  function getSelectedRating() {
+    const selected = document.querySelector('.sidebar input[name=rating]:checked');
+    return selected && selected.value !== 'all' ? parseFloat(selected.value) : 0;
+  }
+
+  function getVisibleProducts() {
+    const tabCategories = activeTab === 'all' ? [] : [activeTab];
+    const sidebarCategories = getCheckedCategories();
+    const categories = sidebarCategories.length ? sidebarCategories : tabCategories;
+    const maxPrice = parseInt(priceEl?.value || 600);
+    const minRating = getSelectedRating();
+    return sortProducts(
+      filterProducts(products, { categories, maxPrice, minRating }),
+      sortEl?.value || 'default'
+    );
+  }
+
+  function renderVisibleProducts() {
+    const visibleProducts = getVisibleProducts();
+    renderProductsGrid(visibleProducts);
+    if (countEl) countEl.textContent = `Showing ${visibleProducts.length} products`;
+  }
+
+  function setActiveTab(filter) {
+    activeTab = filter;
+    document.querySelectorAll('.filter-tabs .tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.filter === activeTab);
+    });
+  }
+
+  setActiveTab(activeTab);
+  renderVisibleProducts();
 
   // Wire up filter tabs
   document.querySelectorAll('.filter-tabs .tab').forEach(tab => {
-    if (catParam && tab.dataset.filter === catParam) tab.classList.add('active');
-    tab.addEventListener('click', async () => {
-      document.querySelectorAll('.filter-tabs .tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const filter = tab.dataset.filter;
-      const filtered = filter === 'all' ? products : filterProducts(products, { categories: [filter] });
-      renderProductsGrid(filtered);
-      if (countEl) countEl.textContent = `Showing ${filtered.length} products`;
+    tab.addEventListener('click', () => {
+      setActiveTab(tab.dataset.filter);
+      document.querySelectorAll('.sidebar input[type=checkbox]').forEach(cb => cb.checked = false);
+      renderVisibleProducts();
     });
   });
 
   // Wire up sort
   document.getElementById('sortSelect')?.addEventListener('change', function () {
-    const sorted = sortProducts(products, this.value);
-    renderProductsGrid(sorted);
+    renderVisibleProducts();
   });
 
   // Wire up sidebar price range
   document.getElementById('priceRange')?.addEventListener('input', function () {
     const max = parseInt(this.value);
-    document.getElementById('priceMax').textContent = `₹${max}`;
-    const checkedCats = [...document.querySelectorAll('.sidebar input[type=checkbox]:checked')].map(c => c.value);
-    const filtered = filterProducts(products, { categories: checkedCats, maxPrice: max });
-    renderProductsGrid(filtered);
+    if (priceMaxEl) priceMaxEl.textContent = `₹${max}`;
+    renderVisibleProducts();
   });
 
   // Wire up sidebar category checkboxes
   document.querySelectorAll('.sidebar input[type=checkbox]').forEach(cb => {
     cb.addEventListener('change', () => {
-      const cats = [...document.querySelectorAll('.sidebar input[type=checkbox]:checked')].map(c => c.value);
-      const max  = parseInt(document.getElementById('priceRange')?.value || 600);
-      renderProductsGrid(filterProducts(products, { categories: cats, maxPrice: max }));
+      renderVisibleProducts();
     });
+  });
+
+  document.querySelectorAll('.sidebar input[name=rating]').forEach(radio => {
+    radio.addEventListener('change', renderVisibleProducts);
+  });
+
+  document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
+    document.querySelectorAll('.sidebar input[type=checkbox]').forEach(cb => cb.checked = false);
+    document.querySelector('.sidebar input[name=rating][value=all]')?.click();
+    if (priceEl) priceEl.value = 600;
+    if (priceMaxEl) priceMaxEl.textContent = '₹600';
+    if (sortEl) sortEl.value = 'default';
+    setActiveTab('all');
+    renderVisibleProducts();
   });
 }
 
@@ -262,19 +290,38 @@ async function initHomepageBestSellers() {
   if (!grid) return;
 
   const products = await fetchProducts({ limit: 8 });
+
   renderProductsGrid(products);
 
-  // Wire tabs
   document.querySelectorAll('.filter-tabs .tab').forEach(tab => {
-    tab.addEventListener('click', async () => {
-      document.querySelectorAll('.filter-tabs .tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const f = tab.dataset.filter;
-      const filtered = f === 'all' ? products : filterProducts(products, { categories: [f] });
+  tab.addEventListener('click', (e) => {
+
+    e.preventDefault();
+
+    document.querySelectorAll('.filter-tabs .tab')
+      .forEach(t => t.classList.remove('active'));
+
+    tab.classList.add('active');
+
+    const filter = tab.dataset.filter;
+
+    const filtered =
+      filter === 'all'
+        ? window.PRODUCTS
+        : window.PRODUCTS.filter(
+            p => (p.category_slug || p.category) === filter
+          );
+          
       renderProductsGrid(filtered);
-    });
   });
-  document.addEventListener('DOMContentLoaded', () => {
-  initProductsPage();
 });
 }
+document.addEventListener('DOMContentLoaded', () => {
+
+  if (window.location.pathname.includes('/pages/shop/products.html')) {
+    initProductsPage();
+  } else {
+    initHomepageBestSellers();
+  }
+
+});

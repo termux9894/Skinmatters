@@ -70,7 +70,16 @@
   <script src="../../js/products-data.js"></script>
   <script src="../../js/ui/layout.js"></script>
   <script src="../../js/ui/main.js"></script>
-  <script>
+   <script>
+    function getCartPageImageSrc(image) {
+      if (!image) return '';
+      if (/^(https?:)?\/\//.test(image) || image.startsWith('data:')) return image;
+      if (image.startsWith('../../') || image.startsWith('../')) return image;
+      if (image.startsWith('images/')) return `../../${image}`;
+      if (image.startsWith('/images/')) return `../..${image}`;
+      return image;
+    }
+
     function renderCartPage() {
       const page = document.getElementById('cartPage');
       if (cart.length === 0) {
@@ -84,8 +93,8 @@
         <div class="cart-items-section">
           <h2>Cart Items (${cart.length})</h2>
           ${cart.map(item => `
-            <div class="cart-page-item" id="cpi-${item.id}">
-              <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/100x100/f5f0eb/888?text=Product'" />
+              <div class="cart-page-item" id="cpi-${item.id}">
+              <img src="${getCartPageImageSrc(item.image)}" alt="${item.name}" onerror="this.src='https://placehold.co/100x100/f5f0eb/888?text=Product'" />
               <div class="cpi-info">
                 <p class="cpi-name">${item.name}</p>
                 <p class="cpi-cat">${item.category}</p>

@@ -22,7 +22,35 @@
     .price-labels { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; }
     .products-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
     .products-header p { color: var(--text-muted); font-size: 0.88rem; }
-    .sort-select { padding: 8px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--warm-white); font-family: var(--font-body); font-size: 0.88rem; outline: none; cursor: pointer; }
+     .sort-select {
+      min-width: 220px;
+      padding: 12px 42px 12px 18px;
+      border: 1px solid #e7d6c3;
+      border-radius: 10px;
+      background: #fffaf5;
+      color: var(--brown);
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(107, 66, 38, 0.08);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .sort-select:hover,
+    .sort-select:focus {
+      border-color: var(--brown);
+      box-shadow: 0 10px 28px rgba(107, 66, 38, 0.14);
+    }
+    .sort-select option {
+      background: #fffaf5;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .sort-select option:checked {
+      background: var(--brown);
+      color: #fffaf5;
+    }
     @media (max-width: 768px) {
       .products-layout { grid-template-columns: 1fr; }
       .sidebar { display: none; }
@@ -45,14 +73,14 @@
     <aside class="sidebar">
       <div class="sidebar-section">
         <h4>Category</h4>
-        <label class="filter-check"><input type="checkbox" value="soap" onchange="filterProducts()"> Soaps</label>
-        <label class="filter-check"><input type="checkbox" value="oil" onchange="filterProducts()"> Oils & Serums</label>
-        <label class="filter-check"><input type="checkbox" value="balm" onchange="filterProducts()"> Balms</label>
-        <label class="filter-check"><input type="checkbox" value="pack" onchange="filterProducts()"> Face & Hair Packs</label>
+        <label class="filter-check"><input type="checkbox" value="soap"> Soaps</label>
+        <label class="filter-check"><input type="checkbox" value="oil"> Oils & Serums</label>
+        <label class="filter-check"><input type="checkbox" value="balm"> Balms</label>
+        <label class="filter-check"><input type="checkbox" value="pack"> Face & Hair Packs</label>
       </div>
       <div class="sidebar-section">
         <h4>Price Range</h4>
-        <input type="range" class="price-range" id="priceRange" min="100" max="600" value="600" oninput="updatePrice(this.value)">
+          <input type="range" class="price-range" id="priceRange" min="100" max="600" value="600">
         <div class="price-labels"><span>₹100</span><span id="priceMax">₹600</span></div>
       </div>
       <div class="sidebar-section">
@@ -61,13 +89,13 @@
         <label class="filter-check"><input type="radio" name="rating" value="4"> 4.0 & above ⭐</label>
         <label class="filter-check"><input type="radio" name="rating" value="all" checked> All</label>
       </div>
-      <button class="btn btn-outline-dark" onclick="clearFilters()" style="width:100%;margin-top:8px;">Clear Filters</button>
+       <button class="btn btn-outline-dark" id="clearFiltersBtn" style="width:100%;margin-top:8px;">Clear Filters</button>
     </aside>
 
     <div>
       <div class="products-header">
         <p id="productCount">Showing all products</p>
-        <select class="sort-select" id="sortSelect" onchange="sortProducts()">
+          <select class="sort-select" id="sortSelect">
           <option value="default">Sort by: Featured</option>
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
@@ -89,15 +117,17 @@
 <div class="toast" id="toast"></div>
 
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../js/config/supabase.js"></script>
 <script src="../../js/config/paths.js"></script>
 <script src="../../js/cart/cart.js"></script>
 <script src="../../js/wishlist/wishlist.js"></script>
 <script src="../../js/ui/layout.js"></script>
+<script src="../../js/{config,auth,products,cart,orders,account,search,reviews,blog,ui}/products-data.js"></script>
 <script src="../../js/products/products.js"></script>
 <script src="../../js/ui/main.js"></script>
-  <script>
+  <script type="text/plain" data-disabled="legacy-products-inline">
     let currentMaxPrice = 600;
 
     function filterProducts() {
