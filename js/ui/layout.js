@@ -111,7 +111,6 @@ function initLayout() {
                   <h4>Category</h4>
                   <a href="${PAGES.products}?cat=oil">Hair Oil</a>
                   <a href="${PAGES.products}?cat=pack">Hair Pack</a>
-                  <a href="${PAGES.products}?cat=soap">Shampoo Bars</a>
                 </div>
               </div>
             </li>

@@ -127,16 +127,34 @@ async function getCartItems() {
 
     if (error) { console.error(error.message); return []; }
 
-    return (data || []).map(item => ({
+    return (data || []).map(item => {
+      const fallbackProduct = typeof PRODUCTS !== 'undefined'
+        ? PRODUCTS.find(p => p.id === item.product.id)
+        : null;
+
+      return {
       id:    item.product.id,
       name:  item.product.name,
       price: parseFloat(item.product.price),
-      image: item.product.image_url,
+      image: item.product.image_url || fallbackProduct?.image || '',
       qty:   item.quantity
-    }));
+      };
+    });
   } else {
     return getLocalCart();
   }
+}
+
+function getCartImageSrc(image) {
+  if (!image) return '';
+  if (/^(https?:)?\/\//.test(image) || image.startsWith('data:')) return image;
+  if (image.startsWith('../../') || image.startsWith('../')) return image;
+
+  const isShopPage = window.location.pathname.includes('/pages/shop/');
+  if (image.startsWith('images/')) return isShopPage ? `../../${image}` : `./${image}`;
+  if (image.startsWith('/images/')) return isShopPage ? `../..${image}` : `.${image}`;
+
+  return image;
 }
 
 // ── GET CART COUNT ───────────────────────────────────────────
@@ -180,9 +198,9 @@ async function renderCartUI() {
     return;
   }
 
-  cartBody.innerHTML = items.map(item => `
+    cartBody.innerHTML = items.map(item => `
     <div class="cart-item">
-      <img src="${item.image || ''}" alt="${item.name}"
+      <img src="${getCartImageSrc(item.image)}" alt="${item.name}"
         onerror="this.src='https://placehold.co/80x80/f5f0eb/888'" />
       <div class="ci-info">
         <p class="ci-name">${item.name}</p>
