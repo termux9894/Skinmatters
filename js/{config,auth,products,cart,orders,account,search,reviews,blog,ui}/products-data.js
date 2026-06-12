@@ -186,7 +186,19 @@ window.PRODUCTS = [
     rating: 4.8,
     reviews: 198,
     description: "Amla, shikakai and egg-protein formula. Restores shine and treats damaged, brittle hair."
-  }
-];
+  },
+  {
+    id: 15,
+    name: "Aloe Due Moisturizer",
+    tagline: "Cool & Hydrate",
+    category: "moisturizer",
+    price: 199,
+    originalPrice: 249,
+    image: "images/Aloe Due Moisturizer.png",
+    badge: "New Arrival",
+    rating: 4.8,
+    reviews: 156,
+    description: "A lightweight aloe vera moisturizer enriched with natural hydrators. Soothes, cools, and deeply moisturizes the skin while keeping it soft, fresh, and healthy throughout the day."
+  }];
 
 if (typeof module !== 'undefined') module.exports = PRODUCTS;
