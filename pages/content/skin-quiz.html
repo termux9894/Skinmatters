@@ -151,6 +151,8 @@
 <script src="../../js/cart/cart.js"></script>
 <script src="../../js/wishlist/wishlist.js"></script>
 
+<script src="../../js/products-data.js"></script>
+
 <script src="../../js/ui/layout.js"></script>
 <script src="../../js/ui/main.js"></script>
   <script>
@@ -173,14 +175,20 @@
     document.getElementById(`qp${q}`).classList.remove('active');
     document.getElementById(`qp${q+1}`).classList.add('active');
     upProg(q);
-    window.scrollTo({top:0,behavior:'smooth'});
+    document.querySelector('.quiz-wrap').scrollIntoView({
+  behavior: 'smooth',
+  block: 'start'
+});
   }
 
   function prv(q){
     document.getElementById(`qp${q}`).classList.remove('active');
     document.getElementById(`qp${q-1}`).classList.add('active');
     upProg(q-2);
-    window.scrollTo({top:0,behavior:'smooth'});
+    document.querySelector('.quiz-wrap').scrollIntoView({
+  behavior: 'smooth',
+  block: 'start'
+});
   }
 
   const TYPES={
@@ -216,7 +224,7 @@
       <div class="product-card">
         <a href="../../pages/shop/product.html?id=${p.id}" class="product-img-wrap">
           ${p.badge?`<span class="product-badge">${p.badge}</span>`:''}
-          <img src="${p.image}" alt="${p.name}" onerror="this.src='https://placehold.co/400x400/f5f0eb/888?text=${encodeURIComponent(p.name)}'"/>
+          <img src="${getCartImageSrc(p.image || '')}" alt="${p.name}" onerror="this.src='https://placehold.co/400x400/f5f0eb/888?text=${encodeURIComponent(p.name)}'"/>
         </a>
         <div class="product-info">
           <p class="product-tagline">${p.tagline}</p>
