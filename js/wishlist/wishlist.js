@@ -111,9 +111,7 @@ async function getWishlistItems() {
   }
 
   const ids = getLocalWishlist();
-
-  if (typeof PRODUCTS === 'undefined') return [];
-
+  if (typeof PRODUCTS === 'undefined') return ids.map(id => ({ id }));
   return PRODUCTS.filter(p => ids.includes(p.id));
 }
 

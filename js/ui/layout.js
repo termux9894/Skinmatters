@@ -235,12 +235,21 @@ function initLayout() {
       <div class="toast" id="toast"></div>`;
   }
 
-  // Initialise cart count
-  if (typeof initCart === 'function')
-  initCart();
+    // Initialise cart count
+    if (typeof initCart === 'function') initCart();
 
-if (typeof initWishlist === 'function')
-  initWishlist();
+    // Ensure wishlist script is present and initialise
+    if (typeof initWishlist === 'function') {
+      initWishlist();
+    } else {
+      // Dynamically load wishlist script if page didn't include it
+      try {
+        const s = document.createElement('script');
+        s.src = (typeof ROOT !== 'undefined' ? ROOT : '') + 'js/wishlist/wishlist.js';
+        s.onload = () => { if (typeof initWishlist === 'function') initWishlist(); };
+        document.head.appendChild(s);
+      } catch (e) { /* ignore */ }
+    }
 }
 
 window.initLayout = initLayout;
