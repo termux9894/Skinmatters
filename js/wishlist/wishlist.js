@@ -177,9 +177,17 @@ function saveLocalWishlist(data) {
     JSON.stringify(data)
   );
 }
-
+function testWishlist() {
+  let wishlist = getLocalWishlist();
+  wishlist.push(1);
+  saveLocalWishlist(wishlist);
+  console.log(localStorage.getItem('sm_wishlist'));
+}
 // ── INIT ────────────────────────────────────────────────────
 async function initWishlist() {
 
   await refreshWishlistCount();
+}
+function addToWishlist(productId) {
+  return toggleWishlist(productId);
 }

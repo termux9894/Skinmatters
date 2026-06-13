@@ -129,7 +129,7 @@
 <script src="../../js/ui/main.js"></script>
   <script type="text/plain" data-disabled="legacy-products-inline">
     let currentMaxPrice = 600;
-
+    
     function filterProducts() {
       const checks = [...document.querySelectorAll('.sidebar input[type=checkbox]:checked')].map(c => c.value);
       renderFilteredProducts(checks, currentMaxPrice);

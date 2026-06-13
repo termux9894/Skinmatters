@@ -22,7 +22,7 @@ function initLayout() {
       <button class="mobile-menu-btn" id="menuBtn" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
-      <a href=PAGES.home class="logo">
+    <a href="${PAGES.home}" class="logo">
         <span class="logo-leaf">🌿</span>
         <div class="logo-text">
           <span class="logo-main">SkinMatters</span>
@@ -69,18 +69,21 @@ function initLayout() {
               </div>
             </div>
           </li>
-          <li><a href=PAGES.products>All Products</a></li>
-          <li><a href=PAGES.combos>Combos</a></li>
-          <li><a href=PAGES.skinQuiz>Skin Quiz</a></li>
-          <li><a href=PAGES.blog>Blog</a></li>
-          <li><a href=PAGES.about>Our Story</a></li>
+          <li><a href="${PAGES.products}">All Products</a></li>
+          <li><a href="${PAGES.combos}">Combos</a></li>
+          <li><a href="${PAGES.skinQuiz}">Skin Quiz</a></li>
+          <li><a href="${PAGES.blog}">Blog</a></li>
+          <li><a href="${PAGES.about}">Our Story</a></li>
         </ul>
       </nav>
       <div class="header-actions">
         <button class="icon-btn" id="searchToggle" aria-label="Search" onclick="window.location.href=PAGES.search"><i class="fa fa-search"></i></button>
-        <a href=PAGES.wishlist class="icon-btn" aria-label="Wishlist"><i class="fa fa-heart"></i></a>
-        <a href=PAGES.account class="icon-btn" aria-label="Account"><i class="fa fa-user"></i></a>
-        <a href=PAGES.cart class="icon-btn cart-btn" aria-label="Cart">
+       <a href="${PAGES.wishlist}" class="icon-btn" aria-label="Wishlist">
+  <i class="fa fa-heart"></i>
+  <span id="wishlistCount" class="wishlist-count">0</span>
+</a>
+        <a href="${PAGES.account}" class="icon-btn" aria-label="Account"><i class="fa fa-user"></i></a>
+        <a href="${PAGES.cart}" class="icon-btn cart-btn" aria-label="Cart">
           <i class="fa fa-shopping-bag"></i>
           <span class="cart-count" id="cartCount">0</span>
         </a>
@@ -98,7 +101,7 @@ function initLayout() {
   if (footer) footer.innerHTML = `
     <div class="footer-inner">
       <div class="footer-brand">
-        <a href=PAGES.home class="logo footer-logo">
+        <a href="${PAGES.home}" class="logo footer-logo">
           <span class="logo-leaf">🌿</span>
           <div class="logo-text">
             <span class="logo-main">SkinMatters</span>
@@ -115,27 +118,27 @@ function initLayout() {
       </div>
       <div class="footer-links">
         <h4>Shop</h4>
-        <a href=PAGES.products>All Products</a>
+        <a href="${PAGES.products}">All Products</a>
         <a href="${PAGES.products}?cat=soap">Soaps</a>
         <a href="${PAGES.products}?cat=oil">Oils & Serums</a>
         <a href="${PAGES.products}?cat=balm">Balms</a>
-        <a href=PAGES.combos>Combos & Gifts</a>
-        <a href=PAGES.skinQuiz>✨Skin Quiz</a>
+        <a href="${PAGES.combos}">Combos & Gifts</a>
+        <a href="${PAGES.skinQuiz}">✨Skin Quiz</a>
       </div>
       <div class="footer-links">
         <h4>Company</h4>
-        <a href=PAGES.about>Our Story</a>
-        <a href=PAGES.ingredients>Ingredients</a>
-        <a href=PAGES.blog>Blog</a>
-        <a href=PAGES.contact>Contact Us</a>
+        <a href="${PAGES.about}">Our Story</a>
+        <a href="${PAGES.ingredients}">Ingredients</a>
+        <a href="${PAGES.blog}">Blog</a>
+        <a href="${PAGES.contact}">Contact Us</a>
       </div>
       <div class="footer-links">
         <h4>Help</h4>
-        <a href=PAGES.faq>FAQs</a>
-        <a href=PAGES.shipping>Shipping Policy</a>
-        <a href=PAGES.returns>Return Policy</a>
-        <a href=PAGES.track>Track Order</a>
-        <a href=PAGES.account>My Account</a>
+        <a href="${PAGES.faq}">FAQs</a>
+        <a href="${PAGES.shipping}">Shipping Policy</a>
+        <a href="${PAGES.returns}">Return Policy</a>
+        <a href="${PAGES.track}">Track Order</a>
+        <a href="${PAGES.account}">My Account</a>
       </div>
       <div class="footer-links">
         <h4>Legal</h4>
@@ -174,4 +177,11 @@ function initLayout() {
     <div class="cart-overlay" id="cartOverlay"></div>
     <div class="mobile-overlay" id="mobileOverlay"></div>
     <div class="toast" id="toast"></div>`;
+   if (typeof initCart === 'function') {
+  initCart();
+}
+
+if (typeof initWishlist === 'function') {
+  initWishlist();
+}
 }
