@@ -15,8 +15,8 @@
     .about-hero em { color: #c8a96e; }
     .about-hero p { color: rgba(255,255,255,0.8); max-width: 600px; margin: 0 auto; line-height: 1.8; font-size: 1.05rem; }
     .story-section { max-width: 1100px; margin: 0 auto; padding: 80px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-    .story-img-wrap { border-radius: var(--radius); overflow: hidden; background: var(--warm-white); aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; position: relative; }
-    .story-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .story-img-wrap { border-radius: var(--radius); overflow: hidden; background: var(--warm-white); aspect-ratio: auto; display: flex; align-items: center; justify-content: center; position: relative; }
+    .story-img-wrap img { width: 100%; height: auto; object-fit: contain; }
     .story-img-placeholder { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-size: 5rem; background: linear-gradient(135deg, #f5ede0, #e8d5b7); }
     .story-img-placeholder p { font-family: var(--font-display); font-size: 1.2rem; color: var(--brown); }
     .story-text .section-tag { margin-bottom: 16px; }
@@ -52,7 +52,7 @@
   <!-- STORY SECTION -->
   <div class="story-section">
     <div class="story-img-wrap">
-      <div class="story-img-placeholder">🌿<p>Born from Nature</p></div>
+      <img src="../../images/skinmatters-ourstory.png" alt="SkinMatters Products - Born from Nature" onerror="this.src='https://placehold.co/600x450/f5ede0/8b5e3c?text=SkinMatters+Products'" />
     </div>
     <div class="story-text">
       <span class="section-tag">How it began</span>
