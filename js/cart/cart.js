@@ -150,9 +150,13 @@ function getCartImageSrc(image) {
   if (/^(https?:)?\/\//.test(image) || image.startsWith('data:')) return image;
   if (image.startsWith('../../') || image.startsWith('../')) return image;
 
-  const isShopPage = window.location.pathname.includes('/pages/shop/');
-  if (image.startsWith('images/')) return isShopPage ? `../../${image}` : `./${image}`;
-  if (image.startsWith('/images/')) return isShopPage ? `../..${image}` : `.${image}`;
+  // Build a site-root absolute path so images resolve correctly from any page.
+  // Example: /Skinmatters/images/xyz.png
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  const siteRoot = parts.length ? `/${parts[0]}` : '';
+
+  if (image.startsWith('images/')) return `${siteRoot}/${image}`;
+  if (image.startsWith('/images/')) return `${siteRoot}${image}`;
 
   return image;
 }
