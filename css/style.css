@@ -79,10 +79,25 @@ em { font-style: italic; color: var(--brown); }
   padding: 10px 0; overflow: hidden; font-size: 0.82rem; font-weight: 500;
 }
 .announcement-track {
-  white-space: nowrap; animation: scrollAnnounce 30s linear infinite;
-  display: inline-block;
+  display: flex;
+  white-space: nowrap;
+  min-width: 200%;
+  animation: scrollAnnounce 30s linear infinite;
+  font-size: 0;
 }
-@keyframes scrollAnnounce { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.announcement-track span {
+  display: inline-flex;
+  font-size: 0.82rem;
+  padding-right: 0;
+}
+@keyframes scrollAnnounce {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes scrollTrust {
+  from { transform: translateX(0); }
+  to { transform: translateX(-33.3333%); }
+}
 .announcement-bar strong { color: var(--accent); }
 
 /* ---------- HEADER ---------- */
@@ -215,8 +230,9 @@ em { font-style: italic; color: var(--brown); }
 
 /* ---------- TRUST BAR ---------- */
 .trust-bar { background: var(--brown); color: #fff; padding: 14px 0; overflow: hidden; }
-.trust-track { display: flex; align-items: center; gap: 24px; white-space: nowrap; animation: scrollAnnounce 20s linear infinite; }
-.trust-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 500; flex-shrink: 0; }
+.trust-track { display: flex; align-items: center; gap: 24px; white-space: nowrap; width: max-content; animation: scrollTrust 20s linear infinite; font-size: 0; }
+.trust-track > * { font-size: 0.82rem; }
+.trust-item { display: flex; align-items: center; gap: 8px; font-weight: 500; flex-shrink: 0; }
 .trust-item i { color: var(--accent); }
 .trust-sep { color: var(--accent); font-size: 1.2rem; flex-shrink: 0; }
 

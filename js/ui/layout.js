@@ -52,14 +52,9 @@ function initLayout() {
   window.__sm_layout_initialized = true;
   const announcementBar = document.getElementById('announcementBar');
   if (announcementBar) {
+    const message = '🌿 Free shipping on orders above ₹999  |  ✨ Use code <strong>PURE10</strong> for 10% off your 1st order  |  🎁 Free gift on orders above ₹1299  |  🌿 Free shipping on orders above ₹999  |  ✨ Use code <strong>PURE10</strong> for 10% off your 1st order';
     announcementBar.innerHTML = `
-      <div class="announcement-track">
-        <span>🌿 Free shipping on orders above ₹999 &nbsp;&nbsp;|&nbsp;&nbsp;
-        ✨ Use code <strong>PURE10</strong> for 10% off your 1st order &nbsp;&nbsp;|&nbsp;&nbsp;
-        🎁 Free gift on orders above ₹1299 &nbsp;&nbsp;|&nbsp;&nbsp;
-        🌿 Free shipping on orders above ₹999 &nbsp;&nbsp;|&nbsp;&nbsp;
-        ✨ Use code <strong>PURE10</strong> for 10% off your 1st order</span>
-      </div>`;
+      <div class="announcement-track"><span>${message}</span><span>${message}</span></div>`;
   }
 
   const header = document.getElementById('siteHeader');
