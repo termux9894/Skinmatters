@@ -135,10 +135,9 @@ if (image.startsWith('images/')) {
         <button class="btn btn-add-cart" onclick="addToCart(${id})">
           <i class="fa fa-plus"></i> Add to Cart
         </button>
-        <button class="wishlist-btn"
-        onclick="toggleWishlist(${id})">
-    <i class="fa-regular fa-heart"></i>
-</button>
+        <button class="wishlist-btn" data-product-id="${id}" onclick="toggleWishlist(${id})" aria-label="Add to wishlist">
+          <i class="fa-regular fa-heart"></i>
+        </button>
       </div>
     </div>`;
 }

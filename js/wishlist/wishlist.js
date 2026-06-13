@@ -8,9 +8,9 @@
 // ── TOGGLE WISHLIST ─────────────────────────────────────────
 async function toggleWishlist(productId) {
   const user = await getCurrentUser();
+  let newState;
 
   if (user) {
-
     const { data: existing } = await supabase
       .from('wishlists')
       .select('id')
@@ -19,44 +19,70 @@ async function toggleWishlist(productId) {
       .maybeSingle();
 
     if (existing) {
-
       await supabase
         .from('wishlists')
         .delete()
         .eq('id', existing.id);
-
       showToast('Removed from wishlist ❤️', 'success');
-
+      newState = false;
     } else {
-
       await supabase
         .from('wishlists')
         .insert({
           user_id: user.id,
           product_id: productId
         });
-
       showToast('Added to wishlist ❤️', 'success');
+      newState = true;
     }
 
   } else {
-
     let wishlist = getLocalWishlist();
-
     const exists = wishlist.includes(productId);
 
     if (exists) {
       wishlist = wishlist.filter(id => id !== productId);
       showToast('Removed from wishlist ❤️', 'success');
+      newState = false;
     } else {
       wishlist.push(productId);
       showToast('Added to wishlist ❤️', 'success');
+      newState = true;
     }
 
     saveLocalWishlist(wishlist);
   }
 
+  updateWishlistButtons(productId, newState);
   await refreshWishlistCount();
+}
+
+function updateWishlistButtons(productId, isWishlisted) {
+  const selectors = [
+    `button.wishlist-btn[data-product-id="${productId}"]`,
+    '#wishlistBtn'
+  ].join(',');
+
+  document.querySelectorAll(selectors).forEach(btn => {
+    const icon = btn.querySelector('i.fa-heart');
+    if (icon) {
+      if (isWishlisted) {
+        icon.classList.remove('fa-regular');
+        icon.classList.add('fa-solid');
+        icon.style.color = '#e53e3e';
+      } else {
+        icon.classList.remove('fa-solid');
+        icon.classList.add('fa-regular');
+        icon.style.color = '';
+      }
+    }
+
+    if (btn.id === 'wishlistBtn') {
+      btn.innerHTML = isWishlisted
+        ? '<i class="fa fa-heart" style="color:#e53e3e"></i> Wishlisted'
+        : '<i class="fa fa-heart"></i> Wishlist';
+    }
+  });
 }
 
 // ── CHECK IF PRODUCT IS IN WISHLIST ─────────────────────────
@@ -183,9 +209,24 @@ function testWishlist() {
 }
 // ── INIT ────────────────────────────────────────────────────
 async function initWishlist() {
-
   await refreshWishlistCount();
+  await syncWishlistButtons();
 }
+
+async function syncWishlistButtons() {
+  const user = await getCurrentUser();
+  let ids = [];
+
+  if (user) {
+    const items = await getWishlistItems();
+    ids = items.map(item => item?.id).filter(Boolean);
+  } else {
+    ids = getLocalWishlist();
+  }
+
+  ids.forEach(id => updateWishlistButtons(id, true));
+}
+
 function addToWishlist(productId) {
   return toggleWishlist(productId);
 }
