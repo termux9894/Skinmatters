@@ -14,10 +14,11 @@
     .wishlist-product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
     .wl-remove { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #e53e3e; z-index: 1; transition: var(--transition); cursor: pointer; }
     .wl-remove:hover { background: #e53e3e; color: #fff; }
-    .wl-img { height: 140px; background: var(--warm-white); overflow: hidden; }
-    .wl-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
-    .wishlist-product-card:hover .wl-img img { transform: scale(1.05); }
-    .wl-body { padding: 16px; display: grid; gap: 12px; }
+    .wl-img { display: block; width: 100%; height: 320px; max-height: 320px; background: var(--warm-white); overflow: hidden; }
+    .wl-img img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center center; transition: transform 0.4s; }
+    .wishlist-product-card:hover .wl-img img { transform: scale(1.04); }
+    .wishlist-product-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: var(--transition); position: relative; min-height: 440px; }
+    .wl-body { padding: 16px; display: grid; gap: 10px; }
     .wl-body-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
     .wl-content { min-width: 0; }
     .wl-name { font-family: var(--font-display); font-size: 1rem; margin: 0 0 6px; line-height: 1.2; }

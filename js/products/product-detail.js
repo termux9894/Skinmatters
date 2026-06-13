@@ -154,6 +154,9 @@ async function toggleWishlist(productId) {
     showToast('Added to wishlist! ❤️', 'success');
     if (btn) btn.innerHTML = '<i class="fa fa-heart" style="color:#e53e3e"></i> Wishlisted';
   }
+  if (typeof syncWishlistButtons === 'function') {
+    syncWishlistButtons();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', initProductDetail);

@@ -158,6 +158,9 @@ function renderProductsGrid(products, containerId = 'productsGrid') {
 
   grid.innerHTML = products.map(renderProductCard).join('');
   initScrollReveal();
+  if (typeof syncWishlistButtons === 'function') {
+    syncWishlistButtons();
+  }
 }
 
 // ── SORT PRODUCTS ───────────────────────────────────────────
