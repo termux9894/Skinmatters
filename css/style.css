@@ -416,3 +416,20 @@ em { font-style: italic; color: var(--brown); }
   .hero-arrow { display: none; }
   .section { padding: 48px 0; }
 }
+
+.wishlist-count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--green);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--cream);
+}
