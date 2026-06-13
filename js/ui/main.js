@@ -96,6 +96,9 @@ function initMobileMenu() {
 // ── DROPDOWN MENUS (desktop) ──────────────────────────────────
 function initDropdowns() {
   document.querySelectorAll('.has-dropdown').forEach(item => {
+    // Avoid attaching listeners multiple times
+    if (item.dataset.dropdownInit === 'true') return;
+    item.dataset.dropdownInit = 'true';
     const dropdown = item.querySelector('.dropdown');
     if (!dropdown) return;
     let timer;

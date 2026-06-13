@@ -47,6 +47,9 @@
 
 // ── INJECT HEADER ─────────────────────────────────────────────
 function initLayout() {
+  // Prevent double-initialization when pages call initLayout() multiple times
+  if (window.__sm_layout_initialized) return;
+  window.__sm_layout_initialized = true;
   const announcementBar = document.getElementById('announcementBar');
   if (announcementBar) {
     announcementBar.innerHTML = `

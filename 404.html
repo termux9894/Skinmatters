@@ -101,23 +101,11 @@
 </head>
 <body>
 
-  <!-- Minimal header -->
-  <header style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,246,240,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);">
-    <div style="max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
-      <a href="./index.html" class="logo">
-        <span class="logo-leaf">🌿</span>
-        <div class="logo-text">
-          <span class="logo-main">SkinMatters</span>
-          <span class="logo-sub">Pure Naturals</span>
-        </div>
-      </a>
-      <a href="./index.html" class="btn btn-dark" style="padding:10px 22px;font-size:0.85rem;">
-        <i class="fa fa-home"></i>&nbsp; Go Home
-      </a>
-    </div>
-  </header>
+  <div class="announcement-bar" id="announcementBar"></div>
+  <header class="header" id="siteHeader"></header>
+  <div id="cartSidebarWrap"></div>
 
-  <div class="err-wrap" style="padding-top:80px;">
+  <div class="err-wrap" style="padding-top:120px;">
 
     <!-- Illustrated number -->
     <div class="err-visual">
@@ -163,8 +151,21 @@
 
   </div>
 
-  <!-- Press Enter to search -->
+  <footer class="footer" id="siteFooter"></footer>
+  <div class="toast" id="toast"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/config/paths.js"></script>
+  <script src="./js/cart/cart.js"></script>
+  <script src="./js/wishlist/wishlist.js"></script>
+  <script src="./js/ui/layout.js"></script>
+  <script src="./js/ui/main.js"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof initLayout === 'function') {
+        initLayout();
+      }
+    });
+
     document.getElementById('errSearch').addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         const q = e.target.value.trim();
