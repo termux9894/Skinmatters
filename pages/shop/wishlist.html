@@ -17,7 +17,7 @@
     .wl-img { display: block; width: 100%; height: 320px; max-height: 320px; background: var(--warm-white); overflow: hidden; }
     .wl-img img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center center; transition: transform 0.4s; }
     .wishlist-product-card:hover .wl-img img { transform: scale(1.04); }
-    .wishlist-product-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: var(--transition); position: relative; min-height: 440px; }
+    .wishlist-product-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: var(--transition); position: relative; min-height: auto; }
     .wl-body { padding: 16px; display: grid; gap: 10px; }
     .wl-body-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
     .wl-content { min-width: 0; }
@@ -26,6 +26,37 @@
     .wishlist-actions { display: flex; gap: 12px; align-items: center; }
     .wishlist-actions .btn { white-space: nowrap; }
     .wishlist-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+    @media (max-width: 480px) {
+
+  .wishlist-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .wl-img {
+    height: 160px;
+    max-height: 160px;
+  }
+
+  .wl-body {
+    padding: 10px;
+  }
+
+  .wl-name {
+    font-size: 0.9rem;
+  }
+
+  .wishlist-actions .btn {
+    width: 100%;
+    font-size: 0.75rem;
+    padding: 8px;
+  }
+
+  .wl-body-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
   </style>
 </head>
 <body>
