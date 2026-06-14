@@ -7,26 +7,87 @@
   <link rel="stylesheet" href="../../css/pages.css" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <style>
-    .ing-hero { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 80px 24px; text-align: center; }
-    .ing-wrap { max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; }
-    .ing-search-bar { max-width: 500px; margin: 0 auto 48px; display: flex; gap: 10px; }
-    .ing-search-bar input { flex: 1; padding: 13px 18px; border: 1px solid var(--border); border-radius: 50px; font-family: var(--font-body); font-size: 0.9rem; background: var(--warm-white); outline: none; }
-    .ing-search-bar input:focus { border-color: var(--green); }
-    .ing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-    .ing-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; transition: var(--transition); }
-    .ing-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
-    .ing-emoji { font-size: 2.5rem; margin-bottom: 14px; display: block; }
-    .ing-name { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 4px; }
-    .ing-sanskrit { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin-bottom: 12px; }
-    .ing-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 14px; }
-    .ing-benefits { display: flex; flex-wrap: wrap; gap: 6px; }
-    .ing-benefit { background: rgba(58,107,53,0.08); color: var(--green); font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
-    .pledge-section { background: linear-gradient(135deg, #f5ede0, #e8d5b7); border-radius: var(--radius); padding: 48px; text-align: center; margin-top: 60px; }
-    .pledge-section h2 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 16px; }
-    .never-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }
-    .never-item { background: #fff; border: 1px solid var(--border); border-radius: 30px; padding: 8px 18px; font-size: 0.82rem; font-weight: 500; color: #e53e3e; }
-  </style>
+ <style>
+  .ing-hero {background: linear-gradient(135deg, #e8f5e9, #c8e6c9);  padding: 80px 24px;  text-align: center;}
+  .ing-wrap {  max-width: 1100px;  margin: 0 auto;  padding: 60px 24px 80px;}
+  .ing-search-bar {  max-width: 500px;  margin: 0 auto 48px;  display: flex;  gap: 10px;}
+  .ing-search-bar input {  flex: 1;  padding: 13px 18px;  border: 1px solid var(--border);  border-radius: 50px;  font-family: var(--font-body);  font-size: 0.9rem;  background: var(--warm-white);  outline: none;}
+  .ing-search-bar input:focus {  border-color: var(--green);}
+  /* INGREDIENT GRID */
+  .ing-grid {  display: grid;  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));  gap: 20px;}
+  .ing-card {  background: var(--card-bg);  border: 1px solid var(--border);  border-radius: var(--radius);  padding: 22px;  transition: var(--transition);}
+  .ing-card:hover {  transform: translateY(-4px);  box-shadow: var(--shadow-hover);}
+  .ing-emoji { font-size: 2.2rem;   margin-bottom: 12px;   display: block; }
+  .ing-name {  font-family: var(--font-display);  font-size: 1.15rem;  margin-bottom: 4px;}
+  .ing-sanskrit {  font-size: 0.78rem;  color: var(--text-muted);  font-style: italic;  margin-bottom: 10px;}
+  .ing-desc { font-size: 0.84rem;  color: var(--text-muted);  line-height: 1.6;  margin-bottom: 12px;}
+  .ing-benefits {  display: flex;  flex-wrap: wrap;  gap: 6px;}
+  .ing-benefit {  background: rgba(58,107,53,0.08);  color: var(--green);  font-size: 0.72rem;  font-weight: 600;  padding: 4px 10px;  border-radius: 20px;}
+  .pledge-section {  background: linear-gradient(135deg, #f5ede0, #e8d5b7);  border-radius: var(--radius);  padding: 48px;  text-align: center;  margin-top: 60px;}
+  .pledge-section h2 {  font-family: var(--font-display);  font-size: 2rem;  margin-bottom: 16px;}
+  .never-list { display: flex;  flex-wrap: wrap;  justify-content: center;  gap: 12px;  margin-top: 24px;}
+  .never-item {  background: #fff;  border: 1px solid var(--border);  border-radius: 30px;  padding: 8px 18px;  font-size: 0.82rem;  font-weight: 500;  color: #e53e3e;}
+  /* MOBILE */
+  @media (max-width: 480px) {  
+    .ing-wrap {    
+      padding: 32px 12px 50px;  
+    }
+
+    .ing-search-bar {
+      margin-bottom: 24px;
+    }
+
+    .ing-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .ing-card {
+      padding: 12px;
+    }
+
+    .ing-emoji {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+    }
+
+    .ing-name {
+      font-size: 0.9rem;
+      line-height: 1.2;
+    }
+
+    .ing-sanskrit {
+      font-size: 0.62rem;
+      margin-bottom: 6px;
+    }
+
+    .ing-desc {
+      display: none;
+    }
+
+    .ing-benefits {
+      gap: 4px;
+    }
+
+    .ing-benefit {
+      font-size: 0.55rem;
+      padding: 3px 6px;
+    }
+
+    .pledge-section {
+      padding: 24px 12px;
+    }
+
+    .pledge-section h2 {
+      font-size: 1.4rem;
+    }
+
+    .never-item {
+      font-size: 0.7rem;
+      padding: 6px 10px;
+    }
+  }
+</style>
 </head>
 <body>
 
