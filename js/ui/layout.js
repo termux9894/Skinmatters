@@ -137,11 +137,36 @@ function initLayout() {
         </div>
       </div>
       <div class="search-bar" id="searchBar">
-        <div class="search-inner">
-          <input type="text" placeholder="Search for soaps, oils, serums…" id="searchInput"/>
-          <button class="search-close" id="searchClose"><i class="fa fa-times"></i></button>
-        </div>
-      </div>`;
+  <div class="search-inner">
+    <input type="text" placeholder="Search for soaps, oils, serums…" id="searchInput"/>
+    <button class="search-close" id="searchClose"><i class="fa fa-times"></i></button>
+  </div>
+</div>
+
+<div class="mobile-category-bar">
+  <a href="${PAGES.products}">Best Sellers</a>
+  <span>|</span>
+
+  <a href="${PAGES.products}?cat=soap">Face</a>
+  <span>|</span>
+
+  <a href="${PAGES.products}?cat=oil">Hair</a>
+  <span>|</span>
+
+  <a href="${PAGES.products}">All Products</a>
+  <span>|</span>
+
+  <a href="${PAGES.combos}">Combos</a>
+  <span>|</span>
+
+  <a href="${PAGES.skinQuiz}">Skin Quiz</a>
+  <span>|</span>
+
+  <a href="${PAGES.blog}">Blog</a>
+  <span>|</span>
+
+  <a href="${PAGES.about}">Our Story</a>
+</div>`;
   }
 
   // ── INJECT FOOTER ──────────────────────────────────────────
@@ -254,4 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initSearchBar === 'function') {
     initSearchBar();
   }
+  if (window.innerWidth <= 768) {
+  document.querySelectorAll('.footer-links h4').forEach(title => {
+    title.addEventListener('click', () => {
+      title.parentElement.classList.toggle('open');
+    });
+  });
+}
 });
