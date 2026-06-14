@@ -11,13 +11,13 @@
     .blog-wrap { max-width: 1600px; margin: 0 auto; padding: 12px 24px 20px; }
     /* page-specific overrides to tighten spacing slightly */
     .page-hero-sm { padding: 32px 8px 16px; }
-    .blog-hero-card { background: linear-gradient(135deg, #3a6b35 0%, #2d5228 100%); border-radius: var(--radius); padding: 48px 32px; margin: 0; color: #fff; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    .blog-hero-card {background: linear-gradient(135deg, #3a6b35 0%, #2d5228 100%);border-radius: var(--radius);padding: 48px 32px;color: #fff;display: grid;grid-template-columns: 1fr 620px;gap: 50px;align-items: center;}
     .blog-hero-card .blog-tag { background: rgba(200,169,110,0.25); color: var(--accent); }
     .blog-hero-card h2 { font-family: var(--font-display); font-size: 2rem; color: #fff; margin: 12px 0 16px; line-height: 1.2; }
     .blog-hero-card p { color: rgba(255,255,255,0.75); line-height: 1.7; font-size: 0.92rem; margin-bottom: 20px; }
     .blog-hero-card .btn-light { background: #fff; color: var(--green); }
-    .blog-hero-img { border-radius: var(--radius-sm); overflow: hidden; height: 300px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 4.5rem; }
-    .blog-hero-img img { width: 100%; height: 100%; object-fit: contain; }
+    .blog-hero-img {width: 620px;height: 380px;border-radius: 16px;overflow: hidden;margin-left: auto;position: relative;top: 15px;   /* move image down */}
+    .blog-hero-img img { width: 100%; height: 100%; object-fit: cover; }
     .blog-filter { display: flex; gap: 10px; margin: 20px 0 32px; flex-wrap: wrap; align-items: center; justify-content: center; }
     .blog-filter-btn { padding: 8px 20px; border-radius: 30px; font-size: 0.82rem; font-weight: 500; border: 1.5px solid var(--border); color: var(--text-muted); transition: var(--transition); cursor: pointer; background: none; }
     .blog-filter-btn.active, .blog-filter-btn:hover { background: var(--brown); border-color: var(--brown); color: #fff; }
