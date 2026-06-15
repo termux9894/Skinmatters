@@ -72,10 +72,25 @@ function initLayout() {
             <span class="logo-sub">Pure Naturals</span>
           </div>
         </a>
-        <nav class="main-nav" id="mainNav">
+      <nav class="main-nav" id="mainNav">
+
+  <div class="mobile-nav-top">
+   <a href="${PAGES.account}" class="mobile-login-box">
+  <i class="fa fa-user-circle mobile-user-icon"></i>
+
+  <div>
+    <strong>Login / Register</strong>
+    <span>To access rewards, orders & account</span>
+  </div>
+</a>
+
+    <button class="mobile-close-btn" id="mobileCloseBtn">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
           <ul>
             <li class="has-dropdown">
-             <a href="${PAGES.products}">Best Sellers <i class="fa fa-chevron-down"></i></a>
+           <a href="javascript:void(0)">Best Sellers <i class="fa fa-chevron-down"></i></a>
               <div class="dropdown">
                 <div class="dropdown-col">
                   <h4>Skincare</h4>
@@ -118,6 +133,24 @@ function initLayout() {
             <li><a href="${PAGES.blog}">Blog</a></li>
             <li><a href="${PAGES.about}">Our Story</a></li>
           </ul>
+         
+<div class="mobile-social-links">
+  <a href="https://instagram.com/yourpage" target="_blank" aria-label="Instagram">
+    <i class="fab fa-instagram"></i>
+  </a>
+
+  <a href="https://facebook.com/yourpage" target="_blank" aria-label="Facebook">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+
+  <a href="https://youtube.com/yourchannel" target="_blank" aria-label="YouTube">
+    <i class="fab fa-youtube"></i>
+  </a>
+
+  <a href="https://wa.me/yournumber" target="_blank" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+</div>
         </nav>
         <div class="header-actions">
           <button class="icon-btn" id="searchToggle" aria-label="Search">

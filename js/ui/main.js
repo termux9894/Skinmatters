@@ -72,6 +72,30 @@ function initMobileMenu() {
   const btn     = document.getElementById('menuBtn');
   const nav     = document.getElementById('mainNav');
   const overlay = document.getElementById('mobileOverlay');
+  const closeBtn = document.getElementById('mobileCloseBtn');
+ if (window.innerWidth <= 768) {
+
+  nav.querySelectorAll('.has-dropdown > a').forEach(link => {
+link.addEventListener('click', function(e) {
+    console.log('clicked');
+
+    e.preventDefault();
+
+    const parent = this.parentElement;
+    const dropdown = parent.querySelector('.dropdown');
+
+    if (!dropdown) return;
+
+    console.log('toggle');
+
+    dropdown.classList.toggle('open');
+    parent.classList.toggle('dropdown-active');
+});
+
+  });
+
+}
+ 
   if (!btn || !nav) return;
 
   function toggle(forceClose = false) {
@@ -84,27 +108,43 @@ function initMobileMenu() {
 
   btn.addEventListener('click', () => toggle());
   overlay?.addEventListener('click', () => toggle(true));
-
-  // Close on nav link click (mobile)
-  nav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      if (window.innerWidth < 768) toggle(true);
-    });
+  closeBtn?.addEventListener('click', () => toggle(true));
+// Close menu only when dropdown items are clicked
+nav.querySelectorAll('.dropdown a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth < 768) toggle(true);
   });
+});
 }
 
 // ── DROPDOWN MENUS (desktop) ──────────────────────────────────
 function initDropdowns() {
+
+  if (window.innerWidth <= 768) return;
+
   document.querySelectorAll('.has-dropdown').forEach(item => {
-    // Avoid attaching listeners multiple times
+
     if (item.dataset.dropdownInit === 'true') return;
     item.dataset.dropdownInit = 'true';
+
     const dropdown = item.querySelector('.dropdown');
     if (!dropdown) return;
+
     let timer;
-    item.addEventListener('mouseenter', () => { clearTimeout(timer); dropdown.classList.add('open'); });
-    item.addEventListener('mouseleave', () => { timer = setTimeout(() => dropdown.classList.remove('open'), 150); });
+
+    item.addEventListener('mouseenter', () => {
+      clearTimeout(timer);
+      dropdown.classList.add('open');
+    });
+
+    item.addEventListener('mouseleave', () => {
+      timer = setTimeout(() => {
+        dropdown.classList.remove('open');
+      }, 150);
+    });
+
   });
+
 }
 
 // ── SEARCH BAR TOGGLE ─────────────────────────────────────────
