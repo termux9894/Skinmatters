@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Customers – SkinMatters Admin</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link rel="stylesheet" href="../../css/admin.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <h1>Customers</h1>
+      <div class="topbar-right">
+        <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="exportCustomers()">⬇️ Export CSV</button>
+        <div class="admin-avatar" id="adminAvatar">A</div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div id="adminAlert" class="admin-alert" style="display:none"></div>
+
+      <!-- STATS -->
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px" id="custStats"></div>
+
+      <!-- TOOLBAR -->
+      <div class="admin-toolbar">
+        <div class="admin-search">
+          <i class="fa fa-search" style="color:var(--admin-muted)"></i>
+          <input type="text" id="searchInput" placeholder="Search name, email, phone…" oninput="filterCustomers()"/>
+        </div>
+        <div class="admin-filter">
+          <select id="sortFilter" onchange="filterCustomers()">
+            <option value="newest">Newest First</option>
+            <option value="orders">Most Orders</option>
+            <option value="points">Most Points</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="admin-table-wrap">
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Orders</th>
+                <th>Total Spent</th>
+                <th>Reward Points</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="customersBody">
+              <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--admin-muted)"><i class="fa fa-spinner fa-spin"></i> Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="pagination"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMER DETAIL MODAL -->
+  <div class="admin-modal-overlay" id="custModal" style="display:none">
+    <div class="admin-modal" style="max-width:560px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h3 id="custModalName">Customer Details</h3>
+        <button onclick="closeCustModal()" style="color:var(--admin-muted);font-size:1.1rem;background:none;border:none;cursor:pointer">✕</button>
+      </div>
+      <div id="custModalContent"></div>
+      <div class="modal-footer">
+        <button class="admin-btn admin-btn-outline" onclick="closeCustModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/supabase.js"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/admin/admin.js"></script>
+  <script>
+    let allCustomers = [];
+    let currentPage  = 1;
+    const PER_PAGE   = 20;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const admin = await requireAdmin();
+      if (!admin) return;
+      injectAdminSidebar('customers');
+      await loadCustomers();
+    });
+
+    async function loadCustomers() {
+      // Get profiles
+      const { data: profiles, error } = await supabase
+        .from('profiles')
+        .select('id, full_name, phone, reward_points, referral_code, created_at');
+      if (error) { showAdminAlert('Failed: ' + error.message, 'error'); return; }
+
+      // Get auth users for emails (service role only — fallback to profile data)
+      // For each profile get their orders
+      const enriched = await Promise.all((profiles || []).map(async p => {
+        const { data: orders } = await supabase
+          .from('orders')
+          .select('total, status')
+          .eq('user_id', p.id);
+        const validOrders = (orders || []).filter(o => o.status !== 'cancelled');
+        return {
+          ...p,
+          order_count:  orders?.length || 0,
+          total_spent:  validOrders.reduce((s, o) => s + parseFloat(o.total), 0),
+        };
+      }));
+
+      allCustomers = enriched;
+      renderStats(enriched);
+      renderCustomers(enriched, currentPage);
+    }
+
+    function renderStats(customers) {
+      const total        = customers.length;
+      const totalRevenue = customers.reduce((s, c) => s + c.total_spent, 0);
+      const avgOrders    = total ? (customers.reduce((s, c) => s + c.order_count, 0) / total).toFixed(1) : 0;
+      const newThisMonth = customers.filter(c => {
+        const d = new Date(c.created_at);
+        const n = new Date();
+        return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
+      }).length;
+
+      document.getElementById('custStats').innerHTML = `
+        <div class="stat-card"><div class="stat-label">Total Customers</div><div class="stat-value">${total}</div></div>
+        <div class="stat-card"><div class="stat-label">New This Month</div><div class="stat-value" style="color:var(--admin-accent)">${newThisMonth}</div></div>
+        <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value">₹${Math.round(totalRevenue/1000)}k</div></div>
+        <div class="stat-card"><div class="stat-label">Avg Orders/Customer</div><div class="stat-value">${avgOrders}</div></div>`;
+    }
+
+    function renderCustomers(customers, page) {
+      const sorted = [...customers];
+      const sort   = document.getElementById('sortFilter')?.value || 'newest';
+      if (sort === 'orders') sorted.sort((a, b) => b.order_count - a.order_count);
+      else if (sort === 'points') sorted.sort((a, b) => (b.reward_points || 0) - (a.reward_points || 0));
+      else sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+      const start = (page - 1) * PER_PAGE;
+      const paged = sorted.slice(start, start + PER_PAGE);
+      const tbody = document.getElementById('customersBody');
+
+      if (!paged.length) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--admin-muted)">No customers found</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = paged.map(c => {
+        const initials = (c.full_name || 'U').split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+        return `<tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--admin-accent);color:#0f1117;display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:700;flex-shrink:0">${initials}</div>
+              <span style="font-weight:500;font-size:0.88rem">${c.full_name || 'Unknown'}</span>
+            </div>
+          </td>
+          <td style="font-size:0.82rem;color:var(--admin-muted)">–</td>
+          <td style="font-size:0.82rem">${c.phone || '–'}</td>
+          <td><span class="badge ${c.order_count > 0 ? 'badge-blue' : 'badge-gray'}">${c.order_count} order${c.order_count !== 1 ? 's' : ''}</span></td>
+          <td style="font-weight:600;color:var(--admin-accent)">${adminFormatPrice(c.total_spent)}</td>
+          <td><span class="badge badge-purple">🌟 ${c.reward_points || 0} pts</span></td>
+          <td style="font-size:0.78rem;color:var(--admin-muted)">${adminFormatDate(c.created_at)}</td>
+          <td><button class="admin-btn admin-btn-outline admin-btn-sm" onclick="viewCustomer('${c.id}')">View</button></td>
+        </tr>`;
+      }).join('');
+
+      renderPagination(customers.length, page, PER_PAGE, (p) => { currentPage = p; renderCustomers(customers, p); });
+    }
+
+    function filterCustomers() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = allCustomers.filter(c =>
+        (c.full_name || '').toLowerCase().includes(q) ||
+        (c.phone || '').includes(q)
+      );
+      currentPage = 1;
+      renderCustomers(filtered, 1);
+    }
+
+    async function viewCustomer(id) {
+      const c = allCustomers.find(x => x.id === id);
+      if (!c) return;
+
+      // Fetch their orders
+      const { data: orders } = await supabase
+        .from('orders')
+        .select('order_number, status, total, created_at')
+        .eq('user_id', id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      document.getElementById('custModalName').textContent = c.full_name || 'Customer';
+      document.getElementById('custModalContent').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
+          <div class="detail-block" style="background:rgba(255,255,255,.03);border-radius:8px;padding:14px">
+            <h4 style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--admin-muted);margin-bottom:8px">Info</h4>
+            <p style="font-size:0.85rem;line-height:1.8;color:var(--admin-text)">
+              📱 ${c.phone || 'No phone'}<br/>
+              🌟 ${c.reward_points || 0} reward points<br/>
+              🎫 Referral: ${c.referral_code || '–'}<br/>
+              📅 Joined: ${adminFormatDate(c.created_at)}
+            </p>
+          </div>
+          <div class="detail-block" style="background:rgba(255,255,255,.03);border-radius:8px;padding:14px">
+            <h4 style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--admin-muted);margin-bottom:8px">Summary</h4>
+            <p style="font-size:0.85rem;line-height:1.8;color:var(--admin-text)">
+              📦 ${c.order_count} total orders<br/>
+              💰 ${adminFormatPrice(c.total_spent)} spent<br/>
+            </p>
+          </div>
+        </div>
+        <h4 style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--admin-muted);margin-bottom:10px">Recent Orders</h4>
+        ${(orders || []).length ? `
+          <table style="width:100%;border-collapse:collapse;font-size:0.83rem">
+            <thead><tr>
+              <th style="text-align:left;padding:6px 10px;color:var(--admin-muted);border-bottom:1px solid var(--admin-border)">Order</th>
+              <th style="text-align:left;padding:6px 10px;color:var(--admin-muted);border-bottom:1px solid var(--admin-border)">Status</th>
+              <th style="text-align:left;padding:6px 10px;color:var(--admin-muted);border-bottom:1px solid var(--admin-border)">Total</th>
+              <th style="text-align:left;padding:6px 10px;color:var(--admin-muted);border-bottom:1px solid var(--admin-border)">Date</th>
+            </tr></thead>
+            <tbody>${(orders || []).map(o => `
+              <tr>
+                <td style="padding:8px 10px;border-bottom:1px solid rgba(33,38,45,.4);color:var(--admin-blue)">${o.order_number}</td>
+                <td style="padding:8px 10px;border-bottom:1px solid rgba(33,38,45,.4)">${getStatusBadge(o.status)}</td>
+                <td style="padding:8px 10px;border-bottom:1px solid rgba(33,38,45,.4);font-weight:600">${adminFormatPrice(o.total)}</td>
+                <td style="padding:8px 10px;border-bottom:1px solid rgba(33,38,45,.4);color:var(--admin-muted);font-size:0.78rem">${adminFormatDate(o.created_at)}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>` : '<p style="color:var(--admin-muted);font-size:0.85rem">No orders yet.</p>'}`;
+
+      document.getElementById('custModal').style.display = 'flex';
+    }
+
+    function closeCustModal() { document.getElementById('custModal').style.display = 'none'; }
+
+    function exportCustomers() {
+      const data = allCustomers.map(c => ({
+        name:          c.full_name || '',
+        phone:         c.phone || '',
+        orders:        c.order_count,
+        total_spent:   c.total_spent,
+        reward_points: c.reward_points || 0,
+        joined:        new Date(c.created_at).toLocaleDateString('en-IN'),
+      }));
+      exportToCSV(data, 'skinmatters-customers-' + new Date().toISOString().split('T')[0]);
+    }
+
+    document.getElementById('custModal').addEventListener('click', function(e) { if (e.target === this) closeCustModal(); });
+  </script>
+</body>
+</html>

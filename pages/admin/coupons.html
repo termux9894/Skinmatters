@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Coupons – SkinMatters Admin</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link rel="stylesheet" href="../../css/admin.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .coupon-code-display {
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--admin-accent);
+      background: rgba(63,185,80,0.08);
+      padding: 3px 10px;
+      border-radius: 6px;
+      border: 1px dashed rgba(63,185,80,0.3);
+      cursor: pointer;
+    }
+    .coupon-code-display:hover { background: rgba(63,185,80,0.15); }
+    .usage-bar { height: 6px; background: var(--admin-border); border-radius: 6px; overflow: hidden; margin-top: 4px; }
+    .usage-fill { height: 100%; background: var(--admin-accent); border-radius: 6px; transition: width .4s; }
+  </style>
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <h1>Coupons</h1>
+      <div class="topbar-right">
+        <button class="admin-btn admin-btn-primary" onclick="openCouponModal()">+ Create Coupon</button>
+        <div class="admin-avatar" id="adminAvatar">A</div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div id="adminAlert" class="admin-alert" style="display:none"></div>
+
+      <!-- STATS -->
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px" id="couponStats"></div>
+
+      <!-- TOOLBAR -->
+      <div class="admin-toolbar" style="margin-bottom:16px">
+        <div class="admin-search">
+          <i class="fa fa-search" style="color:var(--admin-muted)"></i>
+          <input type="text" id="searchInput" placeholder="Search coupon code…" oninput="filterCoupons()"/>
+        </div>
+        <div class="admin-filter">
+          <select id="statusFilter" onchange="filterCoupons()">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="admin-table-wrap">
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Coupon Code</th>
+                <th>Discount</th>
+                <th>Min Order</th>
+                <th>Usage</th>
+                <th>Expires</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="couponsBody">
+              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--admin-muted)">
+                <i class="fa fa-spinner fa-spin"></i> Loading…
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE / EDIT COUPON MODAL -->
+  <div class="admin-modal-overlay" id="couponModal" style="display:none">
+    <div class="admin-modal" style="max-width:480px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h3 id="couponModalTitle">Create Coupon</h3>
+        <button onclick="closeCouponModal()" style="color:var(--admin-muted);font-size:1.1rem;background:none;border:none;cursor:pointer">✕</button>
+      </div>
+
+      <input type="hidden" id="editCouponId"/>
+
+      <div class="admin-form-group">
+        <label>Coupon Code *</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="cCode" placeholder="e.g. SUMMER20" style="text-transform:uppercase;font-weight:700;letter-spacing:.1em;font-family:monospace"/>
+          <button class="admin-btn admin-btn-outline" onclick="generateCode()" style="flex-shrink:0">🎲 Generate</button>
+        </div>
+        <p class="form-hint" style="font-size:0.75rem;color:var(--admin-muted);margin-top:5px">Customers will enter this at checkout</p>
+      </div>
+
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label>Discount Type *</label>
+          <select id="cType" onchange="updateDiscountLabel()">
+            <option value="percent">Percentage (%)</option>
+            <option value="fixed">Fixed Amount (₹)</option>
+          </select>
+        </div>
+        <div class="admin-form-group">
+          <label id="discountLabel">Discount Value (%) *</label>
+          <input type="number" id="cValue" placeholder="10"/>
+        </div>
+      </div>
+
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label>Minimum Order (₹)</label>
+          <input type="number" id="cMinOrder" placeholder="0 (no minimum)"/>
+        </div>
+        <div class="admin-form-group">
+          <label>Max Uses</label>
+          <input type="number" id="cMaxUses" placeholder="Leave blank for unlimited"/>
+        </div>
+      </div>
+
+      <div class="admin-form-group">
+        <label>Expiry Date (optional)</label>
+        <input type="date" id="cExpiry"/>
+      </div>
+
+      <div class="admin-form-group">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <label class="toggle-switch" style="flex-shrink:0">
+            <input type="checkbox" id="cActive" checked/>
+            <span class="toggle-slider"></span>
+          </label>
+          <span>Active (customers can use this coupon)</span>
+        </label>
+      </div>
+
+      <!-- Preview -->
+      <div id="couponPreview" style="background:rgba(63,185,80,0.06);border:1px dashed rgba(63,185,80,0.25);border-radius:8px;padding:14px;margin-bottom:4px">
+        <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--admin-muted);margin-bottom:6px">Preview</p>
+        <p style="font-size:0.88rem;color:var(--admin-text)" id="couponPreviewText">Fill in the details above to see a preview…</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="admin-btn admin-btn-outline" onclick="closeCouponModal()">Cancel</button>
+        <button class="admin-btn admin-btn-primary" id="saveCouponBtn" onclick="saveCoupon()">Save Coupon</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOGGLE SWITCH CSS (reused from products page) -->
+  <style>
+    .toggle-switch { position:relative; display:inline-block; width:40px; height:22px; }
+    .toggle-switch input { opacity:0; width:0; height:0; }
+    .toggle-slider { position:absolute; cursor:pointer; inset:0; background:var(--admin-border); border-radius:22px; transition:.3s; }
+    .toggle-slider:before { position:absolute; content:''; height:16px; width:16px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:.3s; }
+    input:checked + .toggle-slider { background:var(--admin-accent); }
+    input:checked + .toggle-slider:before { transform:translateX(18px); }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/supabase.js"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/admin/admin.js"></script>
+  <script>
+    let allCoupons  = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const admin = await requireAdmin();
+      if (!admin) return;
+      injectAdminSidebar('coupons');
+      await loadCoupons();
+
+      // Live preview
+      ['cCode','cType','cValue','cMinOrder'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', updatePreview);
+        document.getElementById(id)?.addEventListener('change', updatePreview);
+      });
+    });
+
+    async function loadCoupons() {
+      const { data, error } = await supabase.from('coupons').select('*').order('id', { ascending: false });
+      if (error) { showAdminAlert('Failed: ' + error.message, 'error'); return; }
+      allCoupons = data || [];
+      renderStats(allCoupons);
+      renderCoupons(allCoupons);
+    }
+
+    function renderStats(coupons) {
+      const active   = coupons.filter(c => c.is_active).length;
+      const inactive = coupons.filter(c => !c.is_active).length;
+      const totalUsed = coupons.reduce((s, c) => s + (c.used_count || 0), 0);
+      const expired  = coupons.filter(c => c.expires_at && new Date(c.expires_at) < new Date()).length;
+
+      document.getElementById('couponStats').innerHTML = `
+        <div class="stat-card"><div class="stat-label">Total Coupons</div><div class="stat-value">${coupons.length}</div></div>
+        <div class="stat-card"><div class="stat-label">Active</div><div class="stat-value" style="color:var(--admin-accent)">${active}</div></div>
+        <div class="stat-card"><div class="stat-label">Total Times Used</div><div class="stat-value">${totalUsed}</div></div>
+        <div class="stat-card"><div class="stat-label">Expired</div><div class="stat-value" style="color:var(--admin-red)">${expired}</div></div>`;
+    }
+
+    function renderCoupons(coupons) {
+      const tbody = document.getElementById('couponsBody');
+      if (!coupons.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--admin-muted)">No coupons yet. Create your first one!</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = coupons.map(c => {
+        const isExpired  = c.expires_at && new Date(c.expires_at) < new Date();
+        const usagePct   = c.max_uses ? Math.min((c.used_count / c.max_uses) * 100, 100) : 0;
+        const discountLabel = c.discount_type === 'percent'
+          ? `${c.discount_value}% OFF`
+          : `₹${c.discount_value} OFF`;
+
+        return `<tr>
+          <td>
+            <span class="coupon-code-display" onclick="copyCode('${c.code}')" title="Click to copy">${c.code}</span>
+          </td>
+          <td>
+            <strong style="color:var(--admin-amber);font-size:1rem">${discountLabel}</strong>
+          </td>
+          <td>${c.min_order > 0 ? `₹${c.min_order}+` : '<span style="color:var(--admin-muted)">No minimum</span>'}</td>
+          <td>
+            <span style="font-size:0.85rem">${c.used_count || 0}${c.max_uses ? ` / ${c.max_uses}` : ' uses'}</span>
+            ${c.max_uses ? `<div class="usage-bar"><div class="usage-fill" style="width:${usagePct}%"></div></div>` : ''}
+          </td>
+          <td style="font-size:0.82rem">
+            ${c.expires_at
+              ? `<span style="color:${isExpired ? 'var(--admin-red)' : 'var(--admin-muted)'}">${isExpired ? '❌ Expired ' : ''}${new Date(c.expires_at).toLocaleDateString('en-IN')}</span>`
+              : '<span style="color:var(--admin-muted)">Never</span>'}
+          </td>
+          <td>
+            ${isExpired
+              ? '<span class="badge badge-red">Expired</span>'
+              : c.is_active
+                ? '<span class="badge badge-green">Active</span>'
+                : '<span class="badge badge-gray">Inactive</span>'}
+          </td>
+          <td>
+            <div style="display:flex;gap:6px">
+              <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="editCoupon(${c.id})">Edit</button>
+              <button class="admin-btn admin-btn-danger  admin-btn-sm" onclick="deleteCoupon(${c.id},'${c.code}')">Delete</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function filterCoupons() {
+      const q      = document.getElementById('searchInput').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const filtered = allCoupons.filter(c => {
+        const matchQ = !q || c.code.toLowerCase().includes(q);
+        const matchS = !status
+          || (status === 'active'   && c.is_active)
+          || (status === 'inactive' && !c.is_active);
+        return matchQ && matchS;
+      });
+      renderCoupons(filtered);
+    }
+
+    function openCouponModal() {
+      document.getElementById('editCouponId').value = '';
+      document.getElementById('couponModalTitle').textContent = 'Create Coupon';
+      document.getElementById('cCode').value      = '';
+      document.getElementById('cType').value      = 'percent';
+      document.getElementById('cValue').value     = '';
+      document.getElementById('cMinOrder').value  = '';
+      document.getElementById('cMaxUses').value   = '';
+      document.getElementById('cExpiry').value    = '';
+      document.getElementById('cActive').checked  = true;
+      document.getElementById('discountLabel').textContent = 'Discount Value (%) *';
+      updatePreview();
+      document.getElementById('couponModal').style.display = 'flex';
+    }
+
+    function editCoupon(id) {
+      const c = allCoupons.find(x => x.id === id);
+      if (!c) return;
+      document.getElementById('editCouponId').value  = c.id;
+      document.getElementById('couponModalTitle').textContent = 'Edit Coupon';
+      document.getElementById('cCode').value      = c.code;
+      document.getElementById('cType').value      = c.discount_type;
+      document.getElementById('cValue').value     = c.discount_value;
+      document.getElementById('cMinOrder').value  = c.min_order || '';
+      document.getElementById('cMaxUses').value   = c.max_uses  || '';
+      document.getElementById('cExpiry').value    = c.expires_at ? c.expires_at.split('T')[0] : '';
+      document.getElementById('cActive').checked  = c.is_active;
+      updateDiscountLabel();
+      updatePreview();
+      document.getElementById('couponModal').style.display = 'flex';
+    }
+
+    async function saveCoupon() {
+      const code  = document.getElementById('cCode').value.trim().toUpperCase();
+      const type  = document.getElementById('cType').value;
+      const value = parseFloat(document.getElementById('cValue').value);
+
+      if (!code)  { showAdminAlert('Coupon code is required', 'error'); return; }
+      if (!value) { showAdminAlert('Discount value is required', 'error'); return; }
+      if (type === 'percent' && (value < 1 || value > 100)) {
+        showAdminAlert('Percentage must be between 1 and 100', 'error'); return;
+      }
+
+      const btn = document.getElementById('saveCouponBtn');
+      btn.disabled = true; btn.textContent = 'Saving…';
+
+      const expiryVal = document.getElementById('cExpiry').value;
+      const maxUses   = parseInt(document.getElementById('cMaxUses').value) || null;
+      const minOrder  = parseFloat(document.getElementById('cMinOrder').value) || 0;
+
+      const payload = {
+        code,
+        discount_type:  type,
+        discount_value: value,
+        min_order:      minOrder,
+        max_uses:       maxUses,
+        expires_at:     expiryVal ? new Date(expiryVal).toISOString() : null,
+        is_active:      document.getElementById('cActive').checked,
+      };
+
+      const editId = document.getElementById('editCouponId').value;
+      let error;
+      if (editId) {
+        ({ error } = await supabase.from('coupons').update(payload).eq('id', editId));
+      } else {
+        ({ error } = await supabase.from('coupons').insert(payload));
+      }
+
+      btn.disabled = false; btn.textContent = 'Save Coupon';
+
+      if (error) {
+        showAdminAlert(error.code === '23505' ? 'That coupon code already exists!' : error.message, 'error');
+        return;
+      }
+
+      showAdminAlert(editId ? 'Coupon updated!' : 'Coupon created!', 'success');
+      closeCouponModal();
+      await loadCoupons();
+    }
+
+    async function deleteCoupon(id, code) {
+      confirmDelete(`Delete coupon "${code}"? This cannot be undone.`, async () => {
+        const { error } = await supabase.from('coupons').delete().eq('id', id);
+        if (error) { showAdminAlert('Delete failed: ' + error.message, 'error'); return; }
+        showAdminAlert(`Coupon ${code} deleted.`, 'success');
+        await loadCoupons();
+      });
+    }
+
+    function generateCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const code  = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+      document.getElementById('cCode').value = code;
+      updatePreview();
+    }
+
+    function updateDiscountLabel() {
+      const type = document.getElementById('cType').value;
+      document.getElementById('discountLabel').textContent = type === 'percent'
+        ? 'Discount Value (%) *'
+        : 'Discount Value (₹) *';
+      updatePreview();
+    }
+
+    function updatePreview() {
+      const code     = document.getElementById('cCode').value.trim().toUpperCase() || 'CODE';
+      const type     = document.getElementById('cType').value;
+      const value    = document.getElementById('cValue').value;
+      const minOrder = document.getElementById('cMinOrder').value;
+
+      if (!value) {
+        document.getElementById('couponPreviewText').textContent = 'Fill in the details above to see a preview…';
+        return;
+      }
+
+      const discount = type === 'percent' ? `${value}% off` : `₹${value} off`;
+      const min      = minOrder > 0 ? ` on orders above ₹${minOrder}` : '';
+      document.getElementById('couponPreviewText').innerHTML =
+        `Use code <strong style="color:var(--admin-accent)">${code}</strong> to get <strong>${discount}</strong>${min}.`;
+    }
+
+    function copyCode(code) {
+      navigator.clipboard.writeText(code).then(() => showAdminAlert(`Copied "${code}" to clipboard!`, 'success'));
+    }
+
+    function closeCouponModal() { document.getElementById('couponModal').style.display = 'none'; }
+    document.getElementById('couponModal').addEventListener('click', function(e) { if (e.target === this) closeCouponModal(); });
+  </script>
+</body>
+</html>

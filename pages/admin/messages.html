@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Messages – SkinMatters Admin</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link rel="stylesheet" href="../../css/admin.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .msg-card { background:var(--admin-surface); border:1px solid var(--admin-border); border-radius:10px; padding:18px 20px; margin-bottom:10px; cursor:pointer; transition:border-color .2s; }
+    .msg-card:hover { border-color:var(--admin-blue); }
+    .msg-card.unread { border-left:3px solid var(--admin-blue); }
+    .msg-card.read   { opacity:.7; }
+    .msg-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:8px; }
+    .msg-sender { font-weight:600; font-size:0.88rem; }
+    .msg-meta   { font-size:0.75rem; color:var(--admin-muted); display:flex; gap:12px; }
+    .msg-subject { font-size:0.82rem; color:var(--admin-text); margin-bottom:4px; font-weight:500; }
+    .msg-preview { font-size:0.8rem; color:var(--admin-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:600px; }
+  </style>
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <h1>Messages</h1>
+      <div class="topbar-right">
+        <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="markAllRead()">✅ Mark All Read</button>
+        <div class="admin-avatar" id="adminAvatar">A</div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div id="adminAlert" class="admin-alert" style="display:none"></div>
+
+      <!-- STATS -->
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px" id="msgStats"></div>
+
+      <!-- FILTERS -->
+      <div class="admin-toolbar" style="margin-bottom:16px">
+        <div class="admin-search">
+          <i class="fa fa-search" style="color:var(--admin-muted)"></i>
+          <input type="text" id="searchInput" placeholder="Search messages…" oninput="filterMessages()"/>
+        </div>
+        <div class="admin-filter">
+          <select id="readFilter" onchange="filterMessages()">
+            <option value="">All Messages</option>
+            <option value="unread">Unread Only</option>
+            <option value="read">Read Only</option>
+          </select>
+        </div>
+        <div class="admin-filter">
+          <select id="subjectFilter" onchange="filterMessages()">
+            <option value="">All Subjects</option>
+            <option value="Order Query">Order Query</option>
+            <option value="Product Question">Product Question</option>
+            <option value="Return / Refund">Return / Refund</option>
+            <option value="Bulk / Wholesale">Bulk / Wholesale</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="messagesList">
+        <div style="text-align:center;padding:60px;color:var(--admin-muted)"><i class="fa fa-spinner fa-spin" style="font-size:1.5rem"></i></div>
+      </div>
+      <div id="pagination"></div>
+    </div>
+  </div>
+
+  <!-- MESSAGE MODAL -->
+  <div class="admin-modal-overlay" id="msgModal" style="display:none">
+    <div class="admin-modal" style="max-width:580px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h3 id="msgModalTitle">Message</h3>
+        <button onclick="closeMsgModal()" style="color:var(--admin-muted);font-size:1.1rem;background:none;border:none;cursor:pointer">✕</button>
+      </div>
+      <div id="msgModalContent"></div>
+      <div class="modal-footer">
+        <button class="admin-btn admin-btn-danger" id="deleteBtn">🗑 Delete</button>
+        <button class="admin-btn admin-btn-outline" onclick="closeMsgModal()">Close</button>
+        <a id="replyEmailBtn" class="admin-btn admin-btn-primary" href="#">✉️ Reply via Email</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/supabase.js"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/admin/admin.js"></script>
+  <script>
+    let allMessages = [];
+    let currentPage = 1;
+    const PER_PAGE  = 20;
+    let currentMsgId = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const admin = await requireAdmin();
+      if (!admin) return;
+      injectAdminSidebar('messages');
+      await loadMessages();
+    });
+
+    async function loadMessages() {
+      const { data, error } = await supabase
+        .from('contact_messages')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) { showAdminAlert('Failed: ' + error.message, 'error'); return; }
+      allMessages = data || [];
+      renderStats(allMessages);
+      renderMessages(allMessages, currentPage);
+    }
+
+    function renderStats(msgs) {
+      const unread = msgs.filter(m => !m.is_read).length;
+      const total  = msgs.length;
+      const today  = msgs.filter(m => new Date(m.created_at).toDateString() === new Date().toDateString()).length;
+      document.getElementById('msgStats').innerHTML = `
+        <div class="stat-card"><div class="stat-label">Total Messages</div><div class="stat-value">${total}</div></div>
+        <div class="stat-card"><div class="stat-label">Unread</div><div class="stat-value" style="color:var(--admin-blue)">${unread}</div></div>
+        <div class="stat-card"><div class="stat-label">Received Today</div><div class="stat-value" style="color:var(--admin-accent)">${today}</div></div>`;
+    }
+
+    function renderMessages(msgs, page) {
+      const start = (page - 1) * PER_PAGE;
+      const paged = msgs.slice(start, start + PER_PAGE);
+      const el    = document.getElementById('messagesList');
+
+      if (!paged.length) {
+        el.innerHTML = '<div class="admin-empty"><span class="empty-icon">💬</span><p>No messages found</p></div>';
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+
+      el.innerHTML = paged.map(m => `
+        <div class="msg-card ${m.is_read ? 'read' : 'unread'}" onclick="openMessage('${m.id}')">
+          <div class="msg-header">
+            <div>
+              <span class="msg-sender">${m.name}</span>
+              ${!m.is_read ? '<span class="badge badge-blue" style="margin-left:8px;font-size:0.65rem">NEW</span>' : ''}
+            </div>
+            <div class="msg-meta">
+              <span>📧 ${m.email}</span>
+              ${m.phone ? `<span>📱 ${m.phone}</span>` : ''}
+              <span>${adminFormatDate(m.created_at)}</span>
+            </div>
+          </div>
+          ${m.subject ? `<p class="msg-subject">📌 ${m.subject}</p>` : ''}
+          <p class="msg-preview">${m.message}</p>
+        </div>`).join('');
+
+      renderPagination(msgs.length, page, PER_PAGE, (p) => { currentPage = p; renderMessages(msgs, p); });
+    }
+
+    function filterMessages() {
+      const q       = document.getElementById('searchInput').value.toLowerCase();
+      const read    = document.getElementById('readFilter').value;
+      const subject = document.getElementById('subjectFilter').value;
+
+      const filtered = allMessages.filter(m => {
+        const matchQ = !q || m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q) || m.message.toLowerCase().includes(q);
+        const matchR = !read || (read === 'unread' && !m.is_read) || (read === 'read' && m.is_read);
+        const matchS = !subject || m.subject === subject;
+        return matchQ && matchR && matchS;
+      });
+      currentPage = 1;
+      renderMessages(filtered, 1);
+    }
+
+    async function openMessage(id) {
+      const m = allMessages.find(x => x.id === id);
+      if (!m) return;
+      currentMsgId = id;
+
+      // Mark as read
+      if (!m.is_read) {
+        await supabase.from('contact_messages').update({ is_read: true }).eq('id', id);
+        m.is_read = true;
+        document.querySelector(`[onclick="openMessage('${id}')"]`)?.classList.replace('unread','read');
+        loadSidebarBadges();
+      }
+
+      document.getElementById('msgModalTitle').textContent = m.subject || 'Message from ' + m.name;
+      document.getElementById('msgModalContent').innerHTML = `
+        <div style="background:rgba(255,255,255,.03);border-radius:8px;padding:14px;margin-bottom:16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.85rem">
+            <div><span style="color:var(--admin-muted)">From:</span> <strong>${m.name}</strong></div>
+            <div><span style="color:var(--admin-muted)">Date:</span> ${adminFormatDate(m.created_at)}</div>
+            <div><span style="color:var(--admin-muted)">Email:</span> ${m.email}</div>
+            ${m.phone ? `<div><span style="color:var(--admin-muted)">Phone:</span> ${m.phone}</div>` : ''}
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,.03);border-radius:8px;padding:16px">
+          <p style="font-size:0.9rem;line-height:1.8;color:var(--admin-text)">${m.message.replace(/\n/g,'<br/>')}</p>
+        </div>`;
+
+      document.getElementById('replyEmailBtn').href = `mailto:${m.email}?subject=Re: ${m.subject || 'Your message to SkinMatters'}`;
+      document.getElementById('deleteBtn').onclick = () => deleteMessage(id);
+      document.getElementById('msgModal').style.display = 'flex';
+    }
+
+    async function deleteMessage(id) {
+      confirmDelete('Delete this message permanently?', async () => {
+        const { error } = await supabase.from('contact_messages').delete().eq('id', id);
+        if (error) { showAdminAlert('Delete failed', 'error'); return; }
+        allMessages = allMessages.filter(m => m.id !== id);
+        closeMsgModal();
+        renderStats(allMessages);
+        renderMessages(allMessages, currentPage);
+        showAdminAlert('Message deleted.', 'success');
+      });
+    }
+
+    async function markAllRead() {
+      const { error } = await supabase.from('contact_messages').update({ is_read: true }).eq('is_read', false);
+      if (error) { showAdminAlert('Failed: ' + error.message, 'error'); return; }
+      allMessages.forEach(m => m.is_read = true);
+      renderMessages(allMessages, currentPage);
+      renderStats(allMessages);
+      loadSidebarBadges();
+      showAdminAlert('All messages marked as read.', 'success');
+    }
+
+    function closeMsgModal() { document.getElementById('msgModal').style.display = 'none'; currentMsgId = null; }
+    document.getElementById('msgModal').addEventListener('click', function(e) { if (e.target === this) closeMsgModal(); });
+  </script>
+</body>
+</html>
