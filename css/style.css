@@ -25,6 +25,166 @@
   --font-body: 'DM Sans', sans-serif;
 }
 
+/* ============================================
+   MOBILE BOTTOM NAVIGATION (≤768px only)
+   Sticky bar with 5 items + center Offers button
+   ============================================ */
+@media (max-width: 768px) {
+
+  /* Push body content up so bottom nav doesn't overlap */
+  body {
+    padding-bottom: 80px;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    height: 76px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top-left-radius: 22px;
+    border-top-right-radius: 22px;
+    box-shadow: 0 -4px 30px rgba(107, 66, 38, 0.12);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    padding: 6px 8px 0;
+    /* Safe area for iPhone X+ */
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .bottom-nav-inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+    padding-top: 4px;
+  }
+
+  /* Each nav item */
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 4px 6px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: transform 0.2s ease, color 0.2s ease;
+    position: relative;
+    border-radius: 12px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bottom-nav-item:active {
+    transform: scale(0.92);
+  }
+
+  .bottom-nav-item i {
+    font-size: 1.15rem;
+    transition: color 0.2s ease;
+  }
+
+  .bottom-nav-item span {
+    display: block;
+    line-height: 1;
+  }
+
+  /* Active state */
+  .bottom-nav-item.active {
+    color: var(--brown);
+  }
+
+  .bottom-nav-item.active i {
+    color: var(--green);
+  }
+
+  /* Notification badges */
+  .bottom-nav-badge {
+    position: absolute;
+    top: 0;
+    right: 2px;
+    background: var(--green);
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 700;
+    min-width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    line-height: 1;
+  }
+
+  /* ── CENTER OFFERS BUTTON ── */
+  .bottom-nav-offers-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    position: relative;
+    top: -14px;
+    min-width: 64px;
+  }
+
+  .bottom-nav-offers-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4F7A3A 0%, #8B5A2B 100%);
+    box-shadow: 0 4px 16px rgba(58, 107, 53, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bottom-nav-offers-btn:active {
+    transform: scale(0.9);
+    box-shadow: 0 2px 8px rgba(58, 107, 53, 0.25);
+  }
+
+  .bottom-nav-offers-btn i {
+    font-size: 1.3rem;
+    color: #fff;
+  }
+
+  .bottom-nav-offers-label {
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  /* Hover effect for touch feedback */
+  .bottom-nav-item:hover {
+    color: var(--brown);
+  }
+
+  .bottom-nav-offers-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 24px rgba(58, 107, 53, 0.4);
+  }
+}
+
 /* ---------- RESET ---------- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }

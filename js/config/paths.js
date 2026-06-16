@@ -32,8 +32,9 @@ const PAGES = {
   wishlist:       ROOT + 'pages/shop/wishlist.html',
   search:         ROOT + 'pages/shop/search.html',
 
-  // ── Account ───────────────────────────────────────────────
+  // ── Account / Auth ─────────────────────────────────────────
   login:          ROOT + 'pages/account/login.html',
+  register:       ROOT + 'pages/account/login.html',   // same page, uses tab switching
   forgotPassword: ROOT + 'pages/account/forgot-password.html',
   account:        ROOT + 'pages/account/account.html',
   track:          ROOT + 'pages/account/track.html',

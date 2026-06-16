@@ -18,19 +18,21 @@
     .auth-tab.active { color: var(--brown); border-bottom-color: var(--brown); }
     .btn-full { width: 100%; }
     .social-auth { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-    .btn-social { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); font-size: 0.88rem; font-weight: 500; background: var(--warm-white); transition: var(--transition); width: 100%; }
+    .btn-social { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); font-size: 0.88rem; font-weight: 500; background: var(--warm-white); transition: var(--transition); width: 100%; cursor: pointer; }
     .btn-social:hover { border-color: var(--brown-light); background: #fdf7f2; }
     .btn-social img { width: 18px; height: 18px; }
+    .btn-social:disabled { opacity: 0.6; cursor: not-allowed; }
     .forgot-link { font-size: 0.8rem; color: var(--brown); text-align: right; display: block; margin-top: -10px; margin-bottom: 20px; }
     .forgot-link:hover { text-decoration: underline; }
     .pw-toggle { position: relative; }
     .pw-toggle input { padding-right: 44px; }
-    .pw-toggle button { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .pw-toggle button { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); background: none; border: none; cursor: pointer; }
     .strength-bar { height: 4px; border-radius: 4px; margin-top: 6px; background: var(--border); overflow: hidden; }
     .strength-fill { height: 100%; width: 0; border-radius: 4px; transition: width 0.3s, background 0.3s; }
     .terms-check { display: flex; align-items: flex-start; gap: 10px; font-size: 0.82rem; color: var(--text-muted); }
     .terms-check input { margin-top: 2px; accent-color: var(--brown); flex-shrink: 0; }
     .terms-check a { color: var(--brown); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -54,180 +56,102 @@
       </div>
 
       <!-- LOGIN -->
-<div id="loginPanel">
+      <div id="loginPanel">
+        <div class="social-auth">
+          <button id="googleBtn" class="btn-social" onclick="loginWithGoogle()">
+            <i class="fa-brands fa-google"></i>
+            Continue with Google
+          </button>
+        </div>
 
-  <div class="social-auth">
-    <button
-      id="googleBtn"
-      class="btn-social"
-      onclick="loginWithGoogle()">
+        <div class="form-divider">or login with email</div>
 
-      <i class="fa-brands fa-google"></i>
-      Continue with Google
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" />
+        </div>
 
-    </button>
-  </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="pw-toggle">
+            <input type="password" id="loginPassword" placeholder="Enter your password" />
+            <button type="button" onclick="togglePw('loginPassword', this)">
+              <i class="fa fa-eye"></i>
+            </button>
+          </div>
+        </div>
 
-  <div class="form-divider">
-    or login with email
-  </div>
+        <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
 
-  <div class="form-group">
-    <label>Email Address</label>
-    <input
-      type="email"
-      id="loginEmail"
-      placeholder="you@example.com" />
-  </div>
+        <button class="btn btn-dark btn-full" onclick="handleLogin()" id="loginBtn">
+          Login to My Account
+        </button>
 
-  <div class="form-group">
-    <label>Password</label>
+        <p style="text-align:center;margin-top:16px;font-size:0.82rem;color:var(--text-muted);">
+          Don't have an account?
+          <a href="#" onclick="switchTab('register')" style="color:var(--brown);">Sign up free</a>
+        </p>
+      </div>
 
-    <div class="pw-toggle">
-      <input
-        type="password"
-        id="loginPassword"
-        placeholder="Enter your password" />
+      <!-- REGISTER -->
+      <div id="registerPanel" style="display:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" id="regFirst" placeholder="Priya" />
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="regLast" placeholder="Sharma" />
+          </div>
+        </div>
 
-      <button
-        type="button"
-        onclick="togglePw('loginPassword', this)">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="regEmail" placeholder="you@example.com" />
+        </div>
 
-        <i class="fa fa-eye"></i>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="regPhone" placeholder="+91 98765 43210" />
+        </div>
 
-      </button>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="pw-toggle">
+            <input type="password" id="regPassword" placeholder="Min. 8 characters" oninput="checkStrength(this.value)" />
+            <button type="button" onclick="togglePw('regPassword',this)">
+              <i class="fa fa-eye"></i>
+            </button>
+          </div>
+          <div class="strength-bar">
+            <div class="strength-fill" id="strengthFill"></div>
+          </div>
+          <p class="form-hint" id="strengthText">Enter a password</p>
+        </div>
+
+        <div class="form-group" style="margin-bottom:24px;">
+          <label class="terms-check">
+            <input type="checkbox" id="termsCheck" />
+            I agree to the
+            <a href="../../pages/support/shipping.html">Terms of Service</a>
+            and
+            <a href="../../pages/support/returns.html">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button class="btn btn-dark btn-full" onclick="handleRegister()" id="registerBtn">
+          Create My Account
+        </button>
+
+        <p style="text-align:center;margin-top:16px;font-size:0.82rem;color:var(--text-muted);">
+          Already have an account?
+          <a href="#" onclick="switchTab('login')" style="color:var(--brown);">Login</a>
+        </p>
+      </div>
     </div>
   </div>
-
-  <a
-    href="../../pages/account/forgot-password.html"
-    class="forgot-link">
-
-    Forgot password?
-
-  </a>
-
-  <button
-    class="btn btn-dark btn-full"
-    onclick="handleLogin()">
-
-    Login to My Account
-
-  </button>
-
-  <p style="
-      text-align:center;
-      margin-top:16px;
-      font-size:0.82rem;
-      color:var(--text-muted);
-    ">
-
-    Don't have an account?
-
-    <a
-      href="#"
-      onclick="switchTab('register')"
-      style="color:var(--brown);">
-
-      Sign up free
-
-    </a>
-
-  </p>
-
 </div>
-
-<!-- REGISTER -->
-<div id="registerPanel" style="display:none;">
-
-  <div class="form-row">
-    <div class="form-group">
-      <label>First Name</label>
-      <input type="text" id="regFirst" placeholder="Priya" />
-    </div>
-
-    <div class="form-group">
-      <label>Last Name</label>
-      <input type="text" id="regLast" placeholder="Sharma" />
-    </div>
-  </div>
-
-  <div class="form-group">
-    <label>Email Address</label>
-    <input type="email" id="regEmail" placeholder="you@example.com" />
-  </div>
-
-  <div class="form-group">
-    <label>Phone Number</label>
-    <input type="tel" id="regPhone" placeholder="+91 98765 43210" />
-  </div>
-
-  <div class="form-group">
-    <label>Password</label>
-
-    <div class="pw-toggle">
-      <input
-        type="password"
-        id="regPassword"
-        placeholder="Min. 8 characters"
-        oninput="checkStrength(this.value)" />
-
-      <button
-        type="button"
-        onclick="togglePw('regPassword',this)">
-        <i class="fa fa-eye"></i>
-      </button>
-    </div>
-
-    <div class="strength-bar">
-      <div class="strength-fill" id="strengthFill"></div>
-    </div>
-
-    <p class="form-hint" id="strengthText">
-      Enter a password
-    </p>
-  </div>
-
-  <div class="form-group" style="margin-bottom:24px;">
-    <label class="terms-check">
-      <input type="checkbox" id="termsCheck" />
-
-      I agree to the
-      <a href="../../pages/support/shipping.html">
-        Terms of Service
-      </a>
-      and
-      <a href="../../pages/support/returns.html">
-        Privacy Policy
-      </a>
-
-    </label>
-  </div>
-
-  <button
-    class="btn btn-dark btn-full"
-    onclick="handleRegister()">
-
-    Create My Account
-
-  </button>
-
-<p style="
-      text-align:center;
-      margin-top:16px;
-      font-size:0.82rem;
-      color:var(--text-muted);
-    ">
-
-    Already have an account?
-
-    <a href="#" onclick="switchTab('login')" style="color:var(--brown);"> Login </a>
-</p>
-
-</div> <!-- registerPanel -->
-</div> <!-- form-card -->
-</div> <!-- auth-box -->
-</div> <!-- auth-wrap -->
 
 <footer class="footer" id="siteFooter"></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -243,11 +167,27 @@
 <script src="../../js/ui/main.js"></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => { initLayout(); });
+  // ── AUTO-REDIRECT IF ALREADY LOGGED IN ──────────────────────
+  document.addEventListener('DOMContentLoaded', async () => {
+    initLayout();
+    // Initialise auth state
+    if (typeof initAuth === 'function') {
+      await initAuth();
+    }
+    // Check if already logged in
+    const user = loadUserFromLocal();
+    if (user) {
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get('redirect') || PAGES.account;
+      window.location.href = redirect;
+    }
+  });
 
   function switchTab(tab) {
-    document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (i===0 && tab==='login')||(i===1 && tab==='register')));
-    document.getElementById('loginPanel').style.display    = tab === 'login'    ? 'block' : 'none';
+    document.querySelectorAll('.auth-tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+    });
+    document.getElementById('loginPanel').style.display = tab === 'login' ? 'block' : 'none';
     document.getElementById('registerPanel').style.display = tab === 'register' ? 'block' : 'none';
   }
 
@@ -260,63 +200,71 @@
 
   function checkStrength(val) {
     const fill = document.getElementById('strengthFill');
-    const txt  = document.getElementById('strengthText');
+    const txt = document.getElementById('strengthText');
     let score = 0;
     if (val.length >= 8) score++;
     if (/[A-Z]/.test(val)) score++;
     if (/[0-9]/.test(val)) score++;
     if (/[^A-Za-z0-9]/.test(val)) score++;
-    const levels = ['','25%','50%','75%','100%'];
-    const colors = ['','#e53e3e','#f5a623','#3a6b35','#27ae60'];
-    const labels = ['','Weak','Fair','Good','Strong'];
-    fill.style.width = levels[score]; fill.style.background = colors[score];
+    const levels = ['', '25%', '50%', '75%', '100%'];
+    const colors = ['', '#e53e3e', '#f5a623', '#3a6b35', '#27ae60'];
+    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+    fill.style.width = levels[score];
+    fill.style.background = colors[score];
     txt.textContent = score ? labels[score] : 'Enter a password';
   }
 
   async function handleLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pw = document.getElementById('loginPassword').value;
+    const email = document.getElementById('loginEmail').value.trim();
+    const pw = document.getElementById('loginPassword').value;
+    const btn = document.getElementById('loginBtn');
 
-  if (!email || !pw) {
-    showToast('Please fill in all fields', 'error');
-    return;
+    if (!email || !pw) {
+      showToast('Please fill in all fields', 'error');
+      return;
+    }
+
+    // Disable button to prevent double-click
+    if (btn) { btn.disabled = true; btn.textContent = 'Logging in…'; }
+
+    await loginWithEmail(email, pw);
+
+    // Re-enable if login failed (user will still be on this page)
+    if (btn) { btn.disabled = false; btn.textContent = 'Login to My Account'; }
   }
-
-  await loginWithEmail(email, pw);
-}
 
   async function handleRegister() {
-  const first = document.getElementById('regFirst').value.trim();
-  const last = document.getElementById('regLast').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const phone = document.getElementById('regPhone').value.trim();
-  const pw = document.getElementById('regPassword').value;
-  const terms = document.getElementById('termsCheck').checked;
+    const first = document.getElementById('regFirst').value.trim();
+    const last = document.getElementById('regLast').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const phone = document.getElementById('regPhone').value.trim();
+    const pw = document.getElementById('regPassword').value;
+    const terms = document.getElementById('termsCheck').checked;
+    const btn = document.getElementById('registerBtn');
 
-  if (!first || !last || !email || !pw) {
-    showToast('Please fill in all fields','error');
-    return;
+    if (!first || !last || !email || !pw) {
+      showToast('Please fill in all fields', 'error');
+      return;
+    }
+
+    if (!terms) {
+      showToast('Please accept the terms', 'error');
+      return;
+    }
+
+    if (pw.length < 8) {
+      showToast('Password must be 8+ characters', 'error');
+      return;
+    }
+
+    // Disable button to prevent double-click
+    if (btn) { btn.disabled = true; btn.textContent = 'Creating account…'; }
+
+    await registerWithEmail(first, last, email, phone, pw);
+
+    // Re-enable if registration failed
+    if (btn) { btn.disabled = false; btn.textContent = 'Create My Account'; }
   }
-
-  if (!terms) {
-    showToast('Please accept the terms','error');
-    return;
-  }
-
-  if (pw.length < 8) {
-    showToast('Password must be 8+ characters','error');
-    return;
-  }
-
-  await registerWithEmail(
-    first,
-    last,
-    email,
-    phone,
-    pw
-  );
-
-}
 </script>
 </body>
 </html>

@@ -10,7 +10,8 @@
   <style>
     .account-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 240px 1fr; gap: 40px; align-items: start; }
     .account-sidebar { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; position: sticky; top: 90px; }
-    .account-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--brown); color: #fff; font-family: var(--font-display); font-size: 1.8rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+    .account-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--brown); color: #fff; font-family: var(--font-display); font-size: 1.8rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; overflow: hidden; }
+    .account-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .account-name { text-align: center; font-family: var(--font-display); font-size: 1.1rem; font-weight: 500; }
     .account-email { text-align: center; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 24px; }
     .account-nav { display: flex; flex-direction: column; gap: 4px; }
@@ -63,7 +64,9 @@
 <div class="account-wrap">
   <!-- SIDEBAR -->
   <aside class="account-sidebar">
-    <div class="account-avatar" id="avatarInitial">G</div>
+    <div class="account-avatar" id="avatarContainer">
+      <span id="avatarInitial">G</span>
+    </div>
     <p class="account-name" id="sidebarName">Guest User</p>
     <p class="account-email" id="sidebarEmail">guest@example.com</p>
     <nav class="account-nav">
@@ -73,7 +76,7 @@
       <div class="account-nav-item" onclick="showPanel('rewards')"><i class="fa fa-star"></i> Rewards</div>
       <div class="account-nav-item" onclick="window.location.href='../../pages/shop/wishlist.html'"><i class="fa fa-heart"></i> Wishlist</div>
       <div class="account-nav-item" onclick="window.location.href='../../pages/account/track.html'"><i class="fa fa-truck"></i> Track Order</div>
-      <div class="account-nav-item danger" onclick="logout()"><i class="fa fa-sign-out-alt"></i> Logout</div>
+      <div class="account-nav-item danger" onclick="handleLogout()"><i class="fa fa-sign-out-alt"></i> Logout</div>
     </nav>
   </aside>
 
@@ -97,7 +100,7 @@
           <h4>Home</h4>
           <p id="addrName">Guest User</p>
           <p>42, Anna Nagar West,<br/>Chennai – 600040<br/>Tamil Nadu, India</p>
-          <p>📞 98765 43210</p>
+          <p id="addrPhone">📞 98765 43210</p>
           <div class="address-actions"><a>Edit</a><a style="color:#e53e3e;">Delete</a></div>
         </div>
         <div class="address-card" style="border: 2px dashed var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; min-height:160px;" onclick="showToast('Address form coming soon!')">
@@ -170,64 +173,144 @@
     { id: '#SM-2025-0031', date: 'Mar 28, 2025', status: 'delivered', total: 720, items: [2, 7, 10] },
   ];
 
-  document.addEventListener('DOMContentLoaded', () => {
+  // ── PROTECT ACCOUNT PAGE ────────────────────────────────────
+  // If not logged in, redirect to login page
+  document.addEventListener('DOMContentLoaded', async () => {
     initLayout();
-    const user = JSON.parse(localStorage.getItem('sm_user') || '{"name":"Guest User","email":"guest@example.com"}');
-    const initials = user.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+
+    // Initialize auth and check session
+    if (typeof initAuth === 'function') {
+      await initAuth();
+    }
+
+    // Get user from localStorage (set by auth.js)
+    const user = loadUserFromLocal();
+
+    if (!user) {
+      // Not logged in → try Supabase session as fallback
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          await saveUserToLocal(session.user);
+        } else {
+          // Redirect to login
+          window.location.href = PAGES.login + '?redirect=' + encodeURIComponent(window.location.href);
+          return;
+        }
+      } catch (e) {
+        window.location.href = PAGES.login + '?redirect=' + encodeURIComponent(window.location.href);
+        return;
+      }
+    }
+
+    // Load the user data into the page
+    loadAccountPage();
+    renderOrders();
+  });
+
+  // ── LOAD ACCOUNT PAGE WITH USER DATA ────────────────────────
+  function loadAccountPage() {
+    const user = loadUserFromLocal();
+    if (!user) return;
+
+    // Avatar: show image if available, otherwise show initials
+    const avatarContainer = document.getElementById('avatarContainer');
+    const avatarInitial = document.getElementById('avatarInitial');
+
+    if (user.avatar_url) {
+      // Clear initials, show profile image
+      avatarInitial.textContent = '';
+      const img = document.createElement('img');
+      img.src = user.avatar_url;
+      img.alt = user.name;
+      avatarContainer.appendChild(img);
+    } else {
+      // Show initials
+      const initials = getUserInitials(user);
+      avatarInitial.textContent = initials || 'G';
+    }
+
+    // Name and email
     document.getElementById('heroName').textContent = user.name.split(' ')[0];
-    document.getElementById('avatarInitial').textContent = initials;
     document.getElementById('sidebarName').textContent = user.name;
     document.getElementById('sidebarEmail').textContent = user.email;
     document.getElementById('addrName').textContent = user.name;
+
+    // Phone
+    if (user.phone) {
+      document.getElementById('addrPhone').textContent = '📞 ' + user.phone;
+      document.getElementById('pPhone').value = user.phone;
+    }
+
+    // Profile form
     document.getElementById('pEmail').value = user.email;
     const parts = user.name.split(' ');
     document.getElementById('pFirst').value = parts[0] || '';
-    document.getElementById('pLast').value  = parts.slice(1).join(' ') || '';
-    renderOrders();
-  });
+    document.getElementById('pLast').value = parts.slice(1).join(' ') || '';
+  }
 
   function showPanel(id) {
     document.querySelectorAll('.account-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.account-nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById(`panel-${id}`).classList.add('active');
+    document.getElementById('panel-' + id).classList.add('active');
     event.currentTarget.classList.add('active');
   }
 
   function renderOrders() {
     const c = document.getElementById('ordersContainer');
-    if (!MOCK_ORDERS.length) { c.innerHTML = '<p style="color:var(--text-muted);">No orders yet. <a href="../../pages/shop/products.html" style="color:var(--brown);">Start shopping!</a></p>'; return; }
+    if (!MOCK_ORDERS.length) {
+      c.innerHTML = '<p style="color:var(--text-muted);">No orders yet. <a href="../../pages/shop/products.html" style="color:var(--brown);">Start shopping!</a></p>';
+      return;
+    }
     c.innerHTML = MOCK_ORDERS.map(o => {
-      const thumbs = o.items.map(id => { const p = PRODUCTS.find(x=>x.id===id); return p ? `<div class="order-thumb"><img src="${p.image}" onerror="this.src='https://placehold.co/60x60/f5f0eb/888'" /></div>` : ''; }).join('');
+      const thumbs = o.items.map(id => {
+        const p = window.PRODUCTS ? window.PRODUCTS.find(x => x.id === id) : null;
+        return p ? '<div class="order-thumb"><img src="' + p.image + '" onerror="this.src=\'https://placehold.co/60x60/f5f0eb/888\'" /></div>' : '';
+      }).join('');
       const statusClass = { delivered: 'status-delivered', shipped: 'status-shipped', processing: 'status-processing' }[o.status];
       const statusLabel = { delivered: '✅ Delivered', shipped: '🚚 Shipped', processing: '⏳ Processing' }[o.status];
-      return `<div class="order-card">
-        <div class="order-header">
-          <div><span class="order-id">${o.id}</span>&nbsp;&nbsp;<span class="order-date">${o.date}</span></div>
-          <span class="order-status ${statusClass}">${statusLabel}</span>
-        </div>
-        <div class="order-items">${thumbs}</div>
-        <div class="order-footer">
-          <span class="order-total">₹${o.total.toLocaleString('en-IN')}</span>
-          <div style="display:flex;gap:12px;">
-            <a href="../../pages/account/track.html" class="btn btn-outline-dark" style="padding:8px 20px; font-size:0.8rem;">Track</a>
-            <button class="btn btn-dark" style="padding:8px 20px; font-size:0.8rem;" onclick="showToast('Reorder added to cart!')">Reorder</button>
-          </div>
-        </div>
-      </div>`;
+      return '<div class="order-card">' +
+        '<div class="order-header">' +
+          '<div><span class="order-id">' + o.id + '</span>&nbsp;&nbsp;<span class="order-date">' + o.date + '</span></div>' +
+          '<span class="order-status ' + statusClass + '">' + statusLabel + '</span>' +
+        '</div>' +
+        '<div class="order-items">' + thumbs + '</div>' +
+        '<div class="order-footer">' +
+          '<span class="order-total">₹' + o.total.toLocaleString('en-IN') + '</span>' +
+          '<div style="display:flex;gap:12px;">' +
+            '<a href="../../pages/account/track.html" class="btn btn-outline-dark" style="padding:8px 20px; font-size:0.8rem;">Track</a>' +
+            '<button class="btn btn-dark" style="padding:8px 20px; font-size:0.8rem;" onclick="showToast(\'Reorder added to cart!\')">Reorder</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
     }).join('');
   }
 
   function saveProfile() {
-    const name = `${document.getElementById('pFirst').value} ${document.getElementById('pLast').value}`.trim();
-    const email = document.getElementById('pEmail').value;
-    localStorage.setItem('sm_user', JSON.stringify({ name, email }));
+    const user = loadUserFromLocal();
+    if (!user) return;
+
+    const name = document.getElementById('pFirst').value.trim() + ' ' + document.getElementById('pLast').value.trim();
+    user.name = name.trim();
+    user.email = document.getElementById('pEmail').value;
+    user.phone = document.getElementById('pPhone').value;
+
+    localStorage.setItem('sm_user', JSON.stringify(user));
+    loadAccountPage();
     showToast('Profile updated! 🌿');
   }
 
-  function logout() {
-    localStorage.removeItem('sm_user');
-    showToast('Logged out. See you soon! 👋');
-    setTimeout(() => window.location.href = '../../index.html', 1200);
+  // ── LOGOUT ──────────────────────────────────────────────────
+  async function handleLogout() {
+    if (typeof logout === 'function') {
+      await logout();
+    } else {
+      localStorage.removeItem('sm_user');
+      localStorage.removeItem('sm_cart');
+      localStorage.removeItem('sm_wishlist');
+      showToast('Logged out. See you soon! 👋');
+      setTimeout(() => window.location.href = PAGES.login, 1200);
+    }
   }
 </script>
 </body>

@@ -52,9 +52,21 @@
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
 .form-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; }
-.form-divider { text-align: center; color: var(--text-muted); font-size: 0.82rem; margin: 20px 0; position: relative; }
-.form-divider::before { content: ''; position: absolute; left: 0; top: 50%; height: 1px; width: 44%; background: var(--border); }
-.form-divider::after  { content: ''; position: absolute; right: 0; top: 50%; height: 1px; width: 44%; background: var(--border); }
+.form-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  margin: 20px 0;
+}
+.form-divider::before,
+.form-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
 
 /* ---- TABS ---- */
 .page-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 32px; gap: 0; }

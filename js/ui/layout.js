@@ -75,14 +75,13 @@ function initLayout() {
       <nav class="main-nav" id="mainNav">
 
   <div class="mobile-nav-top">
-   <a href="${PAGES.account}" class="mobile-login-box">
-  <i class="fa fa-user-circle mobile-user-icon"></i>
-
-  <div>
-    <strong>Login / Register</strong>
-    <span>To access rewards, orders & account</span>
-  </div>
-</a>
+    <a href="${PAGES.login}" class="mobile-login-box" id="mobileLoginBox">
+      <i class="fa fa-user-circle mobile-user-icon"></i>
+      <div>
+        <strong id="mobileLoginTitle">Login / Register</strong>
+        <span id="mobileLoginSub">To access rewards, orders & account</span>
+      </div>
+    </a>
 
     <button class="mobile-close-btn" id="mobileCloseBtn">
       <i class="fa fa-times"></i>
@@ -288,7 +287,46 @@ function initLayout() {
       <div class="toast" id="toast"></div>`;
   }
 
-    // Initialise cart count
+  // ── INJECT MOBILE BOTTOM NAV (mobile only ≤768px) ──
+  if (window.innerWidth <= 768) {
+    let bottomNav = document.getElementById('bottomNavWrap');
+    if (!bottomNav) {
+      bottomNav = document.createElement('div');
+      bottomNav.id = 'bottomNavWrap';
+      document.body.appendChild(bottomNav);
+    }
+    bottomNav.innerHTML = `
+      <div class="bottom-nav">
+        <div class="bottom-nav-inner">
+          <a href="${PAGES.home}" class="bottom-nav-item" id="bnHome">
+            <i class="fa fa-home"></i>
+            <span>Home</span>
+          </a>
+          <a href="javascript:void(0)" class="bottom-nav-item" id="bnCart" onclick="event.preventDefault(); if(typeof openCartSidebar==='function'){ renderCartUI().then(()=>openCartSidebar()); } else { window.location.href='${PAGES.cart}'; }">
+            <i class="fa fa-shopping-bag"></i>
+            <span>Cart</span>
+            <span class="bottom-nav-badge" id="bnCartBadge" style="display:none">0</span>
+          </a>
+          <div class="bottom-nav-offers-wrap">
+            <a href="${PAGES.products}" class="bottom-nav-offers-btn">
+              <i class="fa fa-gift"></i>
+            </a>
+            <span class="bottom-nav-offers-label">Offers</span>
+          </div>
+          <a href="${PAGES.wishlist}" class="bottom-nav-item" id="bnWishlist">
+            <i class="fa fa-heart"></i>
+            <span>Wishlist</span>
+            <span class="bottom-nav-badge" id="bnWishlistBadge" style="display:none">0</span>
+          </a>
+          <a href="${PAGES.login}" class="bottom-nav-item" id="bnAccount">
+            <i class="fa fa-user"></i>
+            <span>Account</span>
+          </a>
+        </div>
+      </div>`;
+  }
+
+    // Initialise cart count (ALL screen sizes)
     if (typeof initCart === 'function') initCart();
 
     // Ensure wishlist script is present and initialise
@@ -302,6 +340,12 @@ function initLayout() {
         s.onload = () => { if (typeof initWishlist === 'function') initWishlist(); };
         document.head.appendChild(s);
       } catch (e) { /* ignore */ }
+    }
+
+    // Initialise auth state to set correct account link
+    if (typeof initAuth === 'function') {
+      // Delay slightly to ensure DOM is ready
+      setTimeout(() => initAuth(), 100);
     }
 }
 
