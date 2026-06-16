@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Dashboard – SkinMatters Admin</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link rel="stylesheet" href="../../css/admin.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .chart-bar-wrap { display:flex; align-items:flex-end; gap:6px; height:80px; margin-top:12px; }
+    .chart-bar { flex:1; background:rgba(63,185,80,0.25); border-radius:4px 4px 0 0; position:relative; min-height:4px; transition:height .4s ease; cursor:default; }
+    .chart-bar:hover { background:rgba(63,185,80,0.45); }
+    .chart-bar .bar-tip { position:absolute; bottom:calc(100% + 4px); left:50%; transform:translateX(-50%); font-size:10px; color:var(--admin-accent); white-space:nowrap; display:none; }
+    .chart-bar:hover .bar-tip { display:block; }
+    .chart-labels { display:flex; gap:6px; margin-top:4px; }
+    .chart-labels span { flex:1; text-align:center; font-size:10px; color:var(--admin-muted); }
+    .recent-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .top-product { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--admin-border); }
+    .top-product:last-child { border:none; }
+    .top-product img { width:44px; height:44px; border-radius:6px; object-fit:cover; background:var(--admin-bg); }
+    .tp-info { flex:1; }
+    .tp-info p { font-size:0.85rem; font-weight:500; color:var(--admin-text); margin-bottom:2px; }
+    .tp-info span { font-size:0.75rem; color:var(--admin-muted); }
+    .tp-revenue { font-size:0.88rem; font-weight:600; color:var(--admin-accent); }
+    @media(max-width:640px){ .recent-grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <h1>Dashboard</h1>
+      <div class="topbar-right">
+        <span style="font-size:0.8rem;color:var(--admin-muted)" id="lastUpdated"></span>
+        <a href="../../index.html" class="view-site" target="_blank"><i class="fa fa-external-link-alt"></i> View Site</a>
+        <div class="admin-avatar" id="adminAvatar">A</div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div id="adminAlert" class="admin-alert" style="display:none"></div>
+
+      <!-- STATS -->
+      <div class="stat-grid" id="statGrid">
+        <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-label">Total Orders</div><div class="stat-value" id="statOrders">–</div><div class="stat-change up" id="statOrdersChange"></div></div>
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Total Revenue</div><div class="stat-value" id="statRevenue">–</div><div class="stat-change up" id="statRevenueChange"></div></div>
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">Customers</div><div class="stat-value" id="statCustomers">–</div><div class="stat-change neutral" id="statCustomersChange"></div></div>
+        <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-label">Pending Orders</div><div class="stat-value" id="statPending">–</div><div class="stat-change" id="statPendingChange"></div></div>
+        <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-label">Avg Rating</div><div class="stat-value" id="statRating">–</div><div class="stat-change neutral">across all products</div></div>
+        <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-label">Unread Messages</div><div class="stat-value" id="statMessages">–</div><div class="stat-change" id="statMessagesChange"></div></div>
+      </div>
+
+      <!-- CHARTS + RECENT -->
+      <div class="recent-grid">
+        <!-- Revenue chart -->
+        <div class="admin-table-wrap">
+          <div class="admin-table-header"><h3>Revenue – Last 7 Days</h3></div>
+          <div style="padding:16px 20px 20px">
+            <div class="chart-bar-wrap" id="revenueChart"></div>
+            <div class="chart-labels" id="chartLabels"></div>
+          </div>
+        </div>
+
+        <!-- Top products -->
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <h3>Top Products</h3>
+            <a href="products.html" class="admin-btn admin-btn-outline admin-btn-sm">Manage</a>
+          </div>
+          <div style="padding:0 16px" id="topProducts">
+            <div class="admin-empty"><span class="empty-icon">🌿</span><p>Loading…</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT ORDERS -->
+      <div class="admin-table-wrap">
+        <div class="admin-table-header">
+          <h3>Recent Orders</h3>
+          <a href="orders.html" class="admin-btn admin-btn-outline admin-btn-sm">View All</a>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+            <tbody id="recentOrdersBody"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--admin-muted)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- LOW STOCK ALERT -->
+      <div class="admin-table-wrap" id="lowStockWrap" style="display:none">
+        <div class="admin-table-header">
+          <h3>⚠️ Low Stock Alert</h3>
+          <a href="products.html" class="admin-btn admin-btn-danger admin-btn-sm">Update Stock</a>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead><tr><th>Product</th><th>Category</th><th>Stock Left</th></tr></thead>
+            <tbody id="lowStockBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/supabase.js"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/admin/admin.js"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const admin = await requireAdmin();
+    if (!admin) return;
+    injectAdminSidebar('dashboard');
+    document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-IN');
+    await Promise.all([loadStats(), loadRevenueChart(), loadRecentOrders(), loadTopProducts(), loadLowStock()]);
+  });
+
+  async function loadStats() {
+    const [orders, profiles, pending, reviews, messages] = await Promise.all([
+      supabase.from('orders').select('total, status, created_at'),
+      supabase.from('profiles').select('id', { count: 'exact', head: true }),
+      supabase.from('orders').select('id', { count: 'exact', head: true }).in('status', ['placed','confirmed','packing']),
+      supabase.from('products').select('rating'),
+      supabase.from('contact_messages').select('id', { count: 'exact', head: true }).eq('is_read', false),
+    ]);
+
+    const allOrders = orders.data || [];
+    const totalRevenue = allOrders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + parseFloat(o.total), 0);
+    const avgRating = reviews.data?.length ? (reviews.data.reduce((s, p) => s + parseFloat(p.rating || 0), 0) / reviews.data.length).toFixed(1) : '–';
+
+    document.getElementById('statOrders').textContent    = allOrders.length;
+    document.getElementById('statRevenue').textContent   = '₹' + Math.round(totalRevenue / 1000) + 'k';
+    document.getElementById('statCustomers').textContent = profiles.count || 0;
+    document.getElementById('statPending').textContent   = pending.count || 0;
+    document.getElementById('statRating').textContent    = avgRating;
+    document.getElementById('statMessages').textContent  = messages.count || 0;
+
+    const pendingChange = document.getElementById('statPendingChange');
+    if (pending.count > 0) { pendingChange.textContent = 'Needs attention'; pendingChange.className = 'stat-change down'; }
+    else { pendingChange.textContent = 'All caught up ✅'; pendingChange.className = 'stat-change up'; }
+
+    const msgChange = document.getElementById('statMessagesChange');
+    if (messages.count > 0) { msgChange.textContent = 'Unread messages'; msgChange.className = 'stat-change down'; }
+    else { msgChange.textContent = 'All read ✅'; msgChange.className = 'stat-change up'; }
+  }
+
+  async function loadRevenueChart() {
+    const days = 7;
+    const labels = [], values = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      labels.push(d.toLocaleDateString('en-IN', { weekday: 'short' }));
+      const start = new Date(d); start.setHours(0,0,0,0);
+      const end   = new Date(d); end.setHours(23,59,59,999);
+      const { data } = await supabase.from('orders').select('total').gte('created_at', start.toISOString()).lte('created_at', end.toISOString()).neq('status','cancelled');
+      values.push((data || []).reduce((s, o) => s + parseFloat(o.total), 0));
+    }
+    const maxVal = Math.max(...values, 1);
+    const chart  = document.getElementById('revenueChart');
+    const lbls   = document.getElementById('chartLabels');
+    chart.innerHTML = values.map((v, i) => `<div class="chart-bar" style="height:${Math.max((v/maxVal)*100, 4)}%"><span class="bar-tip">₹${Math.round(v)}</span></div>`).join('');
+    lbls.innerHTML  = labels.map(l => `<span>${l}</span>`).join('');
+  }
+
+  async function loadRecentOrders() {
+    const { data } = await supabase.from('orders').select(`id, order_number, status, total, created_at, profile:profiles(full_name)`).order('created_at', { ascending: false }).limit(8);
+    const tbody = document.getElementById('recentOrdersBody');
+    if (!data?.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--admin-muted)">No orders yet</td></tr>'; return; }
+    tbody.innerHTML = data.map(o => `
+      <tr>
+        <td><strong style="color:var(--admin-blue)">${o.order_number}</strong></td>
+        <td>${o.profile?.full_name || 'Guest'}</td>
+        <td>–</td>
+        <td>${adminFormatPrice(o.total)}</td>
+        <td>${getStatusBadge(o.status)}</td>
+        <td style="color:var(--admin-muted);font-size:0.8rem">${adminFormatDate(o.created_at)}</td>
+        <td><a href="orders.html" class="admin-btn admin-btn-outline admin-btn-sm">View</a></td>
+      </tr>`).join('');
+  }
+
+  async function loadTopProducts() {
+    const { data } = await supabase.from('products').select('id, name, image_url, reviews_count, rating').order('reviews_count', { ascending: false }).limit(5);
+    const el = document.getElementById('topProducts');
+    if (!data?.length) { el.innerHTML = '<p style="color:var(--admin-muted);padding:16px;font-size:0.85rem">No products yet</p>'; return; }
+    el.innerHTML = data.map(p => `
+      <div class="top-product">
+        <img src="../../${p.image_url || 'images/placeholder.png'}" alt="${p.name}" onerror="this.src='https://placehold.co/44x44/161b22/fff?text=P'"/>
+        <div class="tp-info"><p>${p.name}</p><span>${p.reviews_count || 0} reviews · ⭐ ${p.rating || 0}</span></div>
+      </div>`).join('');
+  }
+
+  async function loadLowStock() {
+    const { data } = await supabase.from('products').select('id, name, category_slug, stock_quantity').lt('stock_quantity', 10).eq('is_active', true);
+    if (!data?.length) return;
+    document.getElementById('lowStockWrap').style.display = 'block';
+    document.getElementById('lowStockBody').innerHTML = data.map(p => `
+      <tr>
+        <td><strong>${p.name}</strong></td>
+        <td><span class="badge badge-gray">${p.category_slug}</span></td>
+        <td><span class="badge ${p.stock_quantity <= 3 ? 'badge-red' : 'badge-amber'}">${p.stock_quantity} left</span></td>
+      </tr>`).join('');
+  }
+  </script>
+</body>
+</html>

@@ -230,7 +230,9 @@
 <script src="../../js/ui/layout.js"></script>
 <script src="../../js/ui/main.js"></script>
 <script>
-  let discount=0, extraShip=0;
+  let discount = 0;
+let extraShip = 0;
+let cart = [];
 
   function renderSummary(){
     const items=document.getElementById('checkoutItems');
@@ -238,11 +240,14 @@
     if(!items||!summ) return;
     if(!cart.length){items.innerHTML='<p style="color:var(--text-muted);font-size:0.85rem">Cart is empty. <a href="../../pages/shop/products.html" style="color:var(--brown)">Shop now</a></p>';return;}
     items.innerHTML=cart.map(i=>`<div class="summary-item">
-      <img src="${i.image}" alt="${i.name}" onerror="this.src='https://placehold.co/52x52/f5f0eb/888'"/>
+      <img src="${getCartImageSrc(i.image)}" alt="${i.name}" onerror="this.src='https://placehold.co/52x52/f5f0eb/888'"/>
       <div class="si-info"><p>${i.name}</p><span>Qty: ${i.qty}</span></div>
       <span class="si-price">₹${(i.price*i.qty).toLocaleString('en-IN')}</span>
     </div>`).join('');
-    const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const sub = cart.reduce(
+  (s, i) => s + (Number(i.price) * Number(i.qty)),
+  0
+);
     const ship=sub>=999?0:79;
     const total=sub-discount+ship+extraShip;
     document.getElementById('finalAmt').textContent=total.toLocaleString('en-IN');
@@ -293,13 +298,138 @@
     } else showToast('Invalid coupon code');
   }
 
-  function placeOrder(){
-    if(!document.getElementById('af')?.value){goStep(1);showToast('Please complete your address first');return;}
-    cart=[];saveCart();
-    window.location.href='../../pages/shop/order-confirmed.html';
-  }
+  async function placeOrder() {
 
-  document.addEventListener('DOMContentLoaded',()=>{initLayout();renderSummary();});
+  try {
+
+    const firstName = document.getElementById('af').value.trim();
+    const lastName  = document.getElementById('al').value.trim();
+    const email     = document.getElementById('ae').value.trim();
+    const phone     = document.getElementById('ap').value.trim();
+
+    const addr1     = document.getElementById('a1').value.trim();
+    const addr2     = document.getElementById('a2').value.trim();
+    const city      = document.getElementById('ac').value.trim();
+    const state     = document.getElementById('as').value.trim();
+    const pin       = document.getElementById('apin').value.trim();
+
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !phone ||
+      !addr1 ||
+      !city ||
+      !state ||
+      !pin
+    ) {
+      goStep(1);
+      showToast('Please complete your address first');
+      return;
+    }
+
+    const customerName = `${firstName} ${lastName}`;
+
+    if (!cart.length) {
+  showToast('Your cart is empty');
+  return;
+}
+    const subtotal = cart.reduce(
+      (sum, item) => sum + (Number(item.price) * Number(item.qty)),
+      0
+    );
+
+    const shipping = subtotal >= 999 ? 0 : 79;
+
+    const total = subtotal - discount + shipping + extraShip;
+
+    const orderNumber =
+      'SM-' +
+      new Date().getFullYear() +
+      '-' +
+      Math.floor(1000 + Math.random() * 9000);
+
+    const shippingAddress =
+      `${addr1}, ${addr2}, ${city}, ${state} - ${pin}`;
+
+    const {
+      data: order,
+      error: orderError
+    } = await supabase
+      .from('orders')
+      .insert({
+        order_number: orderNumber,
+
+        customer_name: customerName,
+        customer_email: email,
+        customer_phone: phone,
+
+        shipping_address: shippingAddress,
+
+        subtotal: subtotal,
+        discount: discount,
+        shipping_charge: shipping + extraShip,
+        total: total,
+
+        status: 'placed',
+        payment_status: 'pending'
+      })
+      .select()
+      .single();
+
+    if (orderError) {
+      console.error(orderError);
+      showToast(orderError.message);
+      return;
+    }
+
+    const orderItems = cart.map(item => ({
+      order_id: order.id,
+      product_id: item.id,
+      product_name: item.name,
+      quantity: item.qty,
+      unit_price: item.price,
+      total_price: item.qty * item.price
+    }));
+
+    const { error: itemError } = await supabase
+      .from('order_items')
+      .insert(orderItems);
+
+    if (itemError) {
+      console.error(itemError);
+      showToast(itemError.message);
+      return;
+    }
+
+    await clearCart();
+
+    localStorage.setItem('last_order_number', orderNumber);
+
+    window.location.href =
+      '../../pages/shop/order-confirmed.html';
+
+  } catch (err) {
+
+    console.error(err);
+
+    showToast(
+      'Something went wrong while placing the order'
+    );
+  }
+}
+
+  document.addEventListener('DOMContentLoaded', async () => {
+
+  await initLayout();
+
+  cart = await getCartItems();
+
+  console.log('CHECKOUT CART:', cart);
+
+  renderSummary();
+
+});
 </script>
 </body>
 </html>

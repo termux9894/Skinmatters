@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Orders – SkinMatters Admin</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link rel="stylesheet" href="../../css/admin.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .order-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:18px; }
+    .detail-block { background:rgba(255,255,255,.03); border-radius:8px; padding:14px; }
+    .detail-block h4 { font-size:0.72rem; text-transform:uppercase; letter-spacing:.1em; color:var(--admin-muted); margin-bottom:10px; }
+    .detail-block p  { font-size:0.85rem; line-height:1.7; color:var(--admin-text); }
+    .order-items-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+    .order-items-table th { text-align:left; padding:8px 10px; color:var(--admin-muted); font-size:0.72rem; text-transform:uppercase; border-bottom:1px solid var(--admin-border); }
+    .order-items-table td { padding:10px; border-bottom:1px solid rgba(33,38,45,.5); }
+    .status-select { background:var(--admin-surface); border:1px solid var(--admin-border); border-radius:6px; padding:6px 10px; color:var(--admin-text); font-size:0.82rem; font-family:inherit; outline:none; cursor:pointer; }
+    .status-select:focus { border-color:var(--admin-accent); }
+  </style>
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <h1>Orders</h1>
+      <div class="topbar-right">
+        <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="exportOrders()">⬇️ Export CSV</button>
+        <div class="admin-avatar" id="adminAvatar">A</div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div id="adminAlert" class="admin-alert" style="display:none"></div>
+
+      <!-- STATS ROW -->
+      <div class="stat-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px" id="orderStats"></div>
+
+      <!-- TOOLBAR -->
+      <div class="admin-toolbar">
+        <div class="admin-search">
+          <i class="fa fa-search" style="color:var(--admin-muted)"></i>
+          <input type="text" id="searchInput" placeholder="Search order ID, customer name…" oninput="filterOrders()"/>
+        </div>
+        <div class="admin-filter">
+          <select id="statusFilter" onchange="filterOrders()">
+            <option value="">All Statuses</option>
+            <option value="placed">Placed</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="packing">Packing</option>
+            <option value="shipped">Shipped</option>
+            <option value="out_for_delivery">Out for Delivery</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="returned">Returned</option>
+          </select>
+        </div>
+        <div class="admin-filter">
+          <select id="dateFilter" onchange="filterOrders()">
+            <option value="">All Time</option>
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="admin-table-wrap">
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"/></th>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersBody">
+              <tr><td colspan="9" style="text-align:center;padding:40px;color:var(--admin-muted)"><i class="fa fa-spinner fa-spin"></i> Loading orders…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="pagination"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER DETAIL MODAL -->
+  <div class="admin-modal-overlay" id="orderModal" style="display:none">
+    <div class="admin-modal" style="max-width:680px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h3 id="modalOrderId">Order Details</h3>
+        <button onclick="closeModal()" style="color:var(--admin-muted);font-size:1.1rem;background:none;border:none;cursor:pointer">✕</button>
+      </div>
+      <div id="modalContent"></div>
+      <div class="modal-footer">
+        <button class="admin-btn admin-btn-outline" onclick="closeModal()">Close</button>
+        <button class="admin-btn admin-btn-primary" id="modalSaveBtn" onclick="saveOrderChanges()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/supabase.js"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/admin/admin.js"></script>
+  <script>
+    let allOrders = [], currentOrder = null;
+    const PER_PAGE = 15;
+    let currentPage = 1;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const admin = await requireAdmin();
+      if (!admin) return;
+      injectAdminSidebar('orders');
+      await loadOrderStats();
+      await loadOrders();
+    });
+
+    async function loadOrderStats() {
+      const { data } = await supabase.from('orders').select('status, subtotal');
+      if (!data) return;
+      const stats = {
+        total:     data.length,
+        pending:   data.filter(o => ['placed','confirmed','packing'].includes(o.status)).length,
+        shipped:   data.filter(o => ['shipped','out_for_delivery'].includes(o.status)).length,
+        delivered: data.filter(o => o.status === 'delivered').length,
+        revenue:   data.filter(o => o.status !== 'cancelled').reduce((s,o) => s + parseFloat(o.subtotal), 0),
+      };
+      document.getElementById('orderStats').innerHTML = `
+        <div class="stat-card"><div class="stat-label">Total Orders</div><div class="stat-value">${stats.total}</div></div>
+        <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value" style="color:var(--admin-amber)">${stats.pending}</div></div>
+        <div class="stat-card"><div class="stat-label">Shipped</div><div class="stat-value" style="color:var(--admin-blue)">${stats.shipped}</div></div>
+        <div class="stat-card"><div class="stat-label">Delivered</div><div class="stat-value" style="color:var(--admin-accent)">${stats.delivered}</div></div>
+        <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value">₹${Math.round(stats.revenue/1000)}k</div></div>`;
+    }
+
+   async function loadOrders() {
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`
+      *,
+      order_items (
+        id,
+        product_name,
+        quantity,
+        unit_price,
+        total_price
+      )
+    `)
+    .order('created_at', { ascending: false });
+
+  console.log('ORDERS:', data);
+  console.log('ERROR:', error);
+
+  if (error) {
+    showAdminAlert('Failed to load orders: ' + error.message, 'error');
+    return;
+  }
+
+  allOrders = data || [];
+  renderOrders(allOrders, currentPage);
+}
+
+    function renderOrders(orders, page) {
+      const start  = (page - 1) * PER_PAGE;
+      const paged  = orders.slice(start, start + PER_PAGE);
+      const tbody  = document.getElementById('ordersBody');
+      if (!paged.length) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--admin-muted)">No orders found</td></tr>';
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+      tbody.innerHTML = paged.map(o => {
+        const customerName = o.customer_name || 'Guest';
+        const customerPhone = o.customer_phone || '';
+        const customerEmail = o.customer_email || '';
+        const address = o.shipping_address || '';
+        const items   = (o.order_items || []).map(i => `${i.product_name} ×${i.quantity}`).join(', ');
+        return `<tr>
+          <td><input type="checkbox" class="row-check" data-id="${o.id}"/></td>
+          <td><strong style="color:var(--admin-blue);cursor:pointer" onclick="openOrder('${o.id}')">${o.order_number}</strong></td>
+          <td>
+            <p style="font-size:0.85rem;font-weight:500">${customerName}</p>
+            <p style="font-size:0.75rem;color:var(--admin-muted)">${customerPhone || ''}</p>
+          </td>
+          <td style="font-size:0.78rem;color:var(--admin-muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${items}">${items || '–'}</td>
+          <td style="font-weight:600">${adminFormatPrice(o.subtotal)}</td>
+          <td>${o.payment_status === 'paid' ? '<span class="badge badge-green">Paid</span>' : o.payment_method === 'cod' ? '<span class="badge badge-amber">COD</span>' : '<span class="badge badge-gray">Pending</span>'}</td>
+          <td>${getStatusBadge(o.status)}</td>
+          <td style="font-size:0.78rem;color:var(--admin-muted)">${adminFormatDate(o.created_at)}</td>
+          <td>
+            <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="openOrder('${o.id}')">View</button>
+          </td>
+        </tr>`;
+      }).join('');
+      renderPagination(orders.length, page, PER_PAGE, (p) => { currentPage = p; renderOrders(orders, p); });
+    }
+
+    function filterOrders() {
+      const q      = document.getElementById('searchInput').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const date   = document.getElementById('dateFilter').value;
+      const now    = new Date();
+
+      let filtered = allOrders.filter(o => {
+        const name = (o.customer_name || '').toLowerCase();
+        const matchQ = !q || o.order_number.toLowerCase().includes(q) || name.includes(q);
+        const matchS = !status || o.status === status;
+        let   matchD = true;
+        if (date === 'today') {
+          const d = new Date(o.created_at);
+          matchD = d.toDateString() === now.toDateString();
+        } else if (date === 'week') {
+          const d = new Date(o.created_at);
+          matchD = (now - d) < 7 * 24 * 60 * 60 * 1000;
+        } else if (date === 'month') {
+          const d = new Date(o.created_at);
+          matchD = d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        }
+        return matchQ && matchS && matchD;
+      });
+      currentPage = 1;
+      renderOrders(filtered, 1);
+    }
+
+    function openOrder(id) {
+  currentOrder = allOrders.find(order => order.id === id);
+  if (!currentOrder) return;
+
+  const customerName  = currentOrder.customer_name || 'Guest';
+  const customerPhone = currentOrder.customer_phone || '';
+  const customerEmail = currentOrder.customer_email || '';
+  const address       = currentOrder.shipping_address || '';
+  const items         = currentOrder.order_items || [];
+
+      document.getElementById('modalOrderId').textContent = currentOrder.order_number;
+      document.getElementById('modalContent').innerHTML = `
+        <div class="order-detail-grid">
+          <div class="detail-block">
+            <h4>Customer</h4>
+            <p><strong>${customerName}</strong><br>${customerPhone}<br>${customerEmail}</p>
+          </div>
+          <div class="detail-block">
+  <h4>Delivery Address</h4>
+  <p>${address || 'No address available'}</p>
+</div>
+          <div class="detail-block">
+            <h4>Payment</h4>
+            <p>${currentOrder.payment_method || '–'} · ${currentOrder.payment_status === 'paid' ? '✅ Paid' : '⏳ ' + currentOrder.payment_status}</p>
+          </div>
+          <div class="detail-block">
+            <h4>Order Summary</h4>
+            <p>Subtotal: <strong>${adminFormatPrice(currentOrder.subtotal)}</strong><br/>Date: ${adminFormatDate(currentOrder.created_at)}</p>
+          </div>
+        </div>
+
+        <h4 style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--admin-muted);margin-bottom:10px">Items Ordered</h4>
+        <table class="order-items-table" style="margin-bottom:18px">
+          <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+          <tbody>${items.map(i => `<tr><td>${i.product_name}</td><td>${i.quantity}</td><td>${adminFormatPrice(i.unit_price)}</td><td>${adminFormatPrice(i.unit_price * i.quantity)}</td></tr>`).join('') || '<tr><td colspan="4" style="color:var(--admin-muted)">No items</td></tr>'}</tbody>
+        </table>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+          <div class="admin-form-group" style="margin:0">
+            <label>Update Status</label>
+            <select class="status-select" id="modalStatus" style="width:100%">
+              ${['placed','confirmed','packing','shipped','out_for_delivery','delivered','cancelled','returned'].map(s => `<option value="${s}" ${currentOrder.status === s ? 'selected' : ''}>${s.replace(/_/g,' ')}</option>`).join('')}
+            </select>
+          </div>
+          <div class="admin-form-group" style="margin:0">
+            <label>Tracking Number</label>
+            <input type="text" id="modalTracking" value="${currentOrder.tracking_number || ''}" placeholder="e.g. 1234567890"/>
+          </div>
+          <div class="admin-form-group" style="margin:0">
+            <label>Courier</label>
+            <input type="text" id="modalCourier" value="${currentOrder.courier || ''}" placeholder="e.g. Delhivery"/>
+          </div>
+        </div>`;
+
+      document.getElementById('orderModal').style.display = 'flex';
+    }
+
+    async function saveOrderChanges() {
+      if (!currentOrder) return;
+      const status   = document.getElementById('modalStatus').value;
+      const tracking = document.getElementById('modalTracking').value.trim();
+      const courier  = document.getElementById('modalCourier').value.trim();
+      const btn      = document.getElementById('modalSaveBtn');
+      btn.disabled = true; btn.textContent = 'Saving…';
+      console.log('CURRENT ORDER:', currentOrder);
+console.log('ORDER ID:', currentOrder.id);
+console.log('ORDER NUMBER:', currentOrder.order_number);
+
+      const { data, error } = await supabase
+  .from('orders')
+  .update({
+    status,
+    tracking_number: tracking || null,
+    courier: courier || null,
+    updated_at: new Date().toISOString()
+  })
+  .eq('id', currentOrder.id)
+  .select();
+
+console.log('UPDATE DATA:', data);
+console.log('UPDATE ERROR:', error);
+
+      btn.disabled = false; btn.textContent = 'Save Changes';
+      if (error) { showAdminAlert('Save failed: ' + error.message, 'error'); return; }
+
+      // Update local data
+      const idx = allOrders.findIndex(o => o.id === currentOrder.id);
+      if (idx !== -1) { allOrders[idx].status = status; allOrders[idx].tracking_number = tracking; allOrders[idx].courier = courier; }
+
+      showAdminAlert('Order updated successfully!', 'success');
+      closeModal();
+      renderOrders(allOrders, currentPage);
+      loadOrderStats();
+    }
+
+    function closeModal() { document.getElementById('orderModal').style.display = 'none'; currentOrder = null; }
+
+    function toggleSelectAll(cb) {
+      document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
+    }
+
+    function exportOrders() {
+      const data = allOrders.map(o => ({
+        order_number: o.order_number,
+        customer:     o.shipping_address?.full_name || 'Guest',
+        subtotal:     o.subtotal,
+        status:       o.status,
+        payment:      o.payment_method,
+        date:         new Date(o.created_at).toLocaleDateString('en-IN'),
+      }));
+      exportToCSV(data, 'skinmatters-orders-' + new Date().toISOString().split('T')[0]);
+    }
+
+    // Close modal on overlay click
+    document.getElementById('orderModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Reviews – SkinMatters Admin</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link rel="stylesheet" href="../../css/admin.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .review-card { background:var(--admin-surface); border:1px solid var(--admin-border); border-radius:10px; padding:18px 20px; margin-bottom:10px; }
+    .review-card.pending { border-left:3px solid var(--admin-amber); }
+    .review-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+    .reviewer-info { display:flex; align-items:center; gap:10px; }
+    .reviewer-avatar { width:36px; height:36px; border-radius:50%; background:var(--admin-accent); color:#0f1117; display:flex; align-items:center; justify-content:center; font-size:0.78rem; font-weight:700; flex-shrink:0; }
+    .reviewer-name { font-weight:600; font-size:0.88rem; }
+    .reviewer-meta { font-size:0.75rem; color:var(--admin-muted); }
+    .review-stars { color:#f5a623; font-size:1rem; }
+    .review-body { font-size:0.88rem; color:var(--admin-text); line-height:1.7; margin:10px 0; }
+    .review-product { font-size:0.78rem; color:var(--admin-blue); margin-bottom:6px; }
+    .review-actions { display:flex; gap:8px; margin-top:12px; }
+  </style>
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <h1>Reviews</h1>
+      <div class="topbar-right">
+        <div class="admin-avatar" id="adminAvatar">A</div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div id="adminAlert" class="admin-alert" style="display:none"></div>
+
+      <!-- STATS -->
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px" id="reviewStats"></div>
+
+      <!-- FILTERS -->
+      <div class="admin-toolbar" style="margin-bottom:16px">
+        <div class="admin-search">
+          <i class="fa fa-search" style="color:var(--admin-muted)"></i>
+          <input type="text" id="searchInput" placeholder="Search reviews…" oninput="filterReviews()"/>
+        </div>
+        <div class="admin-filter">
+          <select id="statusFilter" onchange="filterReviews()">
+            <option value="">All Reviews</option>
+            <option value="pending">Pending Approval</option>
+            <option value="approved">Approved</option>
+          </select>
+        </div>
+        <div class="admin-filter">
+          <select id="ratingFilter" onchange="filterReviews()">
+            <option value="">All Ratings</option>
+            <option value="5">5 Stars ⭐⭐⭐⭐⭐</option>
+            <option value="4">4 Stars ⭐⭐⭐⭐</option>
+            <option value="3">3 Stars ⭐⭐⭐</option>
+            <option value="2">2 Stars ⭐⭐</option>
+            <option value="1">1 Star ⭐</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="reviewsList">
+        <div style="text-align:center;padding:60px;color:var(--admin-muted)"><i class="fa fa-spinner fa-spin" style="font-size:1.5rem"></i></div>
+      </div>
+      <div id="pagination"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../js/config/supabase.js"></script>
+  <script src="../../js/config/paths.js"></script>
+  <script src="../../js/admin/admin.js"></script>
+  <script>
+    let allReviews  = [];
+    let currentPage = 1;
+    const PER_PAGE  = 15;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const admin = await requireAdmin();
+      if (!admin) return;
+      injectAdminSidebar('reviews');
+      await loadReviews();
+    });
+
+    async function loadReviews() {
+      const { data, error } = await supabase
+        .from('reviews')
+        .select(`id, rating, title, content, is_verified, created_at,
+          profile:profiles(full_name),
+          product:products(id, name, image_url)`)
+        .order('created_at', { ascending: false });
+
+      if (error) { showAdminAlert('Failed: ' + error.message, 'error'); return; }
+      allReviews = data || [];
+      renderStats(allReviews);
+      renderReviews(allReviews, currentPage);
+    }
+
+    function renderStats(reviews) {
+      const pending  = reviews.filter(r => !r.is_verified).length;
+      const approved = reviews.filter(r => r.is_verified).length;
+      const avgRating = reviews.length
+        ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
+        : '–';
+      const fiveStar  = reviews.filter(r => r.rating === 5).length;
+
+      document.getElementById('reviewStats').innerHTML = `
+        <div class="stat-card"><div class="stat-label">Total Reviews</div><div class="stat-value">${reviews.length}</div></div>
+        <div class="stat-card"><div class="stat-label">Pending Approval</div><div class="stat-value" style="color:var(--admin-amber)">${pending}</div></div>
+        <div class="stat-card"><div class="stat-label">Approved</div><div class="stat-value" style="color:var(--admin-accent)">${approved}</div></div>
+        <div class="stat-card"><div class="stat-label">Avg Rating</div><div class="stat-value">⭐ ${avgRating}</div></div>`;
+    }
+
+    function renderReviews(reviews, page) {
+      const start = (page - 1) * PER_PAGE;
+      const paged = reviews.slice(start, start + PER_PAGE);
+      const el    = document.getElementById('reviewsList');
+
+      if (!paged.length) {
+        el.innerHTML = '<div class="admin-empty"><span class="empty-icon">⭐</span><p>No reviews found</p></div>';
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+
+      el.innerHTML = paged.map(r => {
+        const name     = r.profile?.full_name || 'Anonymous';
+        const initials = name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+        const stars    = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        return `
+          <div class="review-card ${r.is_verified ? '' : 'pending'}">
+            <div class="review-header">
+              <div class="reviewer-info">
+                <div class="reviewer-avatar">${initials}</div>
+                <div>
+                  <p class="reviewer-name">${name}</p>
+                  <p class="reviewer-meta">${adminFormatDate(r.created_at)}</p>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <div class="review-stars">${stars}</div>
+                ${r.is_verified
+                  ? '<span class="badge badge-green">✅ Approved</span>'
+                  : '<span class="badge badge-amber">⏳ Pending</span>'}
+              </div>
+            </div>
+            <p class="review-product">📦 ${r.product?.name || 'Unknown Product'}</p>
+            ${r.title ? `<p style="font-weight:600;font-size:0.88rem;margin-bottom:6px">${r.title}</p>` : ''}
+            <p class="review-body">${r.content || ''}</p>
+            <div class="review-actions">
+              ${!r.is_verified
+                ? `<button class="admin-btn admin-btn-primary admin-btn-sm" onclick="approveReview('${r.id}')">✅ Approve</button>`
+                : `<button class="admin-btn admin-btn-outline admin-btn-sm" onclick="unapproveReview('${r.id}')">↩ Unapprove</button>`}
+              <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="deleteReview('${r.id}')">🗑 Delete</button>
+            </div>
+          </div>`;
+      }).join('');
+
+      renderPagination(reviews.length, page, PER_PAGE, (p) => { currentPage = p; renderReviews(reviews, p); });
+    }
+
+    function filterReviews() {
+      const q      = document.getElementById('searchInput').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const rating = document.getElementById('ratingFilter').value;
+
+      const filtered = allReviews.filter(r => {
+        const matchQ = !q || (r.content || '').toLowerCase().includes(q) || (r.profile?.full_name || '').toLowerCase().includes(q) || (r.product?.name || '').toLowerCase().includes(q);
+        const matchS = !status || (status === 'pending' && !r.is_verified) || (status === 'approved' && r.is_verified);
+        const matchR = !rating || r.rating === parseInt(rating);
+        return matchQ && matchS && matchR;
+      });
+      currentPage = 1;
+      renderReviews(filtered, 1);
+    }
+
+    async function approveReview(id) {
+      const { error } = await supabase.from('reviews').update({ is_verified: true }).eq('id', id);
+      if (error) { showAdminAlert('Failed: ' + error.message, 'error'); return; }
+      const r = allReviews.find(x => x.id === id);
+      if (r) r.is_verified = true;
+      showAdminAlert('Review approved! It is now visible to customers.', 'success');
+      renderReviews(allReviews, currentPage);
+      renderStats(allReviews);
+      loadSidebarBadges();
+    }
+
+    async function unapproveReview(id) {
+      const { error } = await supabase.from('reviews').update({ is_verified: false }).eq('id', id);
+      if (error) { showAdminAlert('Failed: ' + error.message, 'error'); return; }
+      const r = allReviews.find(x => x.id === id);
+      if (r) r.is_verified = false;
+      showAdminAlert('Review unapproved.', 'success');
+      renderReviews(allReviews, currentPage);
+      renderStats(allReviews);
+    }
+
+    async function deleteReview(id) {
+      confirmDelete('Delete this review permanently?', async () => {
+        const { error } = await supabase.from('reviews').delete().eq('id', id);
+        if (error) { showAdminAlert('Delete failed: ' + error.message, 'error'); return; }
+        allReviews = allReviews.filter(r => r.id !== id);
+        showAdminAlert('Review deleted.', 'success');
+        renderReviews(allReviews, currentPage);
+        renderStats(allReviews);
+      });
+    }
+  </script>
+</body>
+</html>

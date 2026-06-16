@@ -208,7 +208,10 @@
         </select>
       </div>
       <div class="form-group"><label>Message</label><textarea id="cMessage" placeholder="Tell us how we can help you…"></textarea></div>
-      <button class="btn btn-dark" style="width:100%;" onclick="submitContact()">
+      <button
+  id="contactSubmitBtn"
+  class="btn btn-dark"
+  style="width:100%;">
         <i class="fa fa-paper-plane"></i>&nbsp; Send Message
       </button>
     </div>
@@ -233,16 +236,10 @@
 
 <script src="../../js/ui/layout.js"></script>
 <script src="../../js/ui/main.js"></script>
+<script src="../../js/ui/contact.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => { initLayout(); });
-  function submitContact() {
-    const name = document.getElementById('cName').value.trim();
-    const email = document.getElementById('cEmail').value.trim();
-    const msg = document.getElementById('cMessage').value.trim();
-    if (!name || !email || !msg) { showToast('Please fill in all required fields'); return; }
-    document.getElementById('contactForm').style.display = 'none';
-    document.getElementById('successMsg').style.display = 'block';
-  }
+  
 </script>
 </body>
 </html>
