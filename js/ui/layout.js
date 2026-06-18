@@ -131,6 +131,11 @@ function initLayout() {
             <li><a href="${PAGES.skinQuiz}">Skin Quiz</a></li>
             <li><a href="${PAGES.blog}">Blog</a></li>
             <li><a href="${PAGES.about}">Our Story</a></li>
+            <!-- ── NEW: Mobile-only menu items (no icons) ── -->
+            <li class="mobile-only-menu-item"><a href="${PAGES.account}">My Orders</a></li>
+            <li class="mobile-only-menu-item"><a href="${PAGES.track}">Track Order</a></li>
+            <li class="mobile-only-menu-item"><a href="${PAGES.contact}">Contact Us</a></li>
+            <!-- ── END: Mobile-only menu items ── -->
           </ul>
          
 <div class="mobile-social-links">

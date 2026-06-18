@@ -98,12 +98,18 @@ link.addEventListener('click', function(e) {
  
   if (!btn || !nav) return;
 
+  /* ── ROOT CAUSE FIX: Lock BOTH html and body scroll.
+       Using position:fixed on body breaks touch scrolling on
+       fixed-position children like the side menu. Instead we
+       only disable overflow on html+body, which keeps the
+       side menu (position:fixed) fully scrollable. ── */
   function toggle(forceClose = false) {
     const open = forceClose ? false : !nav.classList.contains('open');
     nav.classList.toggle('open', open);
     btn.classList.toggle('open', open);
     overlay?.classList.toggle('show', open);
     document.body.classList.toggle('nav-open', open);
+    document.documentElement.classList.toggle('nav-open', open);
   }
 
   btn.addEventListener('click', () => toggle());
