@@ -196,7 +196,29 @@
           <p style="font-size:0.9rem;line-height:1.8;color:var(--admin-text)">${m.message.replace(/\n/g,'<br/>')}</p>
         </div>`;
 
-      document.getElementById('replyEmailBtn').href = `mailto:${m.email}?subject=Re: ${m.subject || 'Your message to SkinMatters'}`;
+      const gmailUrl =
+  `https://mail.google.com/mail/?view=cm&fs=1` +
+  `&to=${encodeURIComponent(m.email)}` +
+  `&su=${encodeURIComponent(
+    'Re: ' + (m.subject || 'Your message to SkinMatters')
+  )}` +
+  `&body=${encodeURIComponent(
+`Hello ${m.name},
+
+Thank you for contacting SkinMatters.
+
+------------------------------------
+Customer Message:
+${m.message}
+------------------------------------
+
+
+Regards,
+SkinMatters Team`
+)}`;
+
+document.getElementById('replyEmailBtn').href = gmailUrl;
+document.getElementById('replyEmailBtn').target = '_blank';
       document.getElementById('deleteBtn').onclick = () => deleteMessage(id);
       document.getElementById('msgModal').style.display = 'flex';
     }

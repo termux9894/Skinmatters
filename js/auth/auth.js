@@ -80,18 +80,20 @@ async function registerWithEmail(firstName, lastName, email, phone, password) {
 
 // ── LOGIN WITH GOOGLE ───────────────────────────────────────
 async function loginWithGoogle() {
+  const redirect =
+    new URLSearchParams(window.location.search).get('redirect') ||
+    window.location.origin + '/pages/account/account.html';
+
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.origin + '/pages/account/account.html',
-      queryParams: {
-        access_type: 'offline',
-        prompt: 'consent'
-      }
+      redirectTo: redirect
     }
   });
+
   if (error) {
     showToast(error.message, 'error');
+    console.error(error);
   }
 }
 

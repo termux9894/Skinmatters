@@ -9,8 +9,8 @@
 //  4. Paste them below
 // ============================================================
 
-const SUPABASE_URL  = 'https://gdvmavtfeiclrylargki.supabase.co';  // ← paste here
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdkdm1hdnRmZWljbHJ5bGFyZ2tpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2NzUyODMsImV4cCI6MjA5NDI1MTI4M30.X_WRXvqIw9-dzDZdbyOsbPDAXKAknU08pYEMV-vVr_0';                 // ← paste here
+const SUPABASE_URL  = 'https://ttkkxfdmccrbbcnjvysb.supabase.co';  // ← paste here
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0a2t4ZmRtY2NyYmJjbmp2eXNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2Njc5MjksImV4cCI6MjA5MjI0MzkyOX0.KtwUiqxaY6BchJ7bG8SqPG8G-WfLxEb3Sr-gbrpPFtA';                 // ← paste here
 
 // Create and export the Supabase client
 // (loaded from CDN in every HTML file's <head>)
