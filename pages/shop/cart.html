@@ -43,6 +43,10 @@
   </style>
 </head>
 <body>
+  <script>
+    // ── FIX: Skip cart page, redirect directly to checkout ──
+    window.location.href = '../../pages/shop/checkout.html';
+  </script>
 
 <div class="announcement-bar" id="announcementBar"></div>
 <header class="header" id="siteHeader"></header>
@@ -68,9 +72,18 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../../js/config/paths.js"></script>
   <script src="../../js/products-data.js"></script>
+  <script src="../../js/cart/cart.js"></script>
   <script src="../../js/ui/layout.js"></script>
   <script src="../../js/ui/main.js"></script>
    <script>
+    /* ── FIX: Load cart from localStorage using cart.js helpers ── */
+    /* cart.js defines getLocalCart() which reads from localStorage('sm_cart') */
+    let cart = [];
+    async function loadCartFromStorage() {
+      cart = getLocalCart();
+      renderCartPage();
+    }
+
     function getCartPageImageSrc(image) {
       if (!image) return '';
       if (/^(https?:)?\/\//.test(image) || image.startsWith('data:')) return image;
@@ -140,7 +153,11 @@
       else showToast('Invalid coupon code');
     }
 
-    document.addEventListener('DOMContentLoaded', renderCartPage);
+    /* Load cart from localStorage then render */
+    document.addEventListener('DOMContentLoaded', () => {
+      cart = getLocalCart();
+      renderCartPage();
+    });
   </script>
 </body>
 <script>
